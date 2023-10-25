@@ -1,0 +1,122 @@
+﻿@model List<AppUser>
+
+
+<body>
+    <main>
+        <!-- Main Page Section -->
+        <div class="new-users">
+            <h2>Employee List</h2>
+            <div class="user-list mt-4">
+                <div class="user">
+                    <ul class="nav nav-tabs mt-5" id="employeeTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link active text-decoration-none" id="all-tab" data-toggle="tab" href="#all" role="tab" aria-controls="all" aria-selected="true">All Employees</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link text-decoration-none" id="active-tab" data-toggle="tab" href="#active" role="tab" aria-controls="active" aria-selected="false">Active Employees</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link text-decoration-none" id="inactive-tab" data-toggle="tab" href="#inactive" role="tab" aria-controls="inactive" aria-selected="false">Passive Employees</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="employeeTabContent">
+                        <div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
+                            <!-- Tüm Çalışanlar tablosu burada -->
+                            <table class="table table-bordered table-striped table-hover mt-5">
+                                <!-- Tabloyu burada doldurun -->
+                                <thead>
+                                    <tr>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Email Address</th>
+                                        <th>Department</th>
+                                        <th>Job</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var employee in Model)
+                                    {
+                                        <tr>
+                                            <td>@employee.FirstName</td>
+                                            <td>@employee.LastName</td>
+                                            <td>@employee.Email</td>
+                                            <td>@employee.Department</td>
+                                            <td>@employee.Profession</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="active" role="tabpanel" aria-labelledby="active-tab">
+                            <!-- Aktif Çalışanlar tablosu burada -->
+                            <table class="table table-bordered table-striped table-hover mt-5">
+                                <!-- Sadece aktif çalışanları burada doldurun -->
+                                <thead>
+                                    <tr>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Email Address</th>
+                                        <th>Department</th>
+                                        <th>Job</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var employee in Model)
+                                    {
+                                        if (employee.IsActive)
+                                        {
+                                            <tr>
+                                                <td>@employee.FirstName</td>
+                                                <td>@employee.LastName</td>
+                                                <td>@employee.Email</td>
+                                                <td>@employee.Department</td>
+                                                <td>@employee.Profession</td>
+
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="inactive" role="tabpanel" aria-labelledby="inactive-tab">
+                            <!-- Pasif Çalışanlar tablosu burada -->
+                            <table class="table table-bordered table-striped table-hover mt-5">
+                                <!-- Sadece pasif çalışanları burada doldurun -->
+                                <thead>
+                                    <tr>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Email Address</th>
+                                        <th>Department</th>
+                                        <th>Job</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var employee in Model)
+                                    {
+                                        if (!employee.IsActive)
+                                        {
+                                            <tr>
+                                                <td>@employee.FirstName</td>
+                                                <td>@employee.LastName</td>
+                                                <td>@employee.Email</td>
+                                                <td>@employee.Department</td>
+                                                <td>@employee.Profession</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>

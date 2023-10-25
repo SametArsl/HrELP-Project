@@ -1,0 +1,173 @@
+﻿@model UserDetailVM
+@{
+    ViewData["Title"] = "Edit";
+
+}
+
+<link rel="stylesheet" href="/css/edit.css" />
+
+<body>
+    <main>
+        <!-- Main Page Section -->
+        <div class="new-users">
+            <h2>Home</h2>
+            <div class="user-list mt-4">
+                <div class="user">
+                    <img src="@Model.Photo">
+                    <h2 style="margin-top:15px; margin-left:120px">@Model.FullName</h2>
+                    <dl class="mt-5">
+                        <form method="post" asp-controller="User" asp-action="Edit">
+                            <div class="form-group">
+                                <label for="Email">Email</label>
+                                <input asp-for="@Model.Email" type="email" class="form-control" id="email" placeholder="Enter email" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="FirstName">First Name</label>
+                                <input asp-for="@Model.FirstName" type="text" class="form-control" id="firstName" placeholder="Enter Your First Name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="MiddleName">Middle Name</label>
+                                <input asp-for="@Model.MiddleName" type="text" class="form-control" id="middleName" placeholder="Enter Your Middle Name (optional)">
+                            </div>
+                            <div class="form-group">
+                                <label for="LastName">Last Name</label>
+                                <input asp-for="@Model.LastName" type="text" class="form-control" id="lastName" placeholder="Enter Your Last Name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="SecondLastName">Second Last Name</label>
+                                <input asp-for="@Model.SecondLastName" type="text" class="form-control" id="secondLastName" placeholder="Enter Your Second Last Name (optional)">
+                            </div>
+                            <div class="form-group">
+                                <label for="PhoneNumber">Phone Number</label>
+                                <input asp-for="@Model.PhoneNumber" type="text" class="form-control" id="phoneNumber" placeholder="Enter Your Phone Number" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="BirthDate">BirthDate</label>
+                                <input asp-for="@Model.BirthDate" type="date" class="form-control" id="birthDate" required disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="BirthPlace">Birth Place</label>
+                                <input asp-for="@Model.BirthPlace" type="text" class="form-control" id="birthPlace" placeholder="Enter Your Birth Place" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="Department">Department</label>
+                                <input asp-for="@Model.Department" type="text" class="form-control" id="department" placeholder="Enter Your Department" required disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="Profession">Profession</label>
+                                <input asp-for="@Model.Profession" type="text" class="form-control" id="profession" placeholder="Enter Your Profession" required disabled>
+                            </div>                           
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                <h6 class="mt-3 mb-2 text-primary">Address</h6>
+                            </div>
+                            <div class="form-group">
+                                <label for="Street">City</label>
+                                @Html.DropDownListFor(model => model.SelectedCity,
+                                new SelectList(ViewBag.City, "Value", "Text"),
+                                "-- Select City --",
+                                new {@class="form-control", id = "CityDropdown"})
+                            </div>
+                            <div class="form-group">
+                                <label for="Town">Town</label>
+                                @Html.DropDownListFor(model => model.SelectedTown,
+                                new SelectList(ViewBag.Town, "Value", "Text"),
+                                "-- Select Town --",
+                                new {@class="form-control", id = "TownDropdown"})
+                            </div>
+                            <div class="form-group">
+                                <label for="District">District</label>
+                                @Html.DropDownListFor(model => model.SelectedDistrict,
+                                new SelectList(ViewBag.District, "Value", "Text"),
+                                "-- Select District --",
+                                new {@class="form-control", id = "DistrictDropdown"})
+                            </div>
+                            <div class="form-group">
+                                <label for="Quarter">Quarter</label>
+                                @Html.DropDownListFor(model => model.SelectedQuarter,
+                                new SelectList(ViewBag.Quarter, "Value", "Text"),
+                                "-- Select Quarter --",
+                                new {@class="form-control", id = "QuarterDropdown"})
+                            </div>
+                            <div class="form-group">
+                                <label for="Profession">Full Address</label>
+                                <input asp-for="@Model.FullAddress" type="text" class="form-control" id="fulladdress" placeholder="Enter Your Full Address" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="Profession">Zip Code</label>
+                                <input asp-for="@Model.ZipCode" type="text" class="form-control" id="zipcode" placeholder="Enter Your Zip Code" required>
+                            </div>
+                            <input type="submit" class="btn btn-outline-primary mt-3" value="Save"/>
+                        </form>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function redirectToDetailsPage() {
+
+        window.location.href = "Details";
+    }
+
+    $(document).ready(function () {
+        $("#CityDropdown").change(function () {
+            var selectedCity = $(this).val();
+            $.ajax({
+                url: "/User/GetTownsForCity",
+                type: "GET",
+                dataType: "json",
+                data: { city: selectedCity },
+                success: function (data) {
+                    $("#TownDropdown").empty();
+                    $.each(data, function (i, town) {
+                        $("#TownDropdown").append('<option value="' + town.value + '">' + town.text + '</option>');
+                    });
+                }
+            });
+        });
+    });
+
+    $(document).ready(function () {
+        $("#TownDropdown").change(function () {
+            var selectedTown = $(this).val();
+            var selectedCity = $("#CityDropdown").val();
+            $.ajax({
+                url: "/User/GetDistrictsForTown",
+                type: "GET",
+                dataType: "json",
+                data: { city: selectedCity, town: selectedTown },
+                success: function (data) {
+                    $("#DistrictDropdown").empty();
+                    $.each(data, function (i, district) {
+                        $("#DistrictDropdown").append('<option value="' + district.value + '">' + district.text + '</option>');
+                    });
+                }
+            });
+        });
+    });
+
+    $(document).ready(function () {
+        $("#DistrictDropdown").change(function () {
+            var selectedDistrict = $(this).val();
+            var selectedCity = $("#CityDropdown").val();
+            var selectedTown = $("#TownDropdown").val();
+            $.ajax({
+                url: "/User/GetQuartersForDistrict",
+                type: "GET",
+                dataType: "json",
+                data: { city: selectedCity, town: selectedTown, district: selectedDistrict },
+                success: function (data) {
+                    $("#QuarterDropdown").empty();
+                    $.each(data, function (i, quarter) {
+                        $("#QuarterDropdown").append('<option value="' + quarter.value + '">' + quarter.text + '</option>');
+                    });
+                }
+            });
+        });
+    });
+
+</script>
