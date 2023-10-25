@@ -23,10 +23,48 @@
                     <div class="tab-content" id="employeeTabContent">
                         <div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
                             <!-- Tüm Çalışanlar tablosu burada -->
-                            <table class="table table-bordered table-striped table-hover mt-5">
+                            <table class="table table-bordered table-striped table-hover mt-5 text-center">
                                 <!-- Tabloyu burada doldurun -->
                                 <thead>
                                     <tr>
+                                        <th></th>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Email Address</th>
+                                        <th>Department</th>
+                                        <th>Job</th>
+                                       
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var employee in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <a asp-action="PersonelDetails" asp-route-id="@employee.Id" class="text-dark">
+                                                    <span class="material-symbols-outlined">
+                                                        person_search
+                                                    </span>
+                                                </a>
+                                            </td>
+                                            <td>@employee.FirstName</td>
+                                            <td>@employee.LastName</td>
+                                            <td>@employee.Email</td>
+                                            <td>@employee.Department</td>
+                                            <td>@employee.Profession</td>
+
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="active" role="tabpanel" aria-labelledby="active-tab">
+                            <!-- Aktif Çalışanlar tablosu burada -->
+                            <table class="table table-bordered table-striped table-hover mt-5 text-center">
+                                <!-- Sadece aktif çalışanları burada doldurun -->
+                                <thead>
+                                    <tr>
+                                        <th></th>
                                         <th>First Name</th>
                                         <th>Last Name</th>
                                         <th>Email Address</th>
@@ -38,41 +76,22 @@
                                 <tbody>
                                     @foreach (var employee in Model)
                                     {
-                                        <tr>
-                                            <td>@employee.FirstName</td>
-                                            <td>@employee.LastName</td>
-                                            <td>@employee.Email</td>
-                                            <td>@employee.Department</td>
-                                            <td>@employee.Profession</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="tab-pane fade" id="active" role="tabpanel" aria-labelledby="active-tab">
-                            <!-- Aktif Çalışanlar tablosu burada -->
-                            <table class="table table-bordered table-striped table-hover mt-5">
-                                <!-- Sadece aktif çalışanları burada doldurun -->
-                                <thead>
-                                    <tr>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
-                                        <th>Email Address</th>
-                                        <th>Department</th>
-                                        <th>Job</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var employee in Model)
-                                    {
                                         if (employee.IsActive)
                                         {
                                             <tr>
+                                                <td>
+                                                    <a asp-action="PersonelDetails" asp-route-id="@employee.Id" class="text-dark">
+                                                        <span class="material-symbols-outlined">
+                                                            person_search
+                                                        </span>
+                                                    </a>
+                                                </td>
                                                 <td>@employee.FirstName</td>
                                                 <td>@employee.LastName</td>
                                                 <td>@employee.Email</td>
                                                 <td>@employee.Department</td>
                                                 <td>@employee.Profession</td>
+
 
                                             </tr>
                                         }
@@ -82,15 +101,17 @@
                         </div>
                         <div class="tab-pane fade" id="inactive" role="tabpanel" aria-labelledby="inactive-tab">
                             <!-- Pasif Çalışanlar tablosu burada -->
-                            <table class="table table-bordered table-striped table-hover mt-5">
+                            <table class="table table-bordered table-striped table-hover mt-5 text-center">
                                 <!-- Sadece pasif çalışanları burada doldurun -->
                                 <thead>
                                     <tr>
+                                        <th></th>
                                         <th>First Name</th>
                                         <th>Last Name</th>
                                         <th>Email Address</th>
                                         <th>Department</th>
                                         <th>Job</th>
+                                       
 
                                     </tr>
                                 </thead>
@@ -100,11 +121,19 @@
                                         if (!employee.IsActive)
                                         {
                                             <tr>
+                                                <td>
+                                                    <a asp-action="PersonelDetails" asp-controller="Manager" asp-route-id="@employee.Id" class="text-dark">
+                                                        <span class="material-symbols-outlined">
+                                                            person_search
+                                                        </span>
+                                                    </a>
+                                                </td>
                                                 <td>@employee.FirstName</td>
                                                 <td>@employee.LastName</td>
                                                 <td>@employee.Email</td>
                                                 <td>@employee.Department</td>
                                                 <td>@employee.Profession</td>
+                                     
                                             </tr>
                                         }
                                     }

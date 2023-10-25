@@ -1,0 +1,52 @@
+﻿@model UserDetailVM
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<body>
+    <main>
+        <div class="new-users">
+            <h2>Home</h2>
+            <div class="user-list" onclick="redirectToDetailsPage()">
+                <div class="user">
+                    <img src="@Model.Photo" alt="Image not available.">
+                    <h2 style="margin-top:15px">@Model.FullName</h2>
+                    <dl class="description-list mt-5">
+
+                        <dt><b>Email</b></dt>
+                        <dd>@Model.Email</dd>
+
+                        <dt><b>Phone Number</b></dt>
+                        <dd>@Model.PhoneNumber</dd>
+
+                        <dt><b>Birth Date</b></dt>
+                        <dd>@Model.BirthDate</dd>
+
+                        <dt><b>Birth Place</b></dt>
+                        <dd>@Model.BirthPlace</dd>
+
+                        <dt><b>Hire Date</b></dt>
+                        <dd>@Model.HireDate</dd>
+
+                        <dt><b>Profession</b></dt>
+                        <dd>@Model.Profession</dd>
+
+                        <dt><b>Department</b></dt>
+                        <dd>@Model.Department</dd>
+
+                        <dt><b>Address</b></dt>
+                        <dd>@Model.Address</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+<script>
+    function redirectToMainPage() {
+
+        window.location.href = "Index";
+    }
+</script>
+
