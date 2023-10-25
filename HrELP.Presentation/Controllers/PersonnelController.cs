@@ -1,4 +1,5 @@
 ﻿using HrELP.Application.Services.AppUserService;
+using HrELP.Application.Services.CompanyService;
 using HrELP.Application.Services.RequestCategoryService;
 using HrELP.Application.Services.RequestTypeService;
 using HrELP.Domain.Entities.Concrete;
@@ -19,15 +20,17 @@ namespace HrELP.Presentation.Controllers
         private readonly IExpenseRequestRepository _expenseRequestRepository;
         private readonly IRequestTypeService _typeService;
         private readonly IRequestCategoryService _requestCategoryService;
+        private readonly ICompanyService _companyService;
         private readonly SignInManager<AppUser> _signInManager;
 
-        public PersonnelController(IAppUserService appUserService, SignInManager<AppUser> signInManager, IExpenseRequestRepository expenseRequestRepository, IRequestTypeService typeService, IRequestCategoryService requestCategoryService)
+        public PersonnelController(IAppUserService appUserService, SignInManager<AppUser> signInManager, IExpenseRequestRepository expenseRequestRepository, IRequestTypeService typeService, IRequestCategoryService requestCategoryService, ICompanyService companyService)
         {
             _appUserService = appUserService;
             _signInManager = signInManager;
             _expenseRequestRepository = expenseRequestRepository;
             _typeService = typeService;
             _requestCategoryService = requestCategoryService;
+            _companyService = companyService;
         }
 
         public IActionResult Index()
@@ -38,30 +41,33 @@ namespace HrELP.Presentation.Controllers
         [HttpGet]
         public IActionResult FileARequest()
         {
-            ViewBag.Requests = _typeService.GetExpenseRequestTypes().Select(x => new SelectListItem { Value = x.RequestCategoryId.ToString(), Text = x.RequestName }).ToList();
+            ViewBag.Requests = _typeService.GetExpenseRequestTypes().Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.RequestName }).ToList();
 
             return View();
         }
 
-        // Umur Buraya Bak !!
 
-        //[HttpPost]
-        //public async Task<IActionResult> FileARequest(RequestVM vM)
-        //{
-        //    vM.AppUser = await _signInManager.UserManager.GetUserAsync(User);
-        //    vM.RequestCategory = await _requestCategoryService.GetCategoryById(Convert.ToInt32(vM.RequestCategoryId));
+        [HttpPost]
+        public async Task<IActionResult> FileARequest(RequestVM vM)
+        {
+            vM.AppUser= await _signInManager.UserManager.GetUserAsync(User);
+            vM.RequestType= await _typeService.GetTypeById(vM.RequestType.Id);
+            ExpenseRequest expenseRequest = new ExpenseRequest()
+            {
+                AppUser = vM.AppUser,
+                ApprovalStatus = vM.ApprovalStatus,
+                Currency = vM.Currency,
+                Description = vM.Description,
+                RequestTypeId=vM.RequestType.Id,
+                RequestType=vM.RequestType,
+                ExpenseAmount=vM.ExpenseAmount,
+                CreateDate=DateTime.Now,
+                IsActive=true,
+                CompanyId=vM.AppUser.CompanyId,
+            };
 
-        //    ExpenseRequest expenseRequest = new ExpenseRequest()
-        //    {
-        //        AppUser = vM.AppUser,
-        //        ApprovalStatus = vM.ApprovalStatus,
-        //        Currency = vM.Currency,
-        //        Description = vM.Description,
-        //         = vM.RequestCategoryId,
-        //    };
-
-        //    await _expenseRequestRepository.AddAsync(expenseRequest);
-        //    return View();
-        //}
+            await _expenseRequestRepository.AddAsync(expenseRequest);
+            return RedirectToAction("Index","User");
+        }
     }
 }

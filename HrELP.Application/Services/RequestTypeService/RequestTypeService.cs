@@ -22,5 +22,9 @@ namespace HrELP.Application.Services.RequestTypeService
         {
             return _repository.GetAll().Include(x => x.RequestCategory);
         }
+        public async Task<RequestType> GetTypeById(int id)
+        {
+            return await _repository.GetFirstOrDefaultAsync(x => x.Id == id);
+        }
     }
 }

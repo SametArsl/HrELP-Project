@@ -8,8 +8,8 @@ namespace HrELP.Presentation.Models.ViewModels
     public class RequestVM
     {
         public int Id { get; set; }
-        public string RequestCategoryId { get; set; }
-        public RequestCategory RequestCategory { get; set; }
+        public int RequestTypeId { get; set; }
+        public RequestType RequestType { get; set; }
         public string Description { get; set; }
         public int UserId { get; set; }
         public AppUser AppUser { get; set; }

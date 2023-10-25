@@ -10,5 +10,6 @@ namespace HrELP.Application.Services.RequestTypeService
     public interface IRequestTypeService
     {
         IQueryable<RequestType> GetExpenseRequestTypes();
+        Task<RequestType> GetTypeById(int id);
     }
 }

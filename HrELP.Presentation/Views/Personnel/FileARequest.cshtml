@@ -9,23 +9,23 @@
                 <div class="user">
                     <form asp-controller="Personnel" asp-action="FileARequest" method="post">
                         <label for="expenseAmount">Expense Amount:</label>
-                        <input type="number" id="expenseAmount" name="expenseAmount" required><br><br>
+                        <input asp-for="ExpenseAmount" type="number" id="expenseAmount" name="expenseAmount" required><br><br>
 
                         <label for="currency">Currency:</label>
-                        <select id="currency" name="currency" required>
+                        <select asp-for="Currency" id="currency" name="currency" required>
                             <option value="USD">USD</option>
                             <option value="EUR">EUR</option>
                             <option value="TRY">TRY</option>
                         </select><br><br>
 
                         <label for="requestType">Request Type:</label>
-                        @Html.DropDownListFor(model => model.RequestType.RequestName,
+                        @Html.DropDownListFor(model => model.RequestType.Id,
                         new SelectList(ViewBag.Requests, "Value", "Text"),
                         "-- Select Request Type --",
                         new {@class="form-control", id = "RequestDropdown"})<br><br>
 
                         <label for="description">Description:</label>
-                        <textarea id="description" name="description" rows="4" cols="50"></textarea><br><br>
+                        <textarea asp-for="Description" id="description" name="description" rows="4" cols="50"></textarea><br><br>
 
                         <input type="submit" value="Submit Request">
                     </form>

@@ -55,8 +55,8 @@ namespace HrELP.Presentation
             builder.Services.AddTransient<IRequestTypeRepository, RequestTypeRepository>();
             builder.Services.AddTransient<IRequestTypeService, RequestTypeService>();
 
-            //builder.Services.AddTransient<IRequestCategoryRepository, RequestCategoryRepository>();
-            //builder.Services.AddTransient<IRequestCategoryService, RequestCategoryService>();
+            builder.Services.AddTransient<IRequestCategoryRepository, RequestCategoryRepository>();
+            builder.Services.AddTransient<IRequestCategoryService, RequestCategoryService>();
 
             builder.Services.AddTransient<IAppUserService, AppUserService>();
             builder.Services.AddTransient<IAppUserRepository, AppUserRepository>();
