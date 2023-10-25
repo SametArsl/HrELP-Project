@@ -156,5 +156,15 @@ namespace HrELP.Presentation.Controllers
             var message = new Message(new string[] { email }, subject, content);
             _emailService.SendEmail(message);
         }
+        [Route("{Controller}/{Action}")]
+        [HttpGet]
+        public async Task<IActionResult> PersonelDetails(int id)
+        {
+            AppUser user = await _appUserService.GetUserAsync(id);
+            UserDetailVM userDetailsVM = new UserDetailVM();
+            _mapper.Map(user, userDetailsVM);
+            userDetailsVM.FullAddress = user.Address.FullAddress;
+            return View(userDetailsVM);
+        }
     }
 }
