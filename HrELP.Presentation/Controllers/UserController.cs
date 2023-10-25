@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Owin.BuilderProperties;
 
 namespace HrELP.Presentation.Controllers
-{
+{//deneme
     public class UserController : Controller
     {
         private readonly IAppUserService _appUserService;
