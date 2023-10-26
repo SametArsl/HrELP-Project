@@ -5,9 +5,9 @@ namespace HrELP.Domain.Entities.Enums
     public enum Currency
     {
         [Display(Name = "TRY")]
-        tl,
+        TL,
         USD,
-        Euro,
+        EURO,
         GBP,
         CHF
     }
