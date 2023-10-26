@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace HrELP.Presentation.Controllers
 {
@@ -52,7 +53,7 @@ namespace HrELP.Presentation.Controllers
         [HttpPost]
         public async Task<IActionResult> FileARequest(RequestVM vM)
         {
-            vM.AppUser= await _signInManager.UserManager.GetUserAsync(User);
+            vM.AppUser = await _signInManager.UserManager.GetUserAsync(User);
             vM.RequestType= await _typeService.GetTypeById(vM.RequestType.Id);
             ExpenseRequest expenseRequest = new ExpenseRequest()
             {
@@ -68,8 +69,39 @@ namespace HrELP.Presentation.Controllers
                 CompanyId=vM.AppUser.CompanyId,
             };
 
+            if (vM.FormFile != null)
+            {
+                IFormFile formFile = vM.FormFile;
+                var extent = Path.GetExtension(formFile.FileName);
+                var randomName = ($"{Guid.NewGuid()}{extent}");
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\requestFiles\\", randomName);
+                vM.FilePath = "/" + GetFilePath(path).Replace("\\", "/");
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await formFile.CopyToAsync(stream);
+                }
+            }
+            expenseRequest.FilePath = vM.FilePath;
+
             await _expenseRequestRepository.AddAsync(expenseRequest);
             return RedirectToAction("Index","User");
+        }
+        private string GetFilePath(string fullPath)
+        {
+            int wwwrootIndex = fullPath.IndexOf("wwwroot");
+
+            // Check if "wwwroot" is found in the path
+            if (wwwrootIndex != -1)
+            {
+                // Get the substring after "wwwroot"
+                string relativePath = fullPath.Substring(wwwrootIndex + "wwwroot".Length);
+
+                // Trim any leading directory separator characters (like '\')
+                relativePath = relativePath.TrimStart('\\', '/');
+
+                return relativePath;
+            }
+            return "";
         }
     }
 }
