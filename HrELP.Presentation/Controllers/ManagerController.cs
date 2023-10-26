@@ -181,6 +181,21 @@ namespace HrELP.Presentation.Controllers
             userDetailsVM.FullAddress = user.Address.FullAddress;
             return View(userDetailsVM);
         }
+        public async Task<IActionResult> ExpenseRequestDetails(int id)
+        {
+            ExpenseRequest request = await _expenseRequestService.GetRequestById(id);
+            RequestVM requestVM = new RequestVM()
+            {
+                ApprovalStatus = request.ApprovalStatus,
+                AppUser=request.AppUser,
+                ExpenseAmount=request.ExpenseAmount,
+                Currency=request.Currency,
+                Description=request.Description,
+                Id=request.Id,
+                RequestType=request.RequestType,
+            };
+            return PartialView("RequestDetails",requestVM);
+        }
         private string GetPhotoPath(string fullPath)
         {
             int wwwrootIndex = fullPath.IndexOf("wwwroot");
