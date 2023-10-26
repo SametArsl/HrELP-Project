@@ -3,6 +3,7 @@ using HrELP.Application.Models.DTOs;
 using HrELP.Domain.Entities.Concrete;
 using HrELP.Domain.Repositories;
 using HrELP.Infrastructure;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -117,7 +118,8 @@ namespace HrELP.Application.Services.AppUserService
         {
             AppUser user = await _userRepository.GetFirstOrDefaultAsync(x=>x.UserName == updateUserDTO.UserName);
             user.PhoneNumber = updateUserDTO.PhoneNumber;
-            _mapper.Map(user,updateUserDTO);   
+            user.Photo = updateUserDTO.Photo;
+            _mapper.Map(user,updateUserDTO);
             return await _userRepository.UpdateAsync(user);
         }
 

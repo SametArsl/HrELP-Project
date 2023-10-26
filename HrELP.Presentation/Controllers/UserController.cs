@@ -5,8 +5,10 @@ using HrELP.Application.Services.AddressAPIService;
 using HrELP.Application.Services.AppUserService;
 using HrELP.Domain.Entities.Concrete;
 using HrELP.Presentation.Models.ViewModels;
+using Humanizer;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -92,6 +94,24 @@ namespace HrELP.Presentation.Controllers
             var userWithAddress = await _appUserService.GetUserAsync(user.Id);
             UpdateUserDTO update = new UpdateUserDTO();
             _mapper.Map(model,update);
+
+            if (model.PhotoFile != null)
+            {
+                IFormFile formFile = update.PhotoFile;
+                var extent = Path.GetExtension(formFile.FileName);
+                var randomName = ($"{Guid.NewGuid()}{extent}");
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\profilepic\\", randomName);
+                update.Photo = "/" + GetPhotoPath(path).Replace("\\", "/");
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await formFile.CopyToAsync(stream);
+                }
+                if (userWithAddress.Photo != null)
+                {
+                    System.IO.File.Delete("wwwroot" + userWithAddress.Photo);
+                }
+            }
+
             userWithAddress.Address.City = update.SelectedCity;
             userWithAddress.Address.Town = update.SelectedTown;
             userWithAddress.Address.District = update.SelectedDistrict;
@@ -101,6 +121,10 @@ namespace HrELP.Presentation.Controllers
 
             update.UserName = User.Identity.Name;
             await _appUserService.UpdateAsync(update);
+            if (user.Photo != null)
+            {
+                HttpContext.Session.SetString("Photo", user.Photo);
+            }
             return RedirectToAction("Details");
         }
 
@@ -167,6 +191,23 @@ namespace HrELP.Presentation.Controllers
             }
 
             return d[s.Length, t.Length];
+        }
+        private string GetPhotoPath(string fullPath)
+        {
+            int wwwrootIndex = fullPath.IndexOf("wwwroot");
+
+            // Check if "wwwroot" is found in the path
+            if (wwwrootIndex != -1)
+            {
+                // Get the substring after "wwwroot"
+                string relativePath = fullPath.Substring(wwwrootIndex + "wwwroot".Length);
+
+                // Trim any leading directory separator characters (like '\')
+                relativePath = relativePath.TrimStart('\\', '/');
+
+                return relativePath;
+            }
+            return "";
         }
     }
 }

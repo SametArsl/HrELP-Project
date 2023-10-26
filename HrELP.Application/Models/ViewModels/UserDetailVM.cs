@@ -1,4 +1,5 @@
 ﻿using HrELP.Domain.Entities.Concrete;
+using Microsoft.AspNetCore.Http;
 
 namespace HrELP.Presentation.Models.ViewModels
 {
@@ -14,5 +15,6 @@ namespace HrELP.Presentation.Models.ViewModels
         public string SelectedTown { get; set; }
         public string SelectedDistrict { get; set; }
         public string SelectedQuarter { get; set; }
+        public IFormFile? PhotoFile { get; set; }
     }
 }
