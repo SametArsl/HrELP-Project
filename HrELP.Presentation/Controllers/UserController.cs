@@ -8,6 +8,7 @@ using HrELP.Presentation.Models.ViewModels;
 using Humanizer;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,7 @@ using Microsoft.Owin.BuilderProperties;
 
 namespace HrELP.Presentation.Controllers
 {//deneme
+    [Authorize]
     public class UserController : Controller
     {
         private readonly IAppUserService _appUserService;
