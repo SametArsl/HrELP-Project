@@ -2,7 +2,7 @@
 
 <body>
     <main>
-        <div class="new-users">
+        <div class="new-users text-center">
             <h2>Expense Requests</h2>
             <div class="user-list mt-4">
                 <table class="table table-bordered table-striped">
@@ -23,12 +23,38 @@
                         @foreach (var expense in Model)
                         {
                             <tr>
+                                <td>
+                                    <a asp-action="ExpenseRequestDetails" asp-route-id="@expense.Id" class="text-dark">
+                                        <span class="material-symbols-outlined">
+                                            quick_reference_all
+                                        </span>
+                                    </a>
+                                </td>
                                 <td>@expense.AppUser.FullName</td>
                                 <td>@expense.RequestType.RequestName</td>
                                 <td>@expense.CreateDate</td>
                                 <td>@expense.ExpenseAmount</td>
                                 <td>@expense.Currency</td>
-                                <td>@expense.ApprovalStatus</td>
+                                <td>
+                                    @if (expense.ApprovalStatus == HrELP.Domain.Entities.Enums.ApprovalStatus.Pending_Approval)
+                                    {
+                                        <span class="material-symbols-outlined">
+                                            hourglass_top
+                                        </span>
+                                    }
+                                    else if (expense.ApprovalStatus == HrELP.Domain.Entities.Enums.ApprovalStatus.Approved)
+                                    {
+                                        <span class="material-symbols-outlined">
+                                            check_circle
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="material-symbols-outlined">
+                                            cancel
+                                        </span>
+                                    }
+                                </td>
                                 <td>@expense.Description</td>
                             </tr>
                         }

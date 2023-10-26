@@ -11,6 +11,7 @@ using HrELP.Domain.Entities.Concrete.Requests;
 using HrELP.Infrastructure;
 using HrELP.Presentation.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -99,7 +100,20 @@ namespace HrELP.Presentation.Controllers
         [Route("{Controller}/{Action}")]
         [HttpPost]
         public async Task<IActionResult> AddPersonnel(AddPersonnelDTO dTO)
-        {
+        {           
+            if (dTO.PhotoFile != null)
+            {
+                IFormFile formFile = dTO.PhotoFile;
+                var extent = Path.GetExtension(formFile.FileName);
+                var randomName = ($"{Guid.NewGuid()}{extent}");
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\profilepic\\", randomName);
+                dTO.Photo = "/"+GetPhotoPath(path).Replace("\\","/");
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await formFile.CopyToAsync(stream);
+                }
+            }
+
             AppUser appUser = await _signInManager.UserManager.GetUserAsync(User);
             Address address = new Address()
             {
@@ -115,6 +129,7 @@ namespace HrELP.Presentation.Controllers
             dTO.Company = await _companyService.GetCompany(appUser.CompanyId);
             dTO.CompanyId = appUser.CompanyId;
             dTO.Address = address;
+
             int rowsChanged = await _appUserService.AddPersonnelAsync(dTO);
             if (rowsChanged != 0)
             {
@@ -165,6 +180,23 @@ namespace HrELP.Presentation.Controllers
             _mapper.Map(user, userDetailsVM);
             userDetailsVM.FullAddress = user.Address.FullAddress;
             return View(userDetailsVM);
+        }
+        private string GetPhotoPath(string fullPath)
+        {
+            int wwwrootIndex = fullPath.IndexOf("wwwroot");
+
+            // Check if "wwwroot" is found in the path
+            if (wwwrootIndex != -1)
+            {
+                // Get the substring after "wwwroot"
+                string relativePath = fullPath.Substring(wwwrootIndex + "wwwroot".Length);
+
+                // Trim any leading directory separator characters (like '\')
+                relativePath = relativePath.TrimStart('\\', '/');
+
+                return relativePath;
+            }
+            return "";
         }
     }
 }
