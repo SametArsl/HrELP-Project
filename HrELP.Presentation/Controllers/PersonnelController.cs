@@ -8,12 +8,14 @@ using HrELP.Domain.Repositories;
 using HrELP.Presentation.Models.ViewModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace HrELP.Presentation.Controllers
 {
+    [Authorize(Roles ="Personnel")]
     public class PersonnelController : Controller
     {
         private readonly IAppUserService _appUserService;
