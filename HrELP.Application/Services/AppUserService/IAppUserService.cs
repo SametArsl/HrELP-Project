@@ -21,5 +21,6 @@ namespace HrELP.Application.Services.AppUserService
         List<AppUser> GetAllUsersByEmail(string email);
         Task<AppUser> GetUserWithIdentityAsync(string identity);
         Task<AppUser> GetRequestsWithUserAndCompany(int id);
+        Task<AppUser> GetUserWithEmail(string email);
     }
 }

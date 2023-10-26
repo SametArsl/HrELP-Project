@@ -35,11 +35,10 @@ namespace HrELP.Presentation.Controllers
             {
                 try
                 {
-                    await _signInManager.SignOutAsync();
                     var result = await _appUserService.LoginAsync(loginDTO);
                     if (result.Succeeded)
                     {
-                        var user = await _signInManager.UserManager.GetUserAsync(User);
+                        var user = await _appUserService.GetUserWithEmail(loginDTO.UserName);
                         var role = await _userManager.GetRolesAsync(user);
                         HttpContext.Session.SetString("UserName", user.FirstName);
                         HttpContext.Session.SetString("UserRole", role[0]);

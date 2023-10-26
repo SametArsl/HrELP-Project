@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -135,6 +136,12 @@ namespace HrELP.Application.Services.AppUserService
         public async Task<AppUser> GetRequestsWithUserAndCompany(int id)
         {
             AppUser user = await _userRepository.GetUserWithRequestsAsync(id);
+            return user;
+        }
+
+        public async Task<AppUser> GetUserWithEmail(string email)
+        {
+            AppUser user = await _userRepository.GetFirstOrDefaultAsync(x => x.UserName == email);
             return user;
         }
     }

@@ -100,9 +100,8 @@ namespace HrELP.Presentation.Controllers
 
 		public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync();
-
-            return RedirectToAction("Login", "Login");
+            await _signInManager.SignOutAsync();
+            return View("~/Views/Login/Login.cshtml");
         }
         [HttpGet]
         public JsonResult GetTownsForCity(string city)
