@@ -10,5 +10,6 @@ namespace HrELP.Domain.Repositories
     public interface IExpenseRequestRepository : IBaseRepository<ExpenseRequest>
     {
         IQueryable<ExpenseRequest> GetAllWithAppUserAsync();
+        ExpenseRequest GetById(int id);
     }
 }

@@ -11,5 +11,6 @@ namespace HrELP.Application.Services.ExpenseRequestService
     {
         List<ExpenseRequest> GetAll();
         Task CreateRequest(ExpenseRequest request);
+        Task<ExpenseRequest> GetRequestById(int id);
     }
 }

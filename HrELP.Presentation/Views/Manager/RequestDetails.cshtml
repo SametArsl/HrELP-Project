@@ -1,0 +1,87 @@
+﻿@model RequestVM
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<body>
+    <main>
+        <div class="new-users">
+            <h2>@Model.RequestType.RequestCategory.CategoryName Detail</h2>
+            <div class="user-list m-4">
+                <div class="user">
+                    <h1>@Model.RequestType.RequestName</h1>
+                    <dl class="description-list mt-5">
+                        <div class="row border-primary">
+                            <div class="col-6">
+                                <dt><b>Request Owner</b></dt>
+                                <dd>@Model.AppUser.FullName</dd>
+
+                                <dt><b>Request Amount</b></dt>
+                                <dd>@Model.ExpenseAmount @Model.Currency</dd>
+
+                                <dt><b>Request's Description</b></dt>
+                                <dd>@Model.Description</dd>
+                            </div>
+                            <div class="col-6">
+                                <dt><b>Create Time</b></dt>
+                                <dd>@Model.CreateDate.ToString("dd.MM.yyyy")</dd>
+
+                                <dt><b>Update Time</b></dt>
+                                <dd>@Model.UpdateDate.ToString("dd.MM.yyyy")</dd>
+
+                                <dt><b>Status</b></dt>
+
+                                @if (Model.ApprovalStatus == HrELP.Domain.Entities.Enums.ApprovalStatus.Pending_Approval)
+                                {
+                                    <dd class="text-center">
+                                        <span class="material-symbols-outlined text-warning">
+                                            hourglass_top
+                                        </span>
+                                    </dd>
+                                }
+                                else if (Model.ApprovalStatus == HrELP.Domain.Entities.Enums.ApprovalStatus.Approved)
+                                {
+                                    <dd class="text-center">
+                                        <span class="material-symbols-outlined text-success">
+                                            check_circle
+                                        </span>
+                                    </dd>
+                                }
+                                else
+                                {
+                                    <dd class="text-center">
+                                        <span class="material-symbols-outlined text-danger">
+                                            cancel
+                                        </span>
+                                    </dd>
+
+                                }
+                            </div>
+                        </div>
+                        @if(Model.ApprovalStatus==HrELP.Domain.Entities.Enums.ApprovalStatus.Pending_Approval)
+                        {
+                            <dd>
+                                <div class="row justify-content-around">
+                                    <div class="col-3">
+                                        <a class="btn" asp-action="ApproveRequest" asp-route-id="@Model.Id">
+                                            <span class="material-symbols-outlined text-success">
+                                                check_circle
+                                            </span> <h3><b>Approve</b></h3>
+                                        </a>
+                                    </div>
+                                    <div class="col-3 mr-3">
+                                        <a class="btn" asp-action="RefuseRequest" asp-route-id="@Model.Id">
+                                            <span class="material-symbols-outlined text-danger">
+                                                cancel
+                                            </span> <h3><b>Refuse</b></h3>
+                                        </a>
+                                    </div>
+                                </div>
+                            </dd>
+                        }
+                    </dl>
+
+                </div>
+            </div>
+        </div>
+    </main>
+</body>

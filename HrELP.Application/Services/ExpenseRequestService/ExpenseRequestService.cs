@@ -27,5 +27,11 @@ namespace HrELP.Application.Services.ExpenseRequestService
         {
             return _expenseRequestRepository.GetAllWithAppUserAsync().ToList();
         }
+
+        public async Task<ExpenseRequest> GetRequestById(int id)
+        {
+            ExpenseRequest request= _expenseRequestRepository.GetById(id);
+           return request;
+        }
     }
 }

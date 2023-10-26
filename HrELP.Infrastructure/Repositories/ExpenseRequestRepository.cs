@@ -16,6 +16,12 @@ namespace HrELP.Infrastructure.Repositories
         {
         }
 
+        public ExpenseRequest GetById(int id)
+        {
+            ExpenseRequest? expenseRequest = _table.Include(x => x.RequestType).ThenInclude(x=>x.RequestCategory).Include(x => x.AppUser).FirstOrDefault(x => x.Id == id);
+            return expenseRequest;
+        }
+
         IQueryable<ExpenseRequest> IExpenseRequestRepository.GetAllWithAppUserAsync()
         {
             IQueryable<ExpenseRequest> list = _table.Include(x => x.AppUser).Include(y => y.RequestType);
