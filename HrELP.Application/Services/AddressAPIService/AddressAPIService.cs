@@ -10,7 +10,7 @@ namespace HrELP.Application.Services.AddressAPIService
 {
     public class AddressAPIService : IAddressAPIService
     {
-        private List<string> GetAllData(string action)
+        private async Task<List<string>> GetAllData(string action)
         {
             List<string> data = new List<string>();
             using (var client = new HttpClient())
@@ -30,24 +30,24 @@ namespace HrELP.Application.Services.AddressAPIService
             }
             return data;
         }
-        public List<string> GetCitiesAsync()
+        public async Task<List<string>> GetCitiesAsync()
         {
-            return GetAllData("GetCities");
+            return await GetAllData("GetCities");
         }
 
-        public List<string> GetDistrictsByTown(string town, string city)
+        public async Task<List<string>> GetDistrictsByTown(string town, string city)
         {
-            return GetAllData($"GetDistricts?town={town}&city={city}");
+            return await GetAllData($"GetDistricts?town={town}&city={city}");
         }
 
-        public List<string> GetQuartersByDistrictAsync(string town, string city, string district)
+        public async Task<List<string>> GetQuartersByDistrictAsync(string town, string city, string district)
         {
-            return GetAllData($"GetQuarters?district={district}&town={town}&city={city}");
+            return await GetAllData($"GetQuarters?district={district}&town={town}&city={city}");
         }
 
-        public List<string> GetTownsByCityAsync(string city)
+        public async Task<List<string>> GetTownsByCityAsync(string city)
         {
-            return GetAllData($"GetTowns?city={city}");
+            return await GetAllData($"GetTowns?city={city}");
         }
     }
 }

@@ -9,9 +9,9 @@ namespace HrELP.Application.Services.AddressAPIService
 {
     public interface IAddressAPIService
     {
-        List<string> GetCitiesAsync();
-        List<string> GetTownsByCityAsync(string city);
-        List<string> GetDistrictsByTown(string town, string city);
-        List<string> GetQuartersByDistrictAsync(string town, string city, string district);
+        Task<List<string>> GetCitiesAsync();
+        Task<List<string>> GetTownsByCityAsync(string city);
+        Task<List<string>> GetDistrictsByTown(string town, string city);
+        Task<List<string>> GetQuartersByDistrictAsync(string town, string city, string district);
     }
 }

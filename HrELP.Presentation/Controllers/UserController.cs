@@ -51,9 +51,6 @@ namespace HrELP.Presentation.Controllers
         }
         public async Task<IActionResult> Edit()
         {
-            var cities = _addressAPI.GetCitiesAsync();
-            var cityList = cities.Select(x => new SelectListItem { Value = x, Text = x }).ToList();
-
             var user = await _signInManager.UserManager.GetUserAsync(User);
             var userWithAddress = await _appUserService.GetUserAsync(user.Id);
 
@@ -61,16 +58,25 @@ namespace HrELP.Presentation.Controllers
             _mapper.Map(user, userDetailVM);
             userDetailVM.FullAddress = userWithAddress.Address.FullAddress;
             userDetailVM.ZipCode = userWithAddress.Address.PostalCode;
-            userDetailVM.SelectedCity = userWithAddress.Address.City;
-            userDetailVM.SelectedTown = userWithAddress.Address.Town;
-            userDetailVM.SelectedDistrict = userWithAddress.Address.District;
-            userDetailVM.SelectedQuarter = userWithAddress.Address.Quarter;
-            var towns = _addressAPI.GetTownsByCityAsync(userWithAddress.Address.City);
-            var districts = _addressAPI.GetDistrictsByTown(userWithAddress.Address.Town, userWithAddress.Address.City);
-            var quarters = _addressAPI.GetQuartersByDistrictAsync(userWithAddress.Address.Town, userWithAddress.Address.City, userWithAddress.Address.District);
+
+            #region AddressAPI
+            var cities = await _addressAPI.GetCitiesAsync();
+            userDetailVM.SelectedCity = GetMostSimilarString(userWithAddress.Address.City,cities);
+
+            var towns = await _addressAPI.GetTownsByCityAsync(userDetailVM.SelectedCity);
+            userDetailVM.SelectedTown = GetMostSimilarString(userWithAddress.Address.Town,towns);
+
+            var districts = await _addressAPI.GetDistrictsByTown(userDetailVM.SelectedTown, userDetailVM.SelectedCity);
+            userDetailVM.SelectedDistrict = GetMostSimilarString(userWithAddress.Address.District,districts);
+
+            var quarters = await _addressAPI.GetQuartersByDistrictAsync(userDetailVM.SelectedTown, userDetailVM.SelectedCity, userDetailVM.SelectedDistrict);
+            userDetailVM.SelectedQuarter = GetMostSimilarString(userWithAddress.Address.Quarter,quarters);
+            
+            var cityList = cities.Select(x => new SelectListItem { Value = x, Text = x }).ToList();   
             var townList = towns.Select(x => new SelectListItem { Value = x, Text = x }).ToList();
             var districtList = districts.Select(x => new SelectListItem { Value = x, Text = x }).ToList();
             var quarterList = quarters.Select(x => new SelectListItem { Value = x, Text = x }).ToList();
+            #endregion
 
             ViewBag.City = cityList;
             ViewBag.Town = townList;
@@ -104,25 +110,63 @@ namespace HrELP.Presentation.Controllers
             return View("~/Views/Login/Login.cshtml");
         }
         [HttpGet]
-        public JsonResult GetTownsForCity(string city)
+        public async Task<JsonResult> GetTownsForCity(string city)
         {
-            var towns = _addressAPI.GetTownsByCityAsync(city);
+            var towns = await _addressAPI.GetTownsByCityAsync(city);
             var townList = towns?.Select(town => new SelectListItem { Value = town, Text = town }).ToList();
             return Json(townList);
         }
         [HttpGet]
-        public JsonResult GetDistrictsForTown(string city, string town)
+        public async Task<JsonResult> GetDistrictsForTown(string city, string town)
         {
-            var districts = _addressAPI.GetDistrictsByTown(town, city);
+            var districts = await _addressAPI.GetDistrictsByTown(town, city);
             var districtList = districts.Select(x => new SelectListItem { Value = x, Text = x }).ToList();
             return Json(districtList);
         }
         [HttpGet]
-        public JsonResult GetQuartersForDistrict(string city, string town, string district)
+        public static string GetMostSimilarString(string target, List<string> stringList)
         {
-            var quarters = _addressAPI.GetQuartersByDistrictAsync(town, city, district);
-            var quarterList = quarters.Select(x => new SelectListItem { Value = x, Text = x }).ToList();
-            return Json(quarterList);
+            int minDistance = int.MaxValue;
+            string mostSimilarString = null;
+
+            foreach (string str in stringList)
+            {
+                int distance = ComputeLevenshteinDistance(target, str);
+
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    mostSimilarString = str;
+                }
+            }
+
+            return mostSimilarString;
+        }
+        private static int ComputeLevenshteinDistance(string s, string t)
+        {
+            int[,] d = new int[s.Length + 1, t.Length + 1];
+
+            for (int i = 0; i <= s.Length; i++)
+            {
+                d[i, 0] = i;
+            }
+
+            for (int j = 0; j <= t.Length; j++)
+            {
+                d[0, j] = j;
+            }
+
+            for (int j = 1; j <= t.Length; j++)
+            {
+                for (int i = 1; i <= s.Length; i++)
+                {
+                    int cost = (s[i - 1] == t[j - 1]) ? 0 : 1;
+
+                    d[i, j] = Math.Min(Math.Min(d[i - 1, j] + 1, d[i, j - 1] + 1), d[i - 1, j - 1] + cost);
+                }
+            }
+
+            return d[s.Length, t.Length];
         }
     }
 }

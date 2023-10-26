@@ -53,7 +53,7 @@ namespace HrELP.Presentation.Controllers
 
         [Route("{Controller}/{Action}")]
         [HttpGet]
-        public IActionResult AddPersonnel()
+        public async Task<IActionResult> AddPersonnel()
         {
             List<string> departments = new List<string>
             {
@@ -90,7 +90,7 @@ namespace HrELP.Presentation.Controllers
             // ViewBag'e departmanları ve pozisyonları ekle
             ViewBag.Departments = departments;
             ViewBag.Positions = positions;
-            var cities = _addressAPI.GetCitiesAsync();
+            var cities = await _addressAPI.GetCitiesAsync();
             var cityList = cities.Select(x => new SelectListItem { Value = x, Text = x }).ToList();
             ViewBag.City = cityList;
             AddPersonnelDTO dTO = new AddPersonnelDTO();
