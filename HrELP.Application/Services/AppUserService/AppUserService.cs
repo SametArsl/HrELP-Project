@@ -146,5 +146,10 @@ namespace HrELP.Application.Services.AppUserService
             AppUser user = await _userRepository.GetFirstOrDefaultAsync(x => x.UserName == email);
             return user;
         }
+           public async Task<AppUser> GetUserWithEmailAsync(ForgetPasswordVM vm)
+        {
+            var user = await _userRepository.GetFirstOrDefaultAsync(x => x.Email ==vm.Email);
+            return user;
+        }
     }
 }
