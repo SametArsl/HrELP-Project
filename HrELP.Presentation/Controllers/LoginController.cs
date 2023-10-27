@@ -4,9 +4,14 @@ using HrELP.Application.Services.AppUserService;
 using HrELP.Domain.Entities.Concrete;
 using HrELP.Presentation.Models;
 using HrELP.Presentation.Models.ViewModels;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using MimeKit;
+using System.Net;
+using System.Net.Mail;
+using HrELP.Application.Services.EmailService;
 
 namespace HrELP.Presentation.Controllers
 {
@@ -16,12 +21,17 @@ namespace HrELP.Presentation.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IMapper _mapper;
-        public LoginController(IAppUserService appUserService, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IMapper mapper)
+        private readonly IEmailService _emailService;
+        private readonly IWebHostEnvironment _IWebHostEnvironment;
+
+        public LoginController(IAppUserService appUserService, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IMapper mapper, IEmailService emailService, IWebHostEnvironment IWebHostEnvironment)
         {
             _appUserService = appUserService;
             _userManager = userManager;
             _signInManager = signInManager;
             _mapper = mapper;
+            _emailService = emailService;
+            _IWebHostEnvironment = IWebHostEnvironment;
         }
         public IActionResult Login()
         {
@@ -161,6 +171,7 @@ namespace HrELP.Presentation.Controllers
                     }
                 }               
             }
+            
 
             return View();
         }
