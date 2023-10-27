@@ -36,13 +36,25 @@
                                         <div id="myModal" class="modal">
                                             <div class="modal-content">
                                                 <span class="close">&times;</span>
-                                                <p id="warningMessage">Sadece harf giriniz.</p>
+                                                <p id="warningMessage">Sadece harf giriniz!</p>
                                             </div>
                                         </div>
                                         <div id="myModal1" class="modall">
                                             <div class="modall-content">
                                                 <span class="closee">&times;</span>
-                                                <p id="warningMessage">Sadece rakam giriniz.</p>
+                                                <p id="warningMessage">Sadece rakam giriniz!</p>
+                                            </div>
+                                        </div>
+                                        <div id="myModal2" class="modalll">
+                                            <div class="modalll-content">
+                                                <span class="closeee">&times;</span>
+                                                <p id="warningMessage">TC Kimlik Numarası "0" ile Başlayamaz!</p>
+                                            </div>
+                                        </div>
+                                        <div id="myModal3" class="modallll">
+                                            <div class="modallll-content">
+                                                <span class="closeeee">&times;</span>
+                                                <p id="warningMessage">TC Kimlik Numarası 11 Haneli Olmalı!</p>
                                             </div>
                                         </div>
                                         <label class="form-label" for="form3Examplev2">Middle Name</label>
@@ -210,6 +222,41 @@
     });
 
     $(document).ready(function () {
+        $("#IdentityNumber").on("input", function () {
+            var inputValue = $(this).val();
+            var isNumeric = /^\d+$/.test(inputValue); 
+            var isValidLength = inputValue.length === 11; 
+            var doesNotStartWithZero = inputValue.charAt(0) !== '0'; 
+
+            if (!isNumeric ) {
+                
+                $("#myModal1").show();
+                $(this).addClass("is-invalid"); 
+            }
+            else if (!doesNotStartWithZero) {
+
+                $("#myModal2").show();
+                $(this).addClass("is-invalid");
+            }
+            else if (!isValidLength) {
+
+                $("#myModal3").show();
+                $(this).addClass("is-invalid");
+            }
+            else 
+            {
+                $("#myModal1, #myModal2, #myModal3").hide();
+                $(this).removeClass("is-invalid"); 
+            }
+        });
+
+        $(".closee,.closeee,.closeeee").click(function () {
+            $("#myModal1, #myModal2, #myModal3").hide();
+        });
+    });
+
+
+    $(document).ready(function () {
         $("#TownDropdown").change(function () {
             var selectedTown = $(this).val();
             var selectedCity = $("#CityDropdown").val();
@@ -262,7 +309,77 @@
 </script>
 
 <style>
+
+    #myModal3 {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(0, 0, 0, 0.4);
+        width: 300px;
+        height: 100px;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+        #myModal3 .modallll-content {
+            background-color: #fefefe;
+            text-align: center;
+            border-radius: 5px;
+            padding: 20px;
+            height: 100%;
+        }
+
+        #myModal3 .closeeee {
+            color: red;
+            font-size: 24px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+
+            #myModal3 .closeeee:hover {
+                color: darkred;
+            }
     
+    #myModal2 {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(0, 0, 0, 0.4);
+        width: 300px;
+        height: 100px;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+        #myModal2 .modalll-content {
+            background-color: #fefefe;
+            text-align: center;
+            border-radius: 5px;
+            padding: 20px;
+            height: 100%;
+        }
+
+        #myModal2 .closeee {
+            color: red;
+            font-size: 24px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+
+            #myModal2 .closeee:hover {
+                color: darkred;
+            }
+
 
     #myModal1 {
         display: none;
