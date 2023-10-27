@@ -24,5 +24,6 @@ namespace HrELP.Application.Services.AppUserService
         Task<AppUser> GetRequestsWithUserAndCompany(int id);
         Task<AppUser> GetUserWithEmail(string email);
         Task<AppUser> GetUserWithEmailAsync(ForgetPasswordVM vm);
+         Task<AppUser> GetUserWithEmailAsync(CreatePasswordVM vm);     
     }
 }
