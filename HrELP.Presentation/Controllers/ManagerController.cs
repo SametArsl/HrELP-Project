@@ -11,12 +11,14 @@ using HrELP.Domain.Entities.Concrete.Requests;
 using HrELP.Infrastructure;
 using HrELP.Presentation.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Owin.BuilderProperties;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Address = HrELP.Domain.Entities.Concrete.Address;
 
 
@@ -33,7 +35,8 @@ namespace HrELP.Presentation.Controllers
         private readonly IMapper _mapper;
         private readonly IEmailService _emailService;
         private readonly IExpenseRequestService _expenseRequestService;
-        public ManagerController(SignInManager<AppUser> signInManager, AddressAPIService addressAPI, IAppUserService appUserService, ICompanyService companyService, IMapper mapper, UserManager<AppUser> userManager, IEmailService emailService, IExpenseRequestService expenseRequestService)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public ManagerController(SignInManager<AppUser> signInManager, AddressAPIService addressAPI, IAppUserService appUserService, ICompanyService companyService, IMapper mapper, UserManager<AppUser> userManager, IEmailService emailService, IExpenseRequestService expenseRequestService, IWebHostEnvironment webHostEnvironment)
         {
             _signInManager = signInManager;
             _addressAPI = addressAPI;
@@ -43,6 +46,7 @@ namespace HrELP.Presentation.Controllers
             _userManager = userManager;
             _emailService = emailService;
             _expenseRequestService = expenseRequestService;
+            _webHostEnvironment = webHostEnvironment;
         }
 
 
@@ -106,8 +110,8 @@ namespace HrELP.Presentation.Controllers
                 IFormFile formFile = dTO.PhotoFile;
                 var extent = Path.GetExtension(formFile.FileName);
                 var randomName = ($"{Guid.NewGuid()}{extent}");
-                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\profilepic\\", randomName);
-                dTO.Photo = "/"+GetPhotoPath(path).Replace("\\","/");
+                var path = Path.Combine(_webHostEnvironment.WebRootPath, "images", "profilepic", randomName);
+                dTO.Photo = randomName;
                 using (var stream = new FileStream(path, FileMode.Create))
                 {
                     await formFile.CopyToAsync(stream);
@@ -195,23 +199,6 @@ namespace HrELP.Presentation.Controllers
                 RequestType=request.RequestType,
             };
             return PartialView("RequestDetails",requestVM);
-        }
-        private string GetPhotoPath(string fullPath)
-        {
-            int wwwrootIndex = fullPath.IndexOf("wwwroot");
-
-            // Check if "wwwroot" is found in the path
-            if (wwwrootIndex != -1)
-            {
-                // Get the substring after "wwwroot"
-                string relativePath = fullPath.Substring(wwwrootIndex + "wwwroot".Length);
-
-                // Trim any leading directory separator characters (like '\')
-                relativePath = relativePath.TrimStart('\\', '/');
-
-                return relativePath;
-            }
-            return "";
         }
     }
 }

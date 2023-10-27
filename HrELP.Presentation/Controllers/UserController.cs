@@ -101,20 +101,20 @@ namespace HrELP.Presentation.Controllers
 
             if (model.PhotoFile != null)
             {
+                if (System.IO.File.Exists(Path.Combine(_webHostEnvironment.WebRootPath, "images", "profilepic", user.Photo)))
+                {
+                    System.IO.File.Delete(Path.Combine(_webHostEnvironment.WebRootPath, "images", "profilepic", user.Photo));
+                }
                 IFormFile formFile = update.PhotoFile;
                 var extent = Path.GetExtension(formFile.FileName);
                 var randomName = ($"{Guid.NewGuid()}{extent}");
                 var path = Path.Combine(_webHostEnvironment.WebRootPath, "images","profilepic", randomName);
-                //update.Photo = "/" + GetPhotoPath(path).Replace("\\", "/");
                 update.Photo = randomName;
+                
                 using (var stream = new FileStream(path, FileMode.Create))
                 {
                     await formFile.CopyToAsync(stream);
                 }
-                //if (userWithAddress.Photo != null)
-                //{
-                //    System.IO.File.Delete(userWithAddress.Photo);
-                //}
             }
 
             userWithAddress.Address.City = update.SelectedCity;
@@ -196,23 +196,6 @@ namespace HrELP.Presentation.Controllers
             }
 
             return d[s.Length, t.Length];
-        }
-        private string GetPhotoPath(string fullPath)
-        {
-            int wwwrootIndex = fullPath.IndexOf("wwwroot");
-
-            // Check if "wwwroot" is found in the path
-            if (wwwrootIndex != -1)
-            {
-                // Get the substring after "wwwroot"
-                string relativePath = fullPath.Substring(wwwrootIndex + "wwwroot".Length);
-
-                // Trim any leading directory separator characters (like '\')
-                relativePath = relativePath.TrimStart('\\', '/');
-
-                return relativePath;
-            }
-            return "";
         }
     }
 }

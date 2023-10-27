@@ -9,6 +9,7 @@ using HrELP.Presentation.Models.ViewModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -25,8 +26,9 @@ namespace HrELP.Presentation.Controllers
         private readonly IRequestCategoryService _requestCategoryService;
         private readonly ICompanyService _companyService;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public PersonnelController(IAppUserService appUserService, SignInManager<AppUser> signInManager, IExpenseRequestRepository expenseRequestRepository, IRequestTypeService typeService, IRequestCategoryService requestCategoryService, ICompanyService companyService)
+        public PersonnelController(IAppUserService appUserService, SignInManager<AppUser> signInManager, IExpenseRequestRepository expenseRequestRepository, IRequestTypeService typeService, IRequestCategoryService requestCategoryService, ICompanyService companyService, IWebHostEnvironment webHostEnvironment)
         {
             _appUserService = appUserService;
             _signInManager = signInManager;
@@ -34,6 +36,7 @@ namespace HrELP.Presentation.Controllers
             _typeService = typeService;
             _requestCategoryService = requestCategoryService;
             _companyService = companyService;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public IActionResult Index()
@@ -74,8 +77,8 @@ namespace HrELP.Presentation.Controllers
                 IFormFile formFile = vM.FormFile;
                 var extent = Path.GetExtension(formFile.FileName);
                 var randomName = ($"{Guid.NewGuid()}{extent}");
-                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\requestFiles\\", randomName);
-                vM.FilePath = "/" + GetFilePath(path).Replace("\\", "/");
+                var path = Path.Combine(_webHostEnvironment.WebRootPath, "images", "profilepic", randomName);
+                vM.FilePath = randomName;
                 using (var stream = new FileStream(path, FileMode.Create))
                 {
                     await formFile.CopyToAsync(stream);
@@ -85,23 +88,6 @@ namespace HrELP.Presentation.Controllers
 
             await _expenseRequestRepository.AddAsync(expenseRequest);
             return RedirectToAction("Index","User");
-        }
-        private string GetFilePath(string fullPath)
-        {
-            int wwwrootIndex = fullPath.IndexOf("wwwroot");
-
-            // Check if "wwwroot" is found in the path
-            if (wwwrootIndex != -1)
-            {
-                // Get the substring after "wwwroot"
-                string relativePath = fullPath.Substring(wwwrootIndex + "wwwroot".Length);
-
-                // Trim any leading directory separator characters (like '\')
-                relativePath = relativePath.TrimStart('\\', '/');
-
-                return relativePath;
-            }
-            return "";
         }
     }
 }

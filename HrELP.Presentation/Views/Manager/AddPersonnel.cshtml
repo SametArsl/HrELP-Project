@@ -9,9 +9,6 @@
                     <h2 style="margin-top:15px; margin-left:120px">@Model.FirstName</h2>
                     <dl class="mt-5">
                         <form method="post" asp-controller="Manager" asp-action="AddPersonnel" enctype="multipart/form-data">
-                            @* <div>
-                                <input type="hidden" id="Photo" asp-for="Photo" value="" />
-                            </div> *@
                             <div class="mb-4 pb-2">
                                 <label asp-for="PhotoFile" class="form-label">Upload a Photo: </label><br />
                                 <input asp-for="PhotoFile" id="PhotoFile" accept="image/png,image/jpeg,image/jpg"/>
@@ -294,18 +291,6 @@
             });
         });
     });
-
-    // function setPhotoPath() {
-    //     var input = document.getElementById('PhotoFile');
-    //     var hiddenInput = document.getElementById('Photo');
-
-    //     input.addEventListener('change', function () {
-    //         var path = input.value;
-    //         hiddenInput.value = path;
-    //     });
-    // }
-
-    // window.onload = setPhotoPath;
 </script>
 
 <style>
