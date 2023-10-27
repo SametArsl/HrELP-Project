@@ -41,7 +41,7 @@ namespace HrELP.Application.Models.DTOs
         public string SelectedCity { get; set; }
         public string SelectedTown { get; set; }
         public string SelectedDistrict { get; set; }
-        public string SelectedQuarter { get; set; }
+        public string? SelectedQuarter { get; set; }
         public string FullAddress { get; set; }
         public int ZipCode { get; set; }
     }
