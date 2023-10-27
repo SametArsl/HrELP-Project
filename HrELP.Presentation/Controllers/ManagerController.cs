@@ -59,6 +59,9 @@ namespace HrELP.Presentation.Controllers
         [HttpGet]
         public async Task<IActionResult> AddPersonnel()
         {
+
+
+            //***************
             List<string> departments = new List<string>
             {
                 "Software Development",
