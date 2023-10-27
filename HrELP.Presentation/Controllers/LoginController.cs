@@ -127,13 +127,14 @@ namespace HrELP.Presentation.Controllers
         [HttpPost]
         public async Task<IActionResult> ForgetPassword(ForgetPasswordVM vm)
         {
-            AppUser user = await _appUserService.GetUserWithEmailAsync(vm);
+           AppUser user = await _appUserService.GetUserWithEmailAsync(vm);
 
             if (user != null && await _userManager.IsEmailConfirmedAsync(user))
             {
                 var passwordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var tokenResult = await _userManager.SetAuthenticationTokenAsync(user, "ResetPassword", "PasswordReset", passwordToken);
                 var resetLink = Url.Action("CreatePassword", "Login",
-                    new { email = user.Email, token = passwordToken }, Request.Scheme
+                    new { UserId = user.Id, token = passwordToken }, Request.Scheme
                 );
 
                 string HtmlBody = "";
@@ -174,7 +175,6 @@ namespace HrELP.Presentation.Controllers
                     }
                 }               
             }
-            
 
             return View();
         }
