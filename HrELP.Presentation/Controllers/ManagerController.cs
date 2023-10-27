@@ -61,7 +61,6 @@ namespace HrELP.Presentation.Controllers
         {
 
 
-            //***************
             List<string> departments = new List<string>
             {
                 "Software Development",
