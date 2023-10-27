@@ -32,19 +32,34 @@
                                     <div class="form-outline">
                                         <label class="form-label" for="form3Examplev2">First name</label>
                                         <input asp-for="FirstName" type="text" id="form3Examplev2" class="form-control form-control-lg" required /><br />
+                                        
+                                        <div id="myModal" class="modal">
+                                            <div class="modal-content">
+                                                <span class="close">&times;</span>
+                                                <p id="warningMessage">Sadece harf giriniz.</p>
+                                            </div>
+                                        </div>
+                                        <div id="myModal1" class="modall">
+                                            <div class="modall-content">
+                                                <span class="closee">&times;</span>
+                                                <p id="warningMessage">Sadece rakam giriniz.</p>
+                                            </div>
+                                        </div>
                                         <label class="form-label" for="form3Examplev2">Middle Name</label>
                                         <input asp-for="SecondFirstName" type="text" id="form3Examplev2" class="form-control form-control-lg" />
-
+                                        
                                     </div>
-
+                                    
                                 </div>
                                 <div class="col-md-6 mb-4 pb-2">
 
                                     <div class="form-outline">
                                         <label class="form-label" for="form3Examplev3">Last Name</label>
                                         <input asp-for="LastName" type="text" id="form3Examplev3" class="form-control form-control-lg" required /><br />
+                                        
                                         <label class="form-label" for="form3Examplev3">Secondary Last Name</label>
                                         <input asp-for="SecondLastName" type="text" id="form3Examplev3" class="form-control form-control-lg" />
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -65,7 +80,7 @@
                                 <div class="col-md-6 mb-4 pb-2">
                                     <label class="form-label">Identity Number</label>
                                     <input asp-for="IdentityNumber" class="form-control" type="text" placeholder="Enter a Identity Number" required />
-
+                                    
                                 </div>
                                 <div class="col-md-6 mb-4 pb-2">
                                     <label class="form-label">Birth Place</label>
@@ -129,7 +144,7 @@
                             </div>
                             <div class="col-12">
                                 <div class="form-group">
-                                    <label for="zip" class="mb-4">Zip Code</label>
+                                    <label for="zip" class="form-label mb-4">Zip Code</label>
                                     <input asp-for="ZipCode" type="text" class="form-control mb-4" id="zip" placeholder="Zip Code" required>
                                 </div>
                             </div>
@@ -154,26 +169,43 @@
 </body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    function redirectToDetailsPage() {
+    $(document).ready(function () {
+        $("#form3Examplev2, #form3Examplev3, #form3Examplev4, #BirthPlace, #FullAddress").on("input", function () {
+            var regex = /^[a-zA-ZğüşöçıĞÜŞÖÇİ\s]*$/; 
+            var inputValue = $(this).val();
+            if (!regex.test(inputValue)) {
+                $(this).val(inputValue.replace(/[^a-zA-ZğüşöçıĞÜŞÖÇİ\s]/g, ''));
+                
+                $("#myModal").show();
+            } else {
+                
+                $("#myModal").hide();
+            }
+        });
 
-        window.location.href = "Details";
-    }
+        
+        $(".close").click(function () {
+            $("#myModal").hide();
+        });
+    });
 
     $(document).ready(function () {
-        $("#CityDropdown").change(function () {
-            var selectedCity = $(this).val();
-            $.ajax({
-                url: "/User/GetTownsForCity",
-                type: "GET",
-                dataType: "json",
-                data: { city: selectedCity },
-                success: function (data) {
-                    $("#TownDropdown").empty();
-                    $.each(data, function (i, town) {
-                        $("#TownDropdown").append('<option value="' + town.value + '">' + town.text + '</option>');
-                    });
-                }
-            });
+        $("#Salary, #zip, #IdentityNumber, #PhoneNumber").on("input", function () {
+            var regex = /^[0-9]*$/; 
+            var inputValue = $(this).val();
+            if (!regex.test(inputValue)) {
+                $(this).val(inputValue.replace(/[^0-9]/g, ''));
+                
+                $("#myModal1").show();
+            } else {
+                
+                $("#myModal1").hide();
+            }
+        });
+
+        
+        $(".closee").click(function () {
+            $("#myModal1").hide();
         });
     });
 
@@ -229,7 +261,79 @@
     // window.onload = setPhotoPath;
 </script>
 
+<style>
+    
 
+    #myModal1 {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(0, 0, 0, 0.4);
+        width: 300px;
+        height: 100px;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+        #myModal1 .modall-content {
+            background-color: #fefefe;
+            text-align: center;
+            border-radius: 5px;
+            padding: 20px;
+            height: 100%;
+        }
+
+        #myModal1 .closee {
+            color: red;
+            font-size: 24px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+
+            #myModal1 .closee:hover {
+                color: darkred;
+            }
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(0, 0, 0, 0.4);
+        width: 300px; 
+        height: 100px; 
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        text-align: center;
+        border-radius: 5px;
+        padding: 20px;
+        height: 100%; 
+    }
+
+    .close {
+        color: red; 
+        font-size: 24px;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+    }
+
+        .close:hover {
+            color: darkred;
+        }
+
+</style>
 
 
 
