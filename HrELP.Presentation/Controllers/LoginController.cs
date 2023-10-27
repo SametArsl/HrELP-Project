@@ -75,44 +75,47 @@ namespace HrELP.Presentation.Controllers
             return View(loginDTO);
         }
 		[HttpGet]
-		public async Task<IActionResult> CreatePassword(string token, string userId)
-		{
-			if (token == null || userId == null)
-			{
-				ModelState.AddModelError("", "Invalid password create token.");
-			}
-
-			return View();
-		}
-		[HttpPost]
-		public async Task<IActionResult> CreatePassword(CreatePasswordVM vm)
-		{
-			if (ModelState.IsValid)
-			{
-				var user = await _userManager.FindByIdAsync(vm.userId);
-				if (user != null)
-				{
-					if (vm.Password == vm.ReTypePassword)
-					{
-						user.PasswordHash = _signInManager.UserManager.PasswordHasher.HashPassword(user, vm.Password);
-						if (user.PasswordHash != null)
-						{
-							TempData["ErrorMessage"] = "Your Password has been successfully created. You can now login to the system.";
+        public async Task<IActionResult> CreatePassword(string token,string UserId)
+        {
+           
+            if (token == null || UserId==null )
+            {
+                ModelState.AddModelError("", "Invalid password create token.");
+            }
+        
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreatePassword(CreatePasswordVM vm)
+        {
+          
+            if (ModelState.IsValid)
+            {
+                AppUser user = await _appUserService.GetUserWithEmailAsync(vm);
+               
+                if (user != null)
+                {
+                    if (vm.Password == vm.ReTypePassword)
+                    {
+                        user.PasswordHash = _signInManager.UserManager.PasswordHasher.HashPassword(user, vm.Password);
+                        if (user.PasswordHash != null)
+                        {
+                            TempData["ErrorMessage"] = "Your Password has been successfully created. You can now login to the system.";
                             await _userManager.UpdateAsync(user);
-							return RedirectToAction("Login", "Login");
-						}
-					}
-					else
-					{
-						ModelState.AddModelError("", "Passwords don't match.");
-						return View(vm);
-					}
-				}
-				TempData["ErrorMessage"] = "User not found.";
-				return View(vm);
-			}
-			return View(vm);
-		}
+                            return RedirectToAction("Login", "Login");
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Passwords don't match.");
+                        return View(vm);
+                    }
+                }
+                TempData["ErrorMessage"] = "User not found.";
+                return View(vm);
+            }
+            return View(vm);
+        }
 
          [Route("{Controller}/{Action}")]
         public IActionResult ForgetPassword()
