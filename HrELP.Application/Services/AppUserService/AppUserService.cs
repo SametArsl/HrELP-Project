@@ -3,6 +3,7 @@ using HrELP.Application.Models.DTOs;
 using HrELP.Domain.Entities.Concrete;
 using HrELP.Domain.Repositories;
 using HrELP.Infrastructure;
+using HrELP.Presentation.Models.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System;
