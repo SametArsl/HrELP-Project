@@ -152,5 +152,11 @@ namespace HrELP.Application.Services.AppUserService
             var user = await _userRepository.GetFirstOrDefaultAsync(x => x.Email ==vm.Email);
             return user;
         }
+        
+        public async Task<AppUser> GetUserWithEmailAsync(CreatePasswordVM vm)
+        {
+            var user = await _userRepository.GetFirstOrDefaultAsync(x => x.Id == vm.UserId);
+            return user;
+        }
     }
 }
