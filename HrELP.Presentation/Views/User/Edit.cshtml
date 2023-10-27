@@ -13,7 +13,7 @@
             <h2>Home</h2>
             <div class="user-list mt-4">
                 <div class="user">
-                    <img src="@Model.Photo">
+                    <img src="~/images/profilepic/@Model.Photo">
                     <h2 style="margin-top:15px; margin-left:120px">@Model.FullName</h2>
                     <dl class="mt-5">
                         <form method="post" asp-controller="User" asp-action="Edit" enctype="multipart/form-data">

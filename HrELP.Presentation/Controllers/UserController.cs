@@ -25,14 +25,16 @@ namespace HrELP.Presentation.Controllers
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IMapper _mapper;
         private readonly AddressAPIService _addressAPI;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public UserController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IAppUserService appUserService, IMapper mapper, AddressAPIService addressAPI)
+        public UserController(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IAppUserService appUserService, IMapper mapper, AddressAPIService addressAPI, IWebHostEnvironment webHostEnvironment)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _appUserService = appUserService;
             _mapper = mapper;
             _addressAPI = addressAPI;
+            _webHostEnvironment = webHostEnvironment;
         }
         [Route("{Controller}/{Action}")]
         public async Task<IActionResult> Index()
@@ -102,16 +104,17 @@ namespace HrELP.Presentation.Controllers
                 IFormFile formFile = update.PhotoFile;
                 var extent = Path.GetExtension(formFile.FileName);
                 var randomName = ($"{Guid.NewGuid()}{extent}");
-                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\profilepic\\", randomName);
-                update.Photo = "/" + GetPhotoPath(path).Replace("\\", "/");
+                var path = Path.Combine(_webHostEnvironment.WebRootPath, "images","profilepic", randomName);
+                //update.Photo = "/" + GetPhotoPath(path).Replace("\\", "/");
+                update.Photo = randomName;
                 using (var stream = new FileStream(path, FileMode.Create))
                 {
                     await formFile.CopyToAsync(stream);
                 }
-                if (userWithAddress.Photo != null)
-                {
-                    System.IO.File.Delete("wwwroot" + userWithAddress.Photo);
-                }
+                //if (userWithAddress.Photo != null)
+                //{
+                //    System.IO.File.Delete(userWithAddress.Photo);
+                //}
             }
 
             userWithAddress.Address.City = update.SelectedCity;
