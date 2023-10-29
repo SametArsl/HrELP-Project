@@ -87,9 +87,9 @@ body {
 .login {
     font-family: 'Eras ITC';
     color: #ff0060;
-    font-size: 33px;
+    font-size: px;
     font-weight: 700;
-    margin: 50px 40px 40px;
+    margin-top: 50px;
 }
 
 .eula {
@@ -149,14 +149,13 @@ label {
 
 input {
     background: transparent;
-    border: 0;
     color: #f2f2f2;
     font-size: 12px;
     height: 30px;
     line-height: 30px;
     outline: none !important;
     width: 100%;
-    border-radius: 6px;
+    border-radius: 15px;
 }
 
     input::-moz-focus-inner {
@@ -164,9 +163,10 @@ input {
     }
 
 #submit {
-    color: #707075;
-    margin-top: 40px;
+    color: white;
+    margin-top: 45px;
     transition: color 300ms;
+    margin-left: 20px;
 }
 
     #submit:focus {
@@ -176,3 +176,28 @@ input {
     #submit:active {
         color: #d0d0d2;
     }
+
+.password-input {
+    position: relative;
+}
+
+.password-input input[type="password"] {
+    padding-right: 40px; /* Sağda buton için alan bırakın */
+}
+
+.password-input .password-toggle-button {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.center-horizontal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
