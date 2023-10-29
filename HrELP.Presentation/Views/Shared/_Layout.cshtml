@@ -47,7 +47,8 @@
                     </span>
                     <h3>Edit Profile</h3>
                 </a>
-                @if(User.IsInRole("Manager")){
+                @if (User.IsInRole("Manager"))
+                {
                     <a asp-controller="Manager" asp-action="ListExpenseRequests" class="text-decoration-none">
                         <span class="material-symbols-outlined">
                             assignment_add
@@ -115,11 +116,21 @@
                 <div class="profile">
                     <div class="info">
                         <p>Hey, <b>@userName</b></p>
-                        <small>@userRole</small>
+                        <small class="text-muted">@userRole</small>
                     </div>
-                    <div class="profile-photo">
-                        <img src="~/images/profilepic/@photo">
+                    <div class="profile-photo" id="profilePhoto">
+                        <img src="~/images/profilepic/@photo" alt="Profile Photo" />
                     </div>
+                </div>
+                <div class="dropdown-menu" id="profileDropdown">
+                    <a class="dropdown-item" asp-controller="User" asp-action="Edit">
+                        <i class="ti-settings text-primary"></i>
+                        Edit Profile
+                    </a>
+                    <a asp-action="Logout" class="dropdown-item">
+                        <i class="ti-power-off text-primary"></i>
+                        Logout
+                    </a>
                 </div>
             </div>
             <!-- End of Nav -->
