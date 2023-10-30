@@ -20,11 +20,19 @@ namespace HrELP.Application.Services.RequestTypeService
 
         public IQueryable<RequestType> GetExpenseRequestTypes()
         {
-            return _repository.GetAll().Include(x => x.RequestCategory);
+            return _repository.GetAll().Include(x => x.RequestCategory).Where(x=>x.RequestCategoryId==5);
         }
         public async Task<RequestType> GetTypeById(int id)
         {
             return await _repository.GetFirstOrDefaultAsync(x => x.Id == id);
+        }
+        public IQueryable<RequestType> GetAdvanceRequestTypes()
+        {
+            return _repository.GetAll().Include(x=>x.RequestCategory).Where(x=>x.RequestCategoryId==6);
+        }
+        public IQueryable<RequestType> GetLeaveRequestTypes()
+        {
+            return _repository.GetAll().Include(x => x.RequestCategory).Where(x => x.RequestCategoryId == 7);
         }
     }
 }
