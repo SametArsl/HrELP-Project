@@ -9,5 +9,7 @@ namespace HrELP.Domain.Repositories
 {
     public interface IAdvanceRequestRepository : IBaseRepository<AdvanceRequest>
     {
+        IQueryable<AdvanceRequest> GetAllWithAppUserAsync();
+        AdvanceRequest GetById(int id);
     }
 }

@@ -9,5 +9,7 @@ namespace HrELP.Domain.Repositories
 {
     public interface ILeaveRequestRepository : IBaseRepository<LeaveRequest>
     {
+        IQueryable<LeaveRequest> GetAllWithAppUserAsync();
+        LeaveRequest GetById(int id);
     }
 }

@@ -21,6 +21,7 @@ namespace HrELP.Domain.Entities.Concrete.Requests
         public string? Description { get; set; }
         public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.Pending_Approval;
         public DateTime? ResponseDate { get; set; }
+        public int? TotalDaysOff { get; set; }
         public bool IsActive { get; set; }
         public DateTime? CreateDate { get; set; }
         public DateTime? UpdateDate { get; set; }

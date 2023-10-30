@@ -16,7 +16,7 @@ namespace HrELP.Domain.Entities.Concrete.Requests
         public int UserId { get; set; }
         public AppUser AppUser { get; set; }
         public decimal RequestAmount { get; set; }
-        public Currency Currency { get; set; }
+        public Currency Currency { get; set; } = Currency.TL;
         public int RequestTypeId { get; set; }
         public RequestType? RequestType { get; set; }
         public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.Pending_Approval;

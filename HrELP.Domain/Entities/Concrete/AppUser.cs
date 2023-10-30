@@ -39,6 +39,8 @@ namespace HrELP.Domain.Entities.Concrete
         public int AddressId { get; set; }
         public Address? Address { get; set; }
         public decimal Salary { get; set; }
+        public int MaxDaysOff { get; set; }
+        public int DayOffsLeft { get; set; }
         private decimal _advanceLimit;
         public bool IsActive { get; set; }
         public DateTime? CreateDate { get; set; }

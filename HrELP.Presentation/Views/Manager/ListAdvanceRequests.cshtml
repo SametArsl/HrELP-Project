@@ -1,0 +1,222 @@
+﻿@model List<AdvanceRequest>
+
+<body>
+    <main>
+        <div class="new-users text-center">
+            <h2>Advance Requests</h2>
+            <div class="user-list mt-4">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <!-- Tabloya ait başlık satırı -->
+                        <tr>
+                            <th></th>
+                            <th>Owner</th>
+                            <th>Type</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Currency</th>
+                            <th>Status</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody id="allTab">
+                        <!-- Tüm harcama talepleri buraya dinamik olarak eklenir -->
+                        @foreach (var expense in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-action="AdvanceRequestDetails" asp-route-id="@expense.Id" class="text-dark">
+                                        <span class="material-symbols-outlined">
+                                            quick_reference_all
+                                        </span>
+                                    </a>
+                                </td>
+                                <td>@expense.AppUser.FullName</td>
+                                <td>@expense.RequestType.RequestName</td>
+                                <td>@expense.CreateDate</td>
+                                <td>@expense.RequestAmount</td>
+                                <td>@expense.Currency</td>
+                                <td>
+                                    @if (expense.ApprovalStatus == HrELP.Domain.Entities.Enums.ApprovalStatus.Pending_Approval)
+                                    {
+                                        <span class="material-symbols-outlined">
+                                            hourglass_top
+                                        </span>
+                                    }
+                                    else if (expense.ApprovalStatus == HrELP.Domain.Entities.Enums.ApprovalStatus.Approved)
+                                    {
+                                        <span class="material-symbols-outlined">
+                                            check_circle
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="material-symbols-outlined">
+                                            cancel
+                                        </span>
+                                    }
+                                </td>
+                                <td>@expense.Description</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                @* <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                <a class="nav-link" id="allTab" data-toggle="tab" href="#all" role="tab" aria-controls="all" aria-selected="false">All</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="approvedTab" data-toggle="tab" href="#approved" role="tab" aria-controls="approved" aria-selected="true">Approved</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                <a class="nav-link" id="pendingTab" data-toggle="tab" href="#pending" role="tab" aria-controls="pending" aria-selected="false">Pending</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                <a class="nav-link" id="declinedTab" data-toggle="tab" href="#declined" role="tab" aria-controls="declined" aria-selected="false">Declined</a>
+                </li>
+                </ul>
+                <div class="tab-content">
+                <div class="tab-pane fade" id="all" role="tabpanel" aria-labelledby="allTab">
+                <table class="table table-bordered table-striped">
+                <thead>
+                <!-- Tabloya ait başlık satırı -->
+                <tr>
+                <th>Owner</th>
+                <th>Type</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Currency</th>
+                <th>Status</th>
+                <th>Description</th>
+                </tr>
+                </thead>
+                <tbody id="allTab">
+                <!-- Tüm harcama talepleri buraya dinamik olarak eklenir -->
+                @foreach (var expense in Model)
+                {
+                <tr>
+                <td>@expense.AppUser.FullName</td>
+                <td>@expense.RequestType.RequestName</td>
+                <td>@expense.CreateDate</td>
+                <td>@expense.ExpenseAmount</td>
+                <td>@expense.Currency</td>
+                <td>@expense.ApprovalStatus</td>
+                <td>@expense.Description</td>
+                </tr>
+                }
+                </tbody>
+                </table>
+                </div>
+                <div class="tab-pane fade show active" id="approved" role="tabpanel" aria-labelledby="approvedTab">
+                <table class="table table-bordered table-striped">
+                <thead>
+                <!-- Tabloya ait başlık satırı -->
+                <tr>
+                <th>Owner</th>
+                <th>Type</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Currency</th>
+                <th>Status</th>
+                <th>Description</th>
+                </tr>
+                </thead>
+                <tbody id="approvedTab">
+                <!-- Onaylanmış harcama talepleri buraya dinamik olarak eklenir -->
+                @foreach (var expense in Model)
+                {
+                @if (@expense.ApprovalStatus == ApprovalStatus.Approved)
+                {
+                <tr>
+                <td>@expense.AppUser.FullName</td>
+                <td>@expense.RequestType.RequestName</td>
+                <td>@expense.CreateDate</td>
+                <td>@expense.ExpenseAmount</td>
+                <td>@expense.Currency</td>
+                <td>@expense.ApprovalStatus</td>
+                <td>@expense.Description</td>
+                </tr>
+                }
+                }
+                </tbody>
+                </table>
+                </div>
+                <div class="tab-pane fade" id="pending" role="tabpanel" aria-labelledby="pendingTab">
+                <table class="table table-bordered table-striped">
+                <thead>
+                <!-- Tabloya ait başlık satırı -->
+                <tr>
+                <th>Owner</th>
+                <th>Type</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Currency</th>
+                <th>Status</th>
+                <th>Description</th>
+                </tr>
+                </thead>
+                <tbody id="pendingTab">
+                <!-- Bekleyen harcama talepleri buraya dinamik olarak eklenir -->
+                </tbody>
+                </table>
+                </div>
+                <div class="tab-pane fade" id="declined" role="tabpanel" aria-labelledby="declinedTab">
+                <table class="table table-bordered table-striped">
+                <thead>
+                <!-- Tabloya ait başlık satırı -->
+                <tr>
+                <th>Owner</th>
+                <th>Type</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Currency</th>
+                <th>Status</th>
+                <th>Description</th>
+                </tr>
+                </thead>
+                <tbody id="declinedTab">
+                <!-- Reddedilen harcama talepleri buraya dinamik olarak eklenir -->
+                </tbody>
+                </table>
+                </div>
+                </div> *@
+            </div>
+        </div>
+    </main>
+</body>
+
+@* <script>
+    function renderTabs() {
+        var approvedTab = document.getElementById("approvedTab");
+        var pendingTab = document.getElementById("pendingTab");
+        var declinedTab = document.getElementById("declinedTab");
+        var allTab = document.getElementById("allTab");
+
+        // Tabloları temizle
+        approvedTab.innerHTML = "";
+        pendingTab.innerHTML = "";
+        declinedTab.innerHTML = "";
+        allTab.innerHTML = "";
+
+        harcamaTalepleri.forEach(function (talep) {
+            var row = document.createElement("tr");
+            var nameCell = document.createElement("td");
+            nameCell.textContent = talep.name;
+
+            var type = talep.type;
+            if (type === "approved") {
+                approvedTab.appendChild(row);
+            } else if (type === "pending") {
+                pendingTab.appendChild(row);
+            } else if (type === "declined") {
+                declinedTab.appendChild(row);
+            }
+            allTab.appendChild(row);
+        });
+    }
+
+    // Sayfa yüklendiğinde sekmeleri oluştur
+    window.addEventListener("DOMContentLoaded", renderTabs);
+</script> *@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>

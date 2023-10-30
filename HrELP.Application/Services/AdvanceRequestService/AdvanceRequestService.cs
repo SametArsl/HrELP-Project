@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using HrELP.Domain.Entities.Concrete.Requests;
 using HrELP.Domain.Repositories;
+using HrELP.Infrastructure.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +17,22 @@ namespace HrELP.Application.Services.AdvanceRequestService
         public AdvanceRequestService(IAdvanceRequestRepository advanceRequestRepository)
         {
             _advanceRequestRepository = advanceRequestRepository;
+        }
+
+        public async Task CreateRequest(AdvanceRequest request)
+        {
+            await _advanceRequestRepository.AddAsync(request);
+        }
+
+        public List<AdvanceRequest> GetAll()
+        {
+            return _advanceRequestRepository.GetAllWithAppUserAsync().ToList();
+        }
+
+        public async Task<AdvanceRequest> GetRequestById(int id)
+        {
+            AdvanceRequest request = _advanceRequestRepository.GetById(id);
+            return request;
         }
     }
 }

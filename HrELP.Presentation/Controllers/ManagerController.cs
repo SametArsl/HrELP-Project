@@ -2,10 +2,12 @@
 using HrELP.Application.Models.DTOs;
 using HrELP.Application.Services.AddressAPIService;
 using HrELP.Application.Services.AddressService;
+using HrELP.Application.Services.AdvanceRequestService;
 using HrELP.Application.Services.AppUserService;
 using HrELP.Application.Services.CompanyService;
 using HrELP.Application.Services.EmailService;
 using HrELP.Application.Services.ExpenseRequestService;
+using HrELP.Application.Services.LeaveRequestService;
 using HrELP.Domain.Entities.Concrete;
 using HrELP.Domain.Entities.Concrete.Requests;
 using HrELP.Infrastructure;
@@ -35,8 +37,10 @@ namespace HrELP.Presentation.Controllers
         private readonly IMapper _mapper;
         private readonly IEmailService _emailService;
         private readonly IExpenseRequestService _expenseRequestService;
+        private readonly IAdvanceRequestService _advanceRequestService;
+        private readonly ILeaveRequestService _leaveRequestService;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public ManagerController(SignInManager<AppUser> signInManager, AddressAPIService addressAPI, IAppUserService appUserService, ICompanyService companyService, IMapper mapper, UserManager<AppUser> userManager, IEmailService emailService, IExpenseRequestService expenseRequestService, IWebHostEnvironment webHostEnvironment)
+        public ManagerController(SignInManager<AppUser> signInManager, AddressAPIService addressAPI, IAppUserService appUserService, ICompanyService companyService, IMapper mapper, UserManager<AppUser> userManager, IEmailService emailService, IExpenseRequestService expenseRequestService, IWebHostEnvironment webHostEnvironment, IAdvanceRequestService advanceRequestService, ILeaveRequestService leaveRequestService)
         {
             _signInManager = signInManager;
             _addressAPI = addressAPI;
@@ -47,6 +51,8 @@ namespace HrELP.Presentation.Controllers
             _emailService = emailService;
             _expenseRequestService = expenseRequestService;
             _webHostEnvironment = webHostEnvironment;
+            _advanceRequestService = advanceRequestService;
+            _leaveRequestService = leaveRequestService;
         }
 
 
@@ -201,6 +207,49 @@ namespace HrELP.Presentation.Controllers
                 RequestType=request.RequestType,
             };
             return PartialView("RequestDetails",requestVM);
+        }
+        [HttpGet]
+        public IActionResult ListAdvanceRequests()
+        {
+            List<AdvanceRequest> advances = _advanceRequestService.GetAll();
+
+            return View(advances);
+        }
+        public async Task<IActionResult> AdvanceRequestDetails(int id)
+        {
+            AdvanceRequest request = await _advanceRequestService.GetRequestById(id);
+            AdvanceRequestVM requestVM = new AdvanceRequestVM()
+            {
+                ApprovalStatus = request.ApprovalStatus,
+                AppUser = request.AppUser,
+                AdvanceAmount = request.RequestAmount,
+                Currency = request.Currency,
+                Description = request.Description,
+                Id = request.Id,
+                RequestType = request.RequestType,
+            };
+            return PartialView("AdvanceRequestDetails", requestVM);
+        }
+        [HttpGet]
+        public IActionResult ListLeaveRequests()
+        {
+            List<LeaveRequest> leaveRequests = _leaveRequestService.GetAll();
+
+            return View(leaveRequests);
+        }
+        public async Task<IActionResult> LeaveRequestDetails(int id)
+        {
+            LeaveRequest request = await _leaveRequestService.GetRequestById(id);
+            LeaveRequestVM requestVM = new LeaveRequestVM()
+            {
+                ApprovalStatus = request.ApprovalStatus,
+                AppUser = request.AppUser,
+                TotalDaysOff = request.TotalDaysOff,
+                Description = request.Description,
+                Id = request.Id,
+                RequestType = request.RequestType,
+            };
+            return PartialView("LeaveRequestDetails", requestVM);
         }
     }
 }
