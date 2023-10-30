@@ -18,8 +18,10 @@
         <aside>
             <div class="toggle">
                 <div class="logo">
+                    <a asp-controller="User" asp-action="Index" class="text-decoration-none">
                     <img src="/images/HrELPlogominiLight.png" id="logo-img">
                     <h2><span class="danger">H</span>r<span class="danger">ELP</span></h2>
+                    </a>
                 </div>
                 <div class="close" id="close-btn">
                     <span class="material-icons-sharp">
@@ -87,6 +89,12 @@
                             patient_list
                         </span>
                         <h3>File A Request</h3>
+                    </a>
+                    <a asp-controller="Personnel" asp-action="AdvanceRequest" class="text-decoration-none">
+                        <span class="material-symbols-outlined">
+                            patient_list
+                        </span>
+                        <h3>Advance Request</h3>
                     </a>
                 }
 

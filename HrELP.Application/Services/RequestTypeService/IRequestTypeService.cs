@@ -11,5 +11,7 @@ namespace HrELP.Application.Services.RequestTypeService
     {
         IQueryable<RequestType> GetExpenseRequestTypes();
         Task<RequestType> GetTypeById(int id);
+        IQueryable<RequestType> GetAdvanceRequestTypes();
+        IQueryable<RequestType> GetLeaveRequestTypes();
     }
 }
