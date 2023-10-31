@@ -1,12 +1,14 @@
 ﻿using HrELP.Domain.Entities.Concrete.Requests;
 using HrELP.Domain.Entities.Concrete;
 using HrELP.Domain.Entities.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace HrELP.Presentation.Models.ViewModels
 {
     public class AdvanceRequestVM
     {
         public int Id { get; set; }
+        [Required]
         public int RequestTypeId { get; set; }
         public RequestType RequestType { get; set; }
         public string Description { get; set; }

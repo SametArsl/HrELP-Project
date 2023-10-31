@@ -13,22 +13,23 @@
                     }
                     else
                     {
-                        <div class="alert alert-success">The maximum amount you can withdraw = @Model.AdvanceLimit TL </div>
+                        <div class="alert alert-secondary">The maximum amount you can withdraw = @Model.AdvanceLimit TL </div>
                     }
                     <form asp-controller="Personnel" asp-action="AdvanceRequest" method="post" enctype="multipart/form-data">
                         <label for="advanceAmount">Advance Amount:</label>
-                        <input asp-for="AdvanceAmount" type="number" id="advanceAmount" name="advanceAmount" required><br><br>
+                        <input class="form-control" asp-for="AdvanceAmount" type="number" id="advanceAmount" name="advanceAmount" min="0" required ><br><br>
 
                         <label for="requestType">Request Type:</label>
                         @Html.DropDownListFor(model => model.RequestType.Id,
                         new SelectList(ViewBag.Requests, "Value", "Text"),
                         "-- Select Request Type --",
-                        new {@class="form-control", id = "RequestDropdown"})<br><br>
+                        new {@class="form-select", id = "RequestDropdown"})<br><br>
 
                         <label for="description">Description:</label>
-                        <textarea asp-for="Description" id="description" name="description" rows="4" cols="50"></textarea><br /><br />
-
-                        <input type="submit" value="Submit Request">
+                        <textarea asp-for="Description" class="form-control" id="description" name="description" rows="4" cols="50" required></textarea><br /><br />
+                        <div class="text-center">
+                        <input class="btn btn-outline-primary" type="submit" value="Submit Request">
+                        </div>
                     </form>
                 </div>
             </div>
@@ -36,4 +37,5 @@
     </main>
 </body>
 
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>

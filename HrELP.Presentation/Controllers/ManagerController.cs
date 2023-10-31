@@ -257,7 +257,7 @@ namespace HrELP.Presentation.Controllers
             AppUser appUser = await _appUserService.GetUserAsync(advanceRequest.UserId);
             advanceRequest.UpdateDate = DateTime.Now;
             advanceRequest.ApprovalStatus = Domain.Entities.Enums.ApprovalStatus.Approved;
-            if (advanceRequest.RequestType.Id == 6)
+            if (advanceRequest.RequestType.Id == 11)
             {
                 appUser.AdvanceLimit = appUser.AdvanceLimit - advanceRequest.RequestAmount;
                 _appUserService.UpdateAsync(appUser);
