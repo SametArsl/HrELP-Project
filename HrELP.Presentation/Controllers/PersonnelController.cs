@@ -94,11 +94,16 @@ namespace HrELP.Presentation.Controllers
             return RedirectToAction("Index", "User");
         }
         [HttpGet]
-        public IActionResult AdvanceRequest()
+        public async Task<IActionResult> AdvanceRequest()
         {
             ViewBag.Requests = _typeService.GetAdvanceRequestTypes().Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.RequestName }).ToList();
+            AppUser user= await _signInManager.UserManager.GetUserAsync(User);
+            AdvanceRequestVM vm = new AdvanceRequestVM()
+            {
+                AdvanceLimit = user.AdvanceLimit
+            };
 
-            return View();
+            return View(vm);
         }
 
 

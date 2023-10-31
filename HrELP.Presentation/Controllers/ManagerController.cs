@@ -111,7 +111,7 @@ namespace HrELP.Presentation.Controllers
         [Route("{Controller}/{Action}")]
         [HttpPost]
         public async Task<IActionResult> AddPersonnel(AddPersonnelDTO dTO)
-        {           
+        {
             if (dTO.PhotoFile != null)
             {
                 IFormFile formFile = dTO.PhotoFile;
@@ -198,15 +198,15 @@ namespace HrELP.Presentation.Controllers
             ExpenseRequestVM requestVM = new ExpenseRequestVM()
             {
                 ApprovalStatus = request.ApprovalStatus,
-                AppUser=request.AppUser,
-                ExpenseAmount=request.ExpenseAmount,
-                Currency=request.Currency,
-                Description=request.Description,
-                Id=request.Id,
-                RequestType=request.RequestType,
-                FilePath=request.FilePath,
+                AppUser = request.AppUser,
+                ExpenseAmount = request.ExpenseAmount,
+                Currency = request.Currency,
+                Description = request.Description,
+                Id = request.Id,
+                RequestType = request.RequestType,
+                FilePath = request.FilePath,
             };
-            return PartialView("RequestDetails",requestVM);
+            return PartialView("RequestDetails", requestVM);
         }
         [HttpGet]
         public IActionResult ListAdvanceRequests()
@@ -250,6 +250,22 @@ namespace HrELP.Presentation.Controllers
                 RequestType = request.RequestType,
             };
             return PartialView("LeaveRequestDetails", requestVM);
+        }
+        public async Task<IActionResult> ApproveRequest(int id)
+        {
+            AdvanceRequest advanceRequest = await _advanceRequestService.GetRequestById(id);
+            AppUser appUser = await _appUserService.GetUserAsync(advanceRequest.UserId);
+            advanceRequest.UpdateDate = DateTime.Now;
+            advanceRequest.ApprovalStatus = Domain.Entities.Enums.ApprovalStatus.Approved;
+            if (advanceRequest.RequestType.Id == 6)
+            {
+                appUser.AdvanceLimit = appUser.AdvanceLimit - advanceRequest.RequestAmount;
+            }
+            return RedirectToAction("ListAdvanceRequests");
+        }
+        public IActionResult RequestDetail(ExpenseRequestVM vm)
+        {
+            return PartialView(vm);
         }
     }
 }

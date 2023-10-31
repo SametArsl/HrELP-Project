@@ -17,5 +17,6 @@ namespace HrELP.Presentation.Models.ViewModels
         public decimal AdvanceAmount { get; set; }
         public DateTime CreateDate { get; set; } = DateTime.Now;
         public DateTime UpdateDate { get; set; } = DateTime.Now;
+        public decimal? AdvanceLimit { get; set; }
     }
 }

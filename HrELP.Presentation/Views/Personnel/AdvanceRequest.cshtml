@@ -11,6 +11,10 @@
                     {
                         <div class="alert alert-danger">@ViewData["OutOfLimit"]</div>
                     }
+                    else
+                    {
+                        <div class="alert alert-success">The maximum amount you can withdraw = @Model.AdvanceLimit TL </div>
+                    }
                     <form asp-controller="Personnel" asp-action="AdvanceRequest" method="post" enctype="multipart/form-data">
                         <label for="advanceAmount">Advance Amount:</label>
                         <input asp-for="AdvanceAmount" type="number" id="advanceAmount" name="advanceAmount" required><br><br>

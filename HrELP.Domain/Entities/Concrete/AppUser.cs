@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace HrELP.Domain.Entities.Concrete
 {
-    public class AppUser : IdentityUser<int>,IBaseEntity
+    public class AppUser : IdentityUser<int>, IBaseEntity
     {
         public AppUser()
         {
@@ -38,8 +38,22 @@ namespace HrELP.Domain.Entities.Concrete
         public string Department { get; set; }
         public int AddressId { get; set; }
         public Address? Address { get; set; }
-        public decimal Salary { get; set; }
+        private decimal _salary;
+        public decimal Salary
+        {
+            get
+            {
+                return _salary;
+            }
+            set
+            {
+                _salary= value;
+                AdvanceLimit = value * 3;
+            }
+        }
         public int MaxDaysOff { get; set; }
+        private decimal _workingTime;
+
         public int DayOffsLeft { get; set; }
         private decimal _advanceLimit;
         public bool IsActive { get; set; }
@@ -78,17 +92,7 @@ namespace HrELP.Domain.Entities.Concrete
                 _fullName = value;
             }
         }
-        [NotMapped]
-        public decimal AdvanceLimit
-        {
-            get
-            {
-                return Salary * 3;
-            }
-            set
-            {
-                _advanceLimit = value;
-            }
-        }
+        public decimal? AdvanceLimit { get; set; }
+
     }
 }
