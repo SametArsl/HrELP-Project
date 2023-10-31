@@ -132,15 +132,15 @@ namespace HrELP.Presentation.Controllers
                 {
                     ViewData["Message"] = $"The error occurred. Error Message={ex.Message}";
                 }
-                
+
                 return RedirectToAction("Index", "User");
-        }
+            }
             else
             {
                 ViewBag.Requests = _typeService.GetAdvanceRequestTypes().Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.RequestName }).ToList();
                 ViewData["OutOfLimit"] = $"The requested advance amount exceeds the maximum advance limit. You can withdraw up to {vM.AppUser.AdvanceLimit} TL at most.";
                 return View(vM);
-    }
-}
+            }
+        }
     }
 }
