@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using HrELP.Domain.Entities.Concrete;
 using HrELP.Domain.Entities.Concrete.Requests;
 using HrELP.Domain.Repositories;
 using HrELP.Infrastructure.Repositories;
@@ -35,9 +36,16 @@ namespace HrELP.Application.Services.AdvanceRequestService
             return request;
         }
 
+        public List<AdvanceRequest> PendingRequests(AppUser user)
+        {
+            var list=_advanceRequestRepository.GetPendingRequest(user);
+            return list;
+        }
+
         public async Task UpdateAsync(AdvanceRequest request)
         {
             await _advanceRequestRepository.UpdateAsync(request);
         }
+        
     }
 }

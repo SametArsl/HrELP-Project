@@ -97,7 +97,7 @@ namespace HrELP.Presentation.Controllers
         public async Task<IActionResult> AdvanceRequest()
         {
             ViewBag.Requests = _typeService.GetAdvanceRequestTypes().Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.RequestName }).ToList();
-            AppUser user= await _signInManager.UserManager.GetUserAsync(User);
+            AppUser user = await _signInManager.UserManager.GetUserAsync(User);
             AdvanceRequestVM vm = new AdvanceRequestVM()
             {
                 AdvanceLimit = user.AdvanceLimit
@@ -128,17 +128,25 @@ namespace HrELP.Presentation.Controllers
                     CompanyId = vM.AppUser.CompanyId,
                 };
 
-
-                try
+                if (_advanceRequestService.PendingRequests(vM.AppUser).Count > 0)
                 {
-                    await _advanceRequestService.CreateRequest(advanceRequest);
+                    ViewBag.Requests = _typeService.GetAdvanceRequestTypes().Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.RequestName }).ToList();
+                    ViewData["OutOfLimit"] = "The system allows only one advance request per category to be pending at the same time.";
+                    return View(vM);
                 }
-                catch (Exception ex)
+                else
                 {
-                    ViewData["Message"] = $"The error occurred. Error Message={ex.Message}";
-                }
+                    try
+                    {
+                        await _advanceRequestService.CreateRequest(advanceRequest);
+                    }
+                    catch (Exception ex)
+                    {
+                        ViewData["Message"] = $"The error occurred. Error Message={ex.Message}";
+                    }
 
-                return RedirectToAction("Index", "User");
+                    return View("Index", "User");
+                }
             }
             else
             {
