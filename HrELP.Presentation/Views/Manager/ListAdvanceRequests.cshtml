@@ -23,9 +23,8 @@
 
                     <div class="tab-content" id="requestTabContent">
                         <div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
-                            <!-- Tüm Çalışanlar tablosu burada -->
+                            <!-- Tüm talepler tablosu burada -->
                             <table class="table table-bordered table-striped table-hover mt-5 text-center">
-                                <!-- Tabloyu burada doldurun -->
                                 <thead>
                                     <tr>
                                         <th></th>
@@ -38,29 +37,29 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var request in Model)
+                                    @foreach (var advanceRequest in Model)
                                     {
                                         <tr>
                                             <td>
-                                                <a asp-action="AdvanceRequestDetails" asp-route-id="@request.Id" class="text-dark">
+                                                <a asp-action="AdvanceRequestDetails" asp-route-id="@advanceRequest.Id" class="text-dark">
                                                     <span class="material-symbols-outlined">
                                                         quick_reference_all
                                                     </span>
                                                 </a>
                                             </td>
-                                            <td>@request.AppUser.FullName</td>
-                                            <td>@request.RequestType.RequestName</td>
-                                            <td>@request.CreateDate</td>
-                                            <td>@request.RequestAmount</td>
-                                            <td>@request.Currency</td>
+                                            <td>@advanceRequest.AppUser.FullName</td>
+                                            <td>@advanceRequest.RequestType.RequestName</td>
+                                            <td>@advanceRequest.CreateDate</td>
+                                            <td>@advanceRequest.RequestAmount</td>
+                                            <td>@advanceRequest.Currency</td>
                                             <td>
-                                                @if (request.ApprovalStatus == HrELP.Domain.Entities.Enums.ApprovalStatus.Pending_Approval)
+                                                @if (advanceRequest.ApprovalStatus == HrELP.Domain.Entities.Enums.ApprovalStatus.Pending_Approval)
                                                 {
                                                     <span class="material-symbols-outlined text-warning">
                                                         hourglass_top
                                                     </span>
                                                 }
-                                                else if (request.ApprovalStatus == HrELP.Domain.Entities.Enums.ApprovalStatus.Approved)
+                                                else if (advanceRequest.ApprovalStatus == HrELP.Domain.Entities.Enums.ApprovalStatus.Approved)
                                                 {
                                                     <span class="material-symbols-outlined text-success">
                                                         check_circle
@@ -79,9 +78,8 @@
                             </table>
                         </div>
                         <div class="tab-pane fade" id="pending" role="tabpanel" aria-labelledby="pending-tab">
-                            <!-- Tüm Çalışanlar tablosu burada -->
+                            <!-- Bekleyen talepler tablosu burada -->
                             <table class="table table-bordered table-striped table-hover mt-5 text-center">
-                                <!-- Tabloyu burada doldurun -->
                                 <thead>
                                     <tr>
                                         <th></th>
@@ -94,23 +92,23 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var request in Model)
+                                    @foreach (var advanceRequest in Model)
                                     {
-                                        @if (request.ApprovalStatus == ApprovalStatus.Pending_Approval)
+                                        @if (advanceRequest.ApprovalStatus == ApprovalStatus.Pending_Approval)
                                         {
                                             <tr>
                                                 <td>
-                                                    <a asp-action="AdvanceRequestDetails" asp-route-id="@request.Id" class="text-dark">
+                                                    <a asp-action="AdvanceRequestDetails" asp-route-id="@advanceRequest.Id" class="text-dark">
                                                         <span class="material-symbols-outlined">
                                                             quick_reference_all
                                                         </span>
                                                     </a>
                                                 </td>
-                                                <td>@request.AppUser.FullName</td>
-                                                <td>@request.RequestType.RequestName</td>
-                                                <td>@request.CreateDate</td>
-                                                <td>@request.RequestAmount</td>
-                                                <td>@request.Currency</td>
+                                                <td>@advanceRequest.AppUser.FullName</td>
+                                                <td>@advanceRequest.RequestType.RequestName</td>
+                                                <td>@advanceRequest.CreateDate</td>
+                                                <td>@advanceRequest.RequestAmount</td>
+                                                <td>@advanceRequest.Currency</td>
                                                 <td>
                                                     <span class="material-symbols-outlined text-warning">
                                                         hourglass_top
@@ -123,9 +121,8 @@
                             </table>
                         </div>
                         <div class="tab-pane fade" id="approved" role="tabpanel" aria-labelledby="approved-tab">
-                            <!-- Tüm Çalışanlar tablosu burada -->
+                            <!-- Onaylanan talepler tablosu burada -->
                             <table class="table table-bordered table-striped table-hover mt-5 text-center">
-                                <!-- Tabloyu burada doldurun -->
                                 <thead>
                                     <tr>
                                         <th></th>
@@ -138,23 +135,23 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var request in Model)
+                                    @foreach (var advanceRequest in Model)
                                     {
-                                        @if (request.ApprovalStatus == ApprovalStatus.Approved)
+                                        @if (advanceRequest.ApprovalStatus == ApprovalStatus.Approved)
                                         {
                                             <tr>
                                                 <td>
-                                                    <a asp-action="AdvanceRequestDetails" asp-route-id="@request.Id" class="text-dark">
+                                                    <a asp-action="AdvanceRequestDetails" asp-route-id="@advanceRequest.Id" class="text-dark">
                                                         <span class="material-symbols-outlined">
                                                             quick_reference_all
                                                         </span>
                                                     </a>
                                                 </td>
-                                                <td>@request.AppUser.FullName</td>
-                                                <td>@request.RequestType.RequestName</td>
-                                                <td>@request.CreateDate</td>
-                                                <td>@request.RequestAmount</td>
-                                                <td>@request.Currency</td>
+                                                <td>@advanceRequest.AppUser.FullName</td>
+                                                <td>@advanceRequest.RequestType.RequestName</td>
+                                                <td>@advanceRequest.CreateDate</td>
+                                                <td>@advanceRequest.RequestAmount</td>
+                                                <td>@advanceRequest.Currency</td>
                                                 <td>
                                                     <span class="material-symbols-outlined text-success">
                                                         check_circle
@@ -167,9 +164,8 @@
                             </table>
                         </div>
                         <div class="tab-pane fade" id="refused" role="tabpanel" aria-labelledby="refused-tab">
-                            <!-- Tüm Çalışanlar tablosu burada -->
+                            <!-- Reddedilen talepler tablosu burada -->
                             <table class="table table-bordered table-striped table-hover mt-5 text-center">
-                                <!-- Tabloyu burada doldurun -->
                                 <thead>
                                     <tr>
                                         <th></th>
@@ -182,23 +178,23 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var request in Model)
+                                    @foreach (var advanceRequest in Model)
                                     {
-                                        @if (request.ApprovalStatus == ApprovalStatus.Declined)
+                                        @if (advanceRequest.ApprovalStatus == ApprovalStatus.Declined)
                                         {
                                             <tr>
                                                 <td>
-                                                    <a asp-action="AdvanceRequestDetails" asp-route-id="@request.Id" class="text-dark">
+                                                    <a asp-action="AdvanceRequestDetails" asp-route-id="@advanceRequest.Id" class="text-dark">
                                                         <span class="material-symbols-outlined">
                                                             quick_reference_all
                                                         </span>
                                                     </a>
                                                 </td>
-                                                <td>@request.AppUser.FullName</td>
-                                                <td>@request.RequestType.RequestName</td>
-                                                <td>@request.CreateDate</td>
-                                                <td>@request.RequestAmount</td>
-                                                <td>@request.Currency</td>
+                                                <td>@advanceRequest.AppUser.FullName</td>
+                                                <td>@advanceRequest.RequestType.RequestName</td>
+                                                <td>@advanceRequest.CreateDate</td>
+                                                <td>@advanceRequest.RequestAmount</td>
+                                                <td>@advanceRequest.Currency</td>
                                                 <td>
                                                     <span class="material-symbols-outlined text-danger">
                                                         cancel
@@ -217,38 +213,5 @@
     </main>
 </body>
 
-@* <script>
-    function renderTabs() {
-        var approvedTab = document.getElementById("approvedTab");
-        var pendingTab = document.getElementById("pendingTab");
-        var declinedTab = document.getElementById("declinedTab");
-        var allTab = document.getElementById("allTab");
-
-        // Tabloları temizle
-        approvedTab.innerHTML = "";
-        pendingTab.innerHTML = "";
-        declinedTab.innerHTML = "";
-        allTab.innerHTML = "";
-
-        harcamaTalepleri.forEach(function (talep) {
-            var row = document.createElement("tr");
-            var nameCell = document.createElement("td");
-            nameCell.textContent = talep.name;
-
-            var type = talep.type;
-            if (type === "approved") {
-                approvedTab.appendChild(row);
-            } else if (type === "pending") {
-                pendingTab.appendChild(row);
-            } else if (type === "declined") {
-                declinedTab.appendChild(row);
-            }
-            allTab.appendChild(row);
-        });
-    }
-
-    // Sayfa yüklendiğinde sekmeleri oluştur
-    window.addEventListener("DOMContentLoaded", renderTabs);
-</script> *@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>

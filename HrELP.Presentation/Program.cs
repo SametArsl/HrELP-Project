@@ -29,7 +29,7 @@ namespace HrELP.Presentation
             builder.Services.AddDbContext<HrElpContext>(x => x.UseSqlServer(builder.Configuration.GetConnectionString("ConnStr")));
             builder.Services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromMinutes(5); // Adjust the timeout as needed
+                options.IdleTimeout = TimeSpan.FromMinutes(20); // Adjust the timeout as needed
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
