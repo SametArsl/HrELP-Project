@@ -18,8 +18,4 @@
     <ProjectReference Include="..\HrELP.Domain\HrELP.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\requestFiles\" />
-  </ItemGroup>
-
 </Project>

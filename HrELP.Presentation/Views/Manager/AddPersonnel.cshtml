@@ -205,7 +205,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
-        $("#form3Examplev2, #form3Examplev3, #form3Examplev4, #BirthPlace, #FullAddress").on("input", function () {
+        $("#form3Examplev2, #form3Examplev3, #form3Examplev4, #BirthPlace").on("input", function () {
             var regex = /^[a-zA-ZğüşöçıĞÜŞÖÇİ\s]*$/; 
             var inputValue = $(this).val();
             if (!regex.test(inputValue)) {
