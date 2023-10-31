@@ -13,7 +13,7 @@
                     }
                     else
                     {
-                        <div class="alert alert-success">The maximum amount you can withdraw = @Model.AdvanceLimit TL </div>
+                        <div class="alert alert-info">The maximum amount you can withdraw = @Model.AdvanceLimit TL </div>
                     }
                     <form asp-controller="Personnel" asp-action="AdvanceRequest" method="post" enctype="multipart/form-data">
                         <label for="advanceAmount">Advance Amount:</label>

@@ -251,19 +251,32 @@ namespace HrELP.Presentation.Controllers
             };
             return PartialView("LeaveRequestDetails", requestVM);
         }
-        public async Task<IActionResult> ApproveRequest(int id)
+        public async Task<IActionResult> ApproveAdvanceRequest(int id)
         {
             AdvanceRequest advanceRequest = await _advanceRequestService.GetRequestById(id);
             AppUser appUser = await _appUserService.GetUserAsync(advanceRequest.UserId);
             advanceRequest.UpdateDate = DateTime.Now;
             advanceRequest.ApprovalStatus = Domain.Entities.Enums.ApprovalStatus.Approved;
-            if (advanceRequest.RequestType.Id == 6)
+            advanceRequest.ResponseDate= DateTime.Now;
+            if (advanceRequest.RequestType.Id == 11)
             {
                 appUser.AdvanceLimit = appUser.AdvanceLimit - advanceRequest.RequestAmount;
                 _appUserService.UpdateAsync(appUser);
             }
+            advanceRequest.IsActive = false;
             _advanceRequestService.UpdateAsync(advanceRequest);
-            return RedirectToAction("ListAdvanceRequests");
+            return View("ListAdvanceRequests");
+        }
+        public async Task<IActionResult> RefuseAdvanceRequest(int id)
+        {
+            AdvanceRequest advanceRequest = await _advanceRequestService.GetRequestById(id);
+            AppUser appUser = await _appUserService.GetUserAsync(advanceRequest.UserId);
+            advanceRequest.UpdateDate = DateTime.Now;
+            advanceRequest.ApprovalStatus = Domain.Entities.Enums.ApprovalStatus.Declined;
+            advanceRequest.ResponseDate= DateTime.Now;
+            advanceRequest.IsActive = false;
+            _advanceRequestService.UpdateAsync(advanceRequest);
+            return View("ListAdvanceRequests");
         }
         public IActionResult RequestDetail(ExpenseRequestVM vm)
         {
