@@ -81,7 +81,7 @@ namespace HrELP.Presentation.Controllers
                 IFormFile formFile = vM.FormFile;
                 var extent = Path.GetExtension(formFile.FileName);
                 var randomName = ($"{Guid.NewGuid()}{extent}");
-                var path = Path.Combine(_webHostEnvironment.WebRootPath, "images", "profilepic", randomName);
+                var path = Path.Combine(_webHostEnvironment.WebRootPath, "requestFiles", randomName);
                 vM.FilePath = randomName;
                 using (var stream = new FileStream(path, FileMode.Create))
                 {
@@ -107,8 +107,8 @@ namespace HrELP.Presentation.Controllers
         {
             vM.AppUser = await _signInManager.UserManager.GetUserAsync(User);
             vM.RequestType = await _typeService.GetTypeById(vM.RequestType.Id);
-            //if (vM.AppUser.AdvanceLimit >= vM.AdvanceAmount)
-            //{
+            if (vM.AppUser.AdvanceLimit >= vM.AdvanceAmount)
+            {
                 AdvanceRequest advanceRequest = new AdvanceRequest()
                 {
                     AppUser = vM.AppUser,
@@ -134,12 +134,13 @@ namespace HrELP.Presentation.Controllers
                 }
                 
                 return RedirectToAction("Index", "User");
-            //}
-            //else
-            //{
-            //    ViewData["OutOfLimit"] = $"The requested advance amount exceeds the maximum advance limit. You can withdraw up to {vM.AppUser.AdvanceLimit} TL at most.";
-            //    return View(vM);
-            //}
         }
+            else
+            {
+                ViewBag.Requests = _typeService.GetAdvanceRequestTypes().Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.RequestName }).ToList();
+                ViewData["OutOfLimit"] = $"The requested advance amount exceeds the maximum advance limit. You can withdraw up to {vM.AppUser.AdvanceLimit} TL at most.";
+                return View(vM);
+    }
+}
     }
 }

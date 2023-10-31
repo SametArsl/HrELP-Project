@@ -96,7 +96,6 @@ namespace HrELP.Presentation.Controllers
                 "Machine Learning Engineer"
             };
 
-            // Her departmana karşılık gelen pozisyonları oluştur
 
 
             // ViewBag'e departmanları ve pozisyonları ekle
@@ -205,6 +204,7 @@ namespace HrELP.Presentation.Controllers
                 Description=request.Description,
                 Id=request.Id,
                 RequestType=request.RequestType,
+                FilePath=request.FilePath,
             };
             return PartialView("RequestDetails",requestVM);
         }

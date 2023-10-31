@@ -38,7 +38,7 @@ namespace HrELP.Presentation.Controllers
         }
         [Route("{Controller}/{Action}")]
         public async Task<IActionResult> Index()
-        {   
+        {
             var user = await _signInManager.UserManager.GetUserAsync(User);
             var userWithAddress = await _appUserService.GetUserAsync(user.Id);
             UserDetailBaseVM userDetailBaseVM = new UserDetailBaseVM();
@@ -67,18 +67,18 @@ namespace HrELP.Presentation.Controllers
 
             #region AddressAPI
             var cities = await _addressAPI.GetCitiesAsync();
-            userDetailVM.SelectedCity = GetMostSimilarString(userWithAddress.Address.City,cities);
+            userDetailVM.SelectedCity = GetMostSimilarString(userWithAddress.Address.City, cities);
 
             var towns = await _addressAPI.GetTownsByCityAsync(userDetailVM.SelectedCity);
-            userDetailVM.SelectedTown = GetMostSimilarString(userWithAddress.Address.Town,towns);
+            userDetailVM.SelectedTown = GetMostSimilarString(userWithAddress.Address.Town, towns);
 
             var districts = await _addressAPI.GetDistrictsByTown(userDetailVM.SelectedTown, userDetailVM.SelectedCity);
-            userDetailVM.SelectedDistrict = GetMostSimilarString(userWithAddress.Address.District,districts);
+            userDetailVM.SelectedDistrict = GetMostSimilarString(userWithAddress.Address.District, districts);
 
             var quarters = await _addressAPI.GetQuartersByDistrictAsync(userDetailVM.SelectedTown, userDetailVM.SelectedCity, userDetailVM.SelectedDistrict);
-            userDetailVM.SelectedQuarter = GetMostSimilarString(userWithAddress.Address.Quarter,quarters);
-            
-            var cityList = cities.Select(x => new SelectListItem { Value = x, Text = x }).ToList();   
+            userDetailVM.SelectedQuarter = GetMostSimilarString(userWithAddress.Address.Quarter, quarters);
+
+            var cityList = cities.Select(x => new SelectListItem { Value = x, Text = x }).ToList();
             var townList = towns.Select(x => new SelectListItem { Value = x, Text = x }).ToList();
             var districtList = districts.Select(x => new SelectListItem { Value = x, Text = x }).ToList();
             var quarterList = quarters.Select(x => new SelectListItem { Value = x, Text = x }).ToList();
@@ -97,20 +97,23 @@ namespace HrELP.Presentation.Controllers
             var user = await _signInManager.UserManager.GetUserAsync(User);
             var userWithAddress = await _appUserService.GetUserAsync(user.Id);
             UpdateUserDTO update = new UpdateUserDTO();
-            _mapper.Map(model,update);
+            _mapper.Map(model, update);
 
             if (model.PhotoFile != null)
             {
-                if (System.IO.File.Exists(Path.Combine(_webHostEnvironment.WebRootPath, "images", "profilepic", user.Photo)))
+                if (model.Photo != null)
                 {
-                    System.IO.File.Delete(Path.Combine(_webHostEnvironment.WebRootPath, "images", "profilepic", user.Photo));
+                    if (System.IO.File.Exists(Path.Combine(_webHostEnvironment.WebRootPath, "images", "profilepic", user.Photo)))
+                    {
+                        System.IO.File.Delete(Path.Combine(_webHostEnvironment.WebRootPath, "images", "profilepic", user.Photo));
+                    }
                 }
                 IFormFile formFile = update.PhotoFile;
                 var extent = Path.GetExtension(formFile.FileName);
                 var randomName = ($"{Guid.NewGuid()}{extent}");
-                var path = Path.Combine(_webHostEnvironment.WebRootPath, "images","profilepic", randomName);
+                var path = Path.Combine(_webHostEnvironment.WebRootPath, "images", "profilepic", randomName);
                 update.Photo = randomName;
-                
+
                 using (var stream = new FileStream(path, FileMode.Create))
                 {
                     await formFile.CopyToAsync(stream);
@@ -133,7 +136,7 @@ namespace HrELP.Presentation.Controllers
             return RedirectToAction("Details");
         }
 
-		public async Task<IActionResult> Logout()
+        public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             return View("~/Views/Login/Login.cshtml");
@@ -151,6 +154,13 @@ namespace HrELP.Presentation.Controllers
             var districts = await _addressAPI.GetDistrictsByTown(town, city);
             var districtList = districts.Select(x => new SelectListItem { Value = x, Text = x }).ToList();
             return Json(districtList);
+        }
+        [HttpGet]
+        public async Task<JsonResult> GetQuartersForDistrictAsync(string city, string town, string district)
+        {
+            var quarters = await _addressAPI.GetQuartersByDistrictAsync(town, city, district);
+            var quarterList = quarters.Select(x => new SelectListItem { Value = x, Text = x }).ToList();
+            return Json(quarterList);
         }
         [HttpGet]
         public static string GetMostSimilarString(string target, List<string> stringList)
