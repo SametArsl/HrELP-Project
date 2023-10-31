@@ -12,5 +12,6 @@ namespace HrELP.Application.Services.AdvanceRequestService
         List<AdvanceRequest> GetAll();
         Task CreateRequest(AdvanceRequest request);
         Task<AdvanceRequest> GetRequestById(int id);
+        Task UpdateAsync(AdvanceRequest request);
     }
 }

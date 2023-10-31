@@ -260,7 +260,9 @@ namespace HrELP.Presentation.Controllers
             if (advanceRequest.RequestType.Id == 6)
             {
                 appUser.AdvanceLimit = appUser.AdvanceLimit - advanceRequest.RequestAmount;
+                _appUserService.UpdateAsync(appUser);
             }
+            _advanceRequestService.UpdateAsync(advanceRequest);
             return RedirectToAction("ListAdvanceRequests");
         }
         public IActionResult RequestDetail(ExpenseRequestVM vm)

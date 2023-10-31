@@ -34,5 +34,10 @@ namespace HrELP.Application.Services.AdvanceRequestService
             AdvanceRequest request = _advanceRequestRepository.GetById(id);
             return request;
         }
+
+        public async Task UpdateAsync(AdvanceRequest request)
+        {
+            await _advanceRequestRepository.UpdateAsync(request);
+        }
     }
 }

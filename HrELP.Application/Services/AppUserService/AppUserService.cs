@@ -158,5 +158,10 @@ namespace HrELP.Application.Services.AppUserService
             var user = await _userRepository.GetFirstOrDefaultAsync(x => x.Id == vm.UserId);
             return user;
         }
+
+        public async Task<int> UpdateAsync(AppUser appUser)
+        {
+            return await _userRepository.UpdateAsync(appUser);
+        }
     }
 }

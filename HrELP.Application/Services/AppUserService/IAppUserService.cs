@@ -19,6 +19,7 @@ namespace HrELP.Application.Services.AppUserService
         bool IsEmailInUse(string email);
         Task<AppUser> GetUserAsync(int id);
         Task<int> UpdateAsync(UpdateUserDTO updateUserDTO);
+        Task<int> UpdateAsync(AppUser appUser);
         List<AppUser> GetAllUsersByEmail(string email);
         Task<AppUser> GetUserWithIdentityAsync(string identity);
         Task<AppUser> GetRequestsWithUserAndCompany(int id);
