@@ -9,56 +9,56 @@
             <div class="user-list m-4">
                 <div class="user">
                     <h1>@Model.RequestType.RequestName</h1>
-                    <dl class="description-list mt-5">
-                        <div class="row border-primary">
-                            <div class="col-6">
-                                <dt><b>Request Owner</b></dt>
-                                <dd>@Model.AppUser.FullName</dd>
+                    <div class="row border-primary">
+                        <dl class="col-6 mt-5">
+                            <dt><b>Request Owner</b></dt>
+                            <dd>@Model.AppUser.FullName</dd>
 
-                                <dt><b>Request Amount</b></dt>
-                                <dd>@Model.AdvanceAmount @Model.Currency</dd>
+                            <dt><b>Request Amount</b></dt>
+                            <dd>@Model.AdvanceAmount @Model.Currency</dd>
 
-                                <dt><b>Request's Description</b></dt>
-                                <dd>@Model.Description</dd>
-                            </div>
-                            <div class="col-6">
-                                <dt><b>Create Time</b></dt>
-                                <dd>@Model.CreateDate.ToString("dd.MM.yyyy")</dd>
+                            <dt><b>Request's Description</b></dt>
+                            <dd>@Model.Description</dd>
+                        </dl>
+                        <dl class="col-6 mt-5">
+                            <dt><b>Create Time</b></dt>
+                            <dd>@Model.CreateDate.ToString("dd.MM.yyyy")</dd>
 
-                                <dt><b>Update Time</b></dt>
-                                <dd>@Model.UpdateDate.ToString("dd.MM.yyyy")</dd>
+                            <dt><b>Update Time</b></dt>
+                            <dd>@Model.UpdateDate.ToString("dd.MM.yyyy")</dd>
 
-                                <dt><b>Status</b></dt>
+                            <dt><b>Status</b></dt>
 
-                                @if (Model.ApprovalStatus == HrELP.Domain.Entities.Enums.ApprovalStatus.Pending_Approval)
-                                {
-                                    <dd class="text-center">
-                                        <span class="material-symbols-outlined text-warning">
-                                            hourglass_top
-                                        </span>
-                                    </dd>
-                                }
-                                else if (Model.ApprovalStatus == HrELP.Domain.Entities.Enums.ApprovalStatus.Approved)
-                                {
-                                    <dd class="text-center">
-                                        <span class="material-symbols-outlined text-success">
-                                            check_circle
-                                        </span>
-                                    </dd>
-                                }
-                                else
-                                {
-                                    <dd class="text-center">
-                                        <span class="material-symbols-outlined text-danger">
-                                            cancel
-                                        </span>
-                                    </dd>
+                            @if (Model.ApprovalStatus == HrELP.Domain.Entities.Enums.ApprovalStatus.Pending_Approval)
+                            {
+                                <dd>
+                                    <span class="material-symbols-outlined text-warning">
+                                        hourglass_top
+                                    </span>
+                                </dd>
+                            }
+                            else if (Model.ApprovalStatus == HrELP.Domain.Entities.Enums.ApprovalStatus.Approved)
+                            {
+                                <dd>
+                                    <span class="material-symbols-outlined text-success">
+                                        check_circle
+                                    </span>
+                                </dd>
+                            }
+                            else
+                            {
+                                <dd>
+                                    <span class="material-symbols-outlined text-danger">
+                                        cancel
+                                    </span>
+                                </dd>
 
-                                }
-                            </div>
-                        </div>
-                        @if (Model.ApprovalStatus == HrELP.Domain.Entities.Enums.ApprovalStatus.Pending_Approval)
-                        {
+                            }
+                        </dl>
+                    </div>
+                    @if (Model.ApprovalStatus == HrELP.Domain.Entities.Enums.ApprovalStatus.Pending_Approval)
+                    {
+                        <dl class="mt-5">
                             <dd>
                                 <div class="row justify-content-around">
                                     <div class="col-3">
@@ -77,8 +77,8 @@
                                     </div>
                                 </div>
                             </dd>
-                        }
-                    </dl>
+                        </dl>
+                    }
                 </div>
             </div>
         </div>

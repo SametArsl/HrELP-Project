@@ -5,181 +5,213 @@
         <div class="new-users text-center">
             <h2>Advance Requests</h2>
             <div class="user-list mt-4">
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <!-- Tabloya ait başlık satırı -->
-                        <tr>
-                            <th></th>
-                            <th>Owner</th>
-                            <th>Type</th>
-                            <th>Date</th>
-                            <th>Amount</th>
-                            <th>Currency</th>
-                            <th>Status</th>
-                            <th>Description</th>
-                        </tr>
-                    </thead>
-                    <tbody id="allTab">
-                        <!-- Tüm harcama talepleri buraya dinamik olarak eklenir -->
-                        @foreach (var expense in Model)
-                        {
-                            <tr>
-                                <td>
-                                    <a asp-action="AdvanceRequestDetails" asp-route-id="@expense.Id" class="text-dark">
-                                        <span class="material-symbols-outlined">
-                                            quick_reference_all
-                                        </span>
-                                    </a>
-                                </td>
-                                <td>@expense.AppUser.FullName</td>
-                                <td>@expense.RequestType.RequestName</td>
-                                <td>@expense.CreateDate</td>
-                                <td>@expense.RequestAmount</td>
-                                <td>@expense.Currency</td>
-                                <td>
-                                    @if (expense.ApprovalStatus == HrELP.Domain.Entities.Enums.ApprovalStatus.Pending_Approval)
+                <div class="user">
+                    <ul class="nav nav-tabs mt-5" id="employeeTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link active text-decoration-none" id="all-tab" data-toggle="tab" href="#all" role="tab" aria-controls="all" aria-selected="true">All Requests</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link text-decoration-none" id="pending-tab" data-toggle="tab" href="#pending" role="tab" aria-controls="pending" aria-selected="false">Pending Requests</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link text-decoration-none" id="approved-tab" data-toggle="tab" href="#approved" role="tab" aria-controls="approved" aria-selected="false">Approved Requests</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link text-decoration-none" id="refused-tab" data-toggle="tab" href="#refused" role="tab" aria-controls="refused" aria-selected="false">Refused Requests</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="requestTabContent">
+                        <div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
+                            <!-- Tüm Çalışanlar tablosu burada -->
+                            <table class="table table-bordered table-striped table-hover mt-5 text-center">
+                                <!-- Tabloyu burada doldurun -->
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Owner</th>
+                                        <th>Type</th>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Currency</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var request in Model)
                                     {
-                                        <span class="material-symbols-outlined">
-                                            hourglass_top
-                                        </span>
+                                        <tr>
+                                            <td>
+                                                <a asp-action="AdvanceRequestDetails" asp-route-id="@request.Id" class="text-dark">
+                                                    <span class="material-symbols-outlined">
+                                                        quick_reference_all
+                                                    </span>
+                                                </a>
+                                            </td>
+                                            <td>@request.AppUser.FullName</td>
+                                            <td>@request.RequestType.RequestName</td>
+                                            <td>@request.CreateDate</td>
+                                            <td>@request.RequestAmount</td>
+                                            <td>@request.Currency</td>
+                                            <td>
+                                                @if (request.ApprovalStatus == HrELP.Domain.Entities.Enums.ApprovalStatus.Pending_Approval)
+                                                {
+                                                    <span class="material-symbols-outlined text-warning">
+                                                        hourglass_top
+                                                    </span>
+                                                }
+                                                else if (request.ApprovalStatus == HrELP.Domain.Entities.Enums.ApprovalStatus.Approved)
+                                                {
+                                                    <span class="material-symbols-outlined text-success">
+                                                        check_circle
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="material-symbols-outlined text-danger">
+                                                        cancel
+                                                    </span>
+                                                }
+                                            </td>
+                                        </tr>
                                     }
-                                    else if (expense.ApprovalStatus == HrELP.Domain.Entities.Enums.ApprovalStatus.Approved)
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="pending" role="tabpanel" aria-labelledby="pending-tab">
+                            <!-- Tüm Çalışanlar tablosu burada -->
+                            <table class="table table-bordered table-striped table-hover mt-5 text-center">
+                                <!-- Tabloyu burada doldurun -->
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Owner</th>
+                                        <th>Type</th>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Currency</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var request in Model)
                                     {
-                                        <span class="material-symbols-outlined">
-                                            check_circle
-                                        </span>
+                                        @if (request.ApprovalStatus == ApprovalStatus.Pending_Approval)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <a asp-action="AdvanceRequestDetails" asp-route-id="@request.Id" class="text-dark">
+                                                        <span class="material-symbols-outlined">
+                                                            quick_reference_all
+                                                        </span>
+                                                    </a>
+                                                </td>
+                                                <td>@request.AppUser.FullName</td>
+                                                <td>@request.RequestType.RequestName</td>
+                                                <td>@request.CreateDate</td>
+                                                <td>@request.RequestAmount</td>
+                                                <td>@request.Currency</td>
+                                                <td>
+                                                    <span class="material-symbols-outlined text-warning">
+                                                        hourglass_top
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        }
                                     }
-                                    else
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="approved" role="tabpanel" aria-labelledby="approved-tab">
+                            <!-- Tüm Çalışanlar tablosu burada -->
+                            <table class="table table-bordered table-striped table-hover mt-5 text-center">
+                                <!-- Tabloyu burada doldurun -->
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Owner</th>
+                                        <th>Type</th>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Currency</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var request in Model)
                                     {
-                                        <span class="material-symbols-outlined">
-                                            cancel
-                                        </span>
+                                        @if (request.ApprovalStatus == ApprovalStatus.Approved)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <a asp-action="AdvanceRequestDetails" asp-route-id="@request.Id" class="text-dark">
+                                                        <span class="material-symbols-outlined">
+                                                            quick_reference_all
+                                                        </span>
+                                                    </a>
+                                                </td>
+                                                <td>@request.AppUser.FullName</td>
+                                                <td>@request.RequestType.RequestName</td>
+                                                <td>@request.CreateDate</td>
+                                                <td>@request.RequestAmount</td>
+                                                <td>@request.Currency</td>
+                                                <td>
+                                                    <span class="material-symbols-outlined text-success">
+                                                        check_circle
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        }
                                     }
-                                </td>
-                                <td>@expense.Description</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-                @* <ul class="nav nav-tabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                <a class="nav-link" id="allTab" data-toggle="tab" href="#all" role="tab" aria-controls="all" aria-selected="false">All</a>
-                </li>
-                <li class="nav-item" role="presentation">
-                <a class="nav-link active" id="approvedTab" data-toggle="tab" href="#approved" role="tab" aria-controls="approved" aria-selected="true">Approved</a>
-                </li>
-                <li class="nav-item" role="presentation">
-                <a class="nav-link" id="pendingTab" data-toggle="tab" href="#pending" role="tab" aria-controls="pending" aria-selected="false">Pending</a>
-                </li>
-                <li class="nav-item" role="presentation">
-                <a class="nav-link" id="declinedTab" data-toggle="tab" href="#declined" role="tab" aria-controls="declined" aria-selected="false">Declined</a>
-                </li>
-                </ul>
-                <div class="tab-content">
-                <div class="tab-pane fade" id="all" role="tabpanel" aria-labelledby="allTab">
-                <table class="table table-bordered table-striped">
-                <thead>
-                <!-- Tabloya ait başlık satırı -->
-                <tr>
-                <th>Owner</th>
-                <th>Type</th>
-                <th>Date</th>
-                <th>Amount</th>
-                <th>Currency</th>
-                <th>Status</th>
-                <th>Description</th>
-                </tr>
-                </thead>
-                <tbody id="allTab">
-                <!-- Tüm harcama talepleri buraya dinamik olarak eklenir -->
-                @foreach (var expense in Model)
-                {
-                <tr>
-                <td>@expense.AppUser.FullName</td>
-                <td>@expense.RequestType.RequestName</td>
-                <td>@expense.CreateDate</td>
-                <td>@expense.ExpenseAmount</td>
-                <td>@expense.Currency</td>
-                <td>@expense.ApprovalStatus</td>
-                <td>@expense.Description</td>
-                </tr>
-                }
-                </tbody>
-                </table>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="refused" role="tabpanel" aria-labelledby="refused-tab">
+                            <!-- Tüm Çalışanlar tablosu burada -->
+                            <table class="table table-bordered table-striped table-hover mt-5 text-center">
+                                <!-- Tabloyu burada doldurun -->
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Owner</th>
+                                        <th>Type</th>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Currency</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var request in Model)
+                                    {
+                                        @if (request.ApprovalStatus == ApprovalStatus.Declined)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <a asp-action="AdvanceRequestDetails" asp-route-id="@request.Id" class="text-dark">
+                                                        <span class="material-symbols-outlined">
+                                                            quick_reference_all
+                                                        </span>
+                                                    </a>
+                                                </td>
+                                                <td>@request.AppUser.FullName</td>
+                                                <td>@request.RequestType.RequestName</td>
+                                                <td>@request.CreateDate</td>
+                                                <td>@request.RequestAmount</td>
+                                                <td>@request.Currency</td>
+                                                <td>
+                                                    <span class="material-symbols-outlined text-danger">
+                                                        cancel
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-                <div class="tab-pane fade show active" id="approved" role="tabpanel" aria-labelledby="approvedTab">
-                <table class="table table-bordered table-striped">
-                <thead>
-                <!-- Tabloya ait başlık satırı -->
-                <tr>
-                <th>Owner</th>
-                <th>Type</th>
-                <th>Date</th>
-                <th>Amount</th>
-                <th>Currency</th>
-                <th>Status</th>
-                <th>Description</th>
-                </tr>
-                </thead>
-                <tbody id="approvedTab">
-                <!-- Onaylanmış harcama talepleri buraya dinamik olarak eklenir -->
-                @foreach (var expense in Model)
-                {
-                @if (@expense.ApprovalStatus == ApprovalStatus.Approved)
-                {
-                <tr>
-                <td>@expense.AppUser.FullName</td>
-                <td>@expense.RequestType.RequestName</td>
-                <td>@expense.CreateDate</td>
-                <td>@expense.ExpenseAmount</td>
-                <td>@expense.Currency</td>
-                <td>@expense.ApprovalStatus</td>
-                <td>@expense.Description</td>
-                </tr>
-                }
-                }
-                </tbody>
-                </table>
-                </div>
-                <div class="tab-pane fade" id="pending" role="tabpanel" aria-labelledby="pendingTab">
-                <table class="table table-bordered table-striped">
-                <thead>
-                <!-- Tabloya ait başlık satırı -->
-                <tr>
-                <th>Owner</th>
-                <th>Type</th>
-                <th>Date</th>
-                <th>Amount</th>
-                <th>Currency</th>
-                <th>Status</th>
-                <th>Description</th>
-                </tr>
-                </thead>
-                <tbody id="pendingTab">
-                <!-- Bekleyen harcama talepleri buraya dinamik olarak eklenir -->
-                </tbody>
-                </table>
-                </div>
-                <div class="tab-pane fade" id="declined" role="tabpanel" aria-labelledby="declinedTab">
-                <table class="table table-bordered table-striped">
-                <thead>
-                <!-- Tabloya ait başlık satırı -->
-                <tr>
-                <th>Owner</th>
-                <th>Type</th>
-                <th>Date</th>
-                <th>Amount</th>
-                <th>Currency</th>
-                <th>Status</th>
-                <th>Description</th>
-                </tr>
-                </thead>
-                <tbody id="declinedTab">
-                <!-- Reddedilen harcama talepleri buraya dinamik olarak eklenir -->
-                </tbody>
-                </table>
-                </div>
-                </div> *@
             </div>
         </div>
     </main>
