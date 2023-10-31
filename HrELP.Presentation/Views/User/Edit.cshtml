@@ -8,7 +8,7 @@
 
 <body>
     <main>
-        <!-- Main Page Section. -->
+        <!-- Main Page Section -->
         <div class="new-users">
             <h2>Home</h2>
             <div class="user-list mt-4">
@@ -23,9 +23,36 @@
                             </div>
                             <div class="form-group">
                                 <label for="PhoneNumber">Phone Number</label>
-                                <input asp-for="@Model.PhoneNumber" type="text" class="form-control" id="phoneNumber" placeholder="Enter Your Phone Number" required>
-                            </div>                         
-                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                <input asp-for="@Model.PhoneNumber" type="text" class="form-control" id="phoneNumber" placeholder="Enter Your Phone Number" required> <div id="myModal1" class="modal1">
+                                    <div class="modal1-content">
+                                        <span class="close1">&times;</span>
+                                        <p id="warningMessage">Sadece rakam giriniz!</p>
+                                    </div>
+                                </div>
+                                <div id="myModal" class="modal">
+                                    <div class="modal-content">
+                                        <span class="close">&times;</span>
+                                        <p id="warningMessage">Sadece harf giriniz!</p>
+                                    </div>
+                                </div>
+                                <div id="myModal1" class="modal1">
+                                    <div class="modal1-content">
+                                        <span class="close1">&times;</span>
+                                        <p id="warningMessage">Sadece rakam giriniz!</p>
+                                    </div>
+                                </div> <div id="myModal4" class="modal4">
+                                    <div class="modal4-content">
+                                        <span class="close4">&times;</span>
+                                        <p id="warningMessage">Posta Kodu 5 Haneli Olmalı!</p>
+                                    </div>
+                                </div>
+                                <div id="myModal5" class="modal5">
+                                    <div class="modal5-content">
+                                        <span class="close5">&times;</span>
+                                        <p id="warningMessage">Posta Kodu 00-82 arasında olmalı!</p>
+                                    </div>
+                                </div>
+                            </div>  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                                 <h6 class="mt-3 mb-2 text-primary">Address</h6>
                             </div>
                             <div class="form-group">
@@ -64,7 +91,7 @@
                                 <label for="Profession">Zip Code</label>
                                 <input asp-for="@Model.ZipCode" type="text" class="form-control" id="zipcode" placeholder="Enter Your Zip Code" required>
                             </div>
-                            <input type="submit" class="btn btn-outline-primary mt-3" value="Save"/>
+                            <input type="submit" class="btn btn-outline-primary mt-3" value="Save" />
                         </form>
                     </dl>
                 </div>
@@ -80,7 +107,25 @@
 
         window.location.href = "Details";
     }
+    $(document).ready(function () {
+        $("#fulladdress").on("input", function () {
+            var regex = /^[a-zA-ZğüşöçıĞÜŞÖÇİ\s]*$/;
+            var inputValue = $(this).val();
+            if (!regex.test(inputValue)) {
+                $(this).val(inputValue.replace(/[^a-zA-ZğüşöçıĞÜŞÖÇİ\s]/g, ''));
 
+                $("#myModal").show();
+            } else {
+
+                $("#myModal").hide();
+            }
+        });
+
+
+        $(".close").click(function () {
+            $("#myModal").hide();
+        });
+    });
     $(document).ready(function () {
         $("#CityDropdown").change(function () {
             var selectedCity = $(this).val();
@@ -98,7 +143,6 @@
             });
         });
     });
-
     $(document).ready(function () {
         $("#TownDropdown").change(function () {
             var selectedTown = $(this).val();
@@ -117,7 +161,6 @@
             });
         });
     });
-
     $(document).ready(function () {
         $("#DistrictDropdown").change(function () {
             var selectedDistrict = $(this).val();
@@ -137,5 +180,191 @@
             });
         });
     });
+    $(document).ready(function () {
 
+        $("#phoneNumber").on("input", function () {
+            var regex = /^[0-9]*$/;
+            var inputValue = $(this).val();
+            if (!regex.test(inputValue)) {
+                $(this).val(inputValue.replace(/[^0-9]/g, ''));
+
+                $("#myModal1").show();
+            } else {
+
+                $("#myModal1").hide();
+            }
+        });
+
+
+        $(".close1").click(function () {
+            $("#myModal1").hide();
+        });
+    }); $(document).ready(function () {
+        $("#zipcode").on("input", function () {
+            var inputValue = $(this).val();
+            var isNumeric = /^\d+$/.test(inputValue);
+            var isValidLength = inputValue.length === 5;
+            var firstTwoDigits = inputValue.slice(00, 2);
+            var isInRange = parseInt(firstTwoDigits) >= 00 && parseInt(firstTwoDigits) <= 82;
+
+            if (!isNumeric || !isValidLength || !isInRange) {
+                if (!isNumeric) {
+                    $("#myModal1").show();
+                } else if (!isValidLength) {
+                    $("#myModal4").show();
+                } else if (!isInRange) {
+
+                    $("#myModal5").show();
+                }
+
+                $(this).addClass("is-invalid");
+            } else {
+                $("#myModal1, #myModal4, #myModal5").hide();
+                $(this).removeClass("is-invalid");
+            }
+        }); $(".close1,.close4,.close5").click(function () {
+            $("#myModal1, #myModal4, #myModal5").hide();
+        });
+    });
 </script>
+<style>
+    #myModal1 {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(0, 0, 0, 0.4);
+        width: 300px;
+        height: 100px;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+        #myModal1 .modal1-content {
+            background-color: #fefefe;
+            text-align: center;
+            border-radius: 5px;
+            padding: 20px;
+            height: 100%;
+        }
+
+        #myModal1 .close1 {
+            color: red;
+            font-size: 24px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+
+            #myModal1 .close1:hover {
+                color: darkred;
+            }
+
+    #myModal5 {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(0, 0, 0, 0.4);
+        width: 300px;
+        height: 100px;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+        #myModal5 .modal5-content {
+            background-color: #fefefe;
+            text-align: center;
+            border-radius: 5px;
+            padding: 20px;
+            height: 100%;
+        }
+
+        #myModal5 .close5 {
+            color: red;
+            font-size: 24px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+
+            #myModal5 .close5:hover {
+                color: darkred;
+            }
+
+    #myModal4 {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(0, 0, 0, 0.4);
+        width: 300px;
+        height: 100px;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+        #myModal4 .modal4-content {
+            background-color: #fefefe;
+            text-align: center;
+            border-radius: 5px;
+            padding: 20px;
+            height: 100%;
+        }
+
+        #myModal4 .close4 {
+            color: red;
+            font-size: 24px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+
+            #myModal4 .close4:hover {
+                color: darkred;
+            }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(0, 0, 0, 0.4);
+        width: 300px;
+        height: 100px;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        text-align: center;
+        border-radius: 5px;
+        padding: 20px;
+        height: 100%;
+    }
+
+    .close {
+        color: red;
+        font-size: 24px;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+    }
+
+        .close:hover {
+            color: darkred;
+        }
+</style>
