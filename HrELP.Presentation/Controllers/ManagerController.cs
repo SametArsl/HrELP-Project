@@ -196,7 +196,7 @@ namespace HrELP.Presentation.Controllers
         public async Task<IActionResult> ExpenseRequestDetails(int id)
         {
             ExpenseRequest request = await _expenseRequestService.GetRequestById(id);
-            RequestVM requestVM = new RequestVM()
+            ExpenseRequestVM requestVM = new ExpenseRequestVM()
             {
                 ApprovalStatus = request.ApprovalStatus,
                 AppUser=request.AppUser,

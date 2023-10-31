@@ -9,9 +9,9 @@
                     <h2 style="margin-top:15px; margin-left:120px">@Model.FirstName</h2>
                     <dl class="mt-5">
                         <form method="post" asp-controller="Manager" asp-action="AddPersonnel" enctype="multipart/form-data">
-                            <div class="mb-4 pb-2">
-                                <label asp-for="PhotoFile" class="form-label">Upload a Photo: </label><br />
-                                <input asp-for="PhotoFile" id="PhotoFile" accept="image/png,image/jpeg,image/jpg"/>
+                            <div class="mb-3">
+                                <label asp-for="PhotoFile" class="form-label">Upload A Photo:</label>
+                                <input asp-for="PhotoFile" class="form-control" type="file" id="formFile" accept="image/png,image/jpeg,image/jpg">
                             </div>
                             <div class="mb-4 pb-2">
                                 <label class="form-label">Department: </label><br />

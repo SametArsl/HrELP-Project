@@ -5,7 +5,7 @@ using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace HrELP.Presentation.Models.ViewModels
 {
-    public class RequestVM
+    public class ExpenseRequestVM
     {
         public int Id { get; set; }
         public int RequestTypeId { get; set; }

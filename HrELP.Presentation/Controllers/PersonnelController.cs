@@ -58,7 +58,7 @@ namespace HrELP.Presentation.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> FileARequest(RequestVM vM)
+        public async Task<IActionResult> FileARequest(ExpenseRequestVM vM)
         {
             vM.AppUser = await _signInManager.UserManager.GetUserAsync(User);
             vM.RequestType = await _typeService.GetTypeById(vM.RequestType.Id);

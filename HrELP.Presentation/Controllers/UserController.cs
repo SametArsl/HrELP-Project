@@ -101,10 +101,14 @@ namespace HrELP.Presentation.Controllers
 
             if (model.PhotoFile != null)
             {
-                if (System.IO.File.Exists(Path.Combine(_webHostEnvironment.WebRootPath, "images", "profilepic", user.Photo)))
+                if (model.Photo != null)
                 {
-                    System.IO.File.Delete(Path.Combine(_webHostEnvironment.WebRootPath, "images", "profilepic", user.Photo));
+                    if (System.IO.File.Exists(Path.Combine(_webHostEnvironment.WebRootPath, "images", "profilepic", user.Photo)))
+                    {
+                        System.IO.File.Delete(Path.Combine(_webHostEnvironment.WebRootPath, "images", "profilepic", user.Photo));
+                    }
                 }
+                
                 IFormFile formFile = update.PhotoFile;
                 var extent = Path.GetExtension(formFile.FileName);
                 var randomName = ($"{Guid.NewGuid()}{extent}");
@@ -151,6 +155,13 @@ namespace HrELP.Presentation.Controllers
             var districts = await _addressAPI.GetDistrictsByTown(town, city);
             var districtList = districts.Select(x => new SelectListItem { Value = x, Text = x }).ToList();
             return Json(districtList);
+        }
+        [HttpGet]
+        public async Task<JsonResult> GetQuartersForDistrictAsync(string city, string town, string district)
+        {
+            var quarters = await _addressAPI.GetQuartersByDistrictAsync(town, city, district);
+            var quarterList = quarters.Select(x => new SelectListItem { Value = x, Text = x }).ToList();
+            return Json(quarterList);
         }
         [HttpGet]
         public static string GetMostSimilarString(string target, List<string> stringList)
