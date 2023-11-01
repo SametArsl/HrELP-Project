@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using HrELP.Domain.Entities.Concrete;
 using HrELP.Domain.Entities.Concrete.Requests;
 using HrELP.Domain.Repositories;
+using HrELP.Infrastructure.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +34,16 @@ namespace HrELP.Application.Services.ExpenseRequestService
         {
             ExpenseRequest request= _expenseRequestRepository.GetById(id);
            return request;
+        }
+        public List<ExpenseRequest> PendingRequests(AppUser user)
+        {
+            var list = _expenseRequestRepository.GetPendingRequest(user);
+            return list;
+        }
+
+        public async Task UpdateAsync(ExpenseRequest request)
+        {
+            await _expenseRequestRepository.UpdateAsync(request);
         }
     }
 }

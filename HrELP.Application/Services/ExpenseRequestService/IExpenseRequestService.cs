@@ -1,4 +1,5 @@
-﻿using HrELP.Domain.Entities.Concrete.Requests;
+﻿using HrELP.Domain.Entities.Concrete;
+using HrELP.Domain.Entities.Concrete.Requests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,7 @@ namespace HrELP.Application.Services.ExpenseRequestService
         List<ExpenseRequest> GetAll();
         Task CreateRequest(ExpenseRequest request);
         Task<ExpenseRequest> GetRequestById(int id);
+        Task UpdateAsync(ExpenseRequest request);
+        List<ExpenseRequest> PendingRequests(AppUser user);
     }
 }

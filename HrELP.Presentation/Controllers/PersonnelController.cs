@@ -125,49 +125,38 @@ namespace HrELP.Presentation.Controllers
             vM.RequestType = await _typeService.GetTypeById(vM.RequestType.Id);
             if (vM.AppUser.AdvanceLimit >= vM.AdvanceAmount)
             {
-                if(vM.RequestType != null)
+                AdvanceRequest advanceRequest = new AdvanceRequest()
                 {
-                    AdvanceRequest advanceRequest = new AdvanceRequest()
-                    {
-                        AppUser = vM.AppUser,
-                        ApprovalStatus = vM.ApprovalStatus,
-                        Currency = vM.Currency,
-                        Description = vM.Description,
-                        RequestTypeId = vM.RequestType.Id,
-                        RequestType = vM.RequestType,
-                        RequestAmount = vM.AdvanceAmount,
-                        CreateDate = DateTime.Now,
-                        IsActive = true,
-                        CompanyId = vM.AppUser.CompanyId,
-                    };
+                    AppUser = vM.AppUser,
+                    ApprovalStatus = vM.ApprovalStatus,
+                    Currency = vM.Currency,
+                    Description = vM.Description,
+                    RequestTypeId = vM.RequestType.Id,
+                    RequestType = vM.RequestType,
+                    RequestAmount = vM.AdvanceAmount,
+                    CreateDate = DateTime.Now,
+                    IsActive = true,
+                    CompanyId = vM.AppUser.CompanyId,
+                };
 
-                    if (_advanceRequestService.PendingRequests(vM.AppUser).Count > 0)
-                    {
-                        ViewBag.Requests = _typeService.GetAdvanceRequestTypes().Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.RequestName }).ToList();
-                        ViewData["OutOfLimit"] = "The system allows only one advance request per category to be pending at the same time.";
-                        return View(vM);
-                    }
-                    else
-                    {
-                        try
-                        {
-                            await _advanceRequestService.CreateRequest(advanceRequest);
-                        }
-                        catch (Exception ex)
-                        {
-                            ViewData["Message"] = $"The error occurred. Error Message={ex.Message}";
-                        }
-
-                        return View("Index", "User");
-                    }
-
-                }
-
-                else
+                if (_advanceRequestService.PendingRequests(vM.AppUser).Count > 0)
                 {
                     ViewBag.Requests = _typeService.GetAdvanceRequestTypes().Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.RequestName }).ToList();
-                    ViewData["OutOfLimit"] = "Please select a request type !";
+                    ViewData["OutOfLimit"] = "The system allows only one advance request per category to be pending at the same time.";
                     return View(vM);
+                }
+                else
+                {
+                    try
+                    {
+                        await _advanceRequestService.CreateRequest(advanceRequest);
+                    }
+                    catch (Exception ex)
+                    {
+                        ViewData["Message"] = $"The error occurred. Error Message={ex.Message}";
+                    }
+
+                    return View("Index", "User");
                 }
             }
             else

@@ -1,4 +1,5 @@
-﻿using HrELP.Domain.Entities.Concrete.Requests;
+﻿using HrELP.Domain.Entities.Concrete;
+using HrELP.Domain.Entities.Concrete.Requests;
 using HrELP.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -26,6 +27,11 @@ namespace HrELP.Infrastructure.Repositories
         {
             IQueryable<ExpenseRequest> list = _table.Include(x => x.AppUser).Include(y => y.RequestType);
             
+            return list;
+        }
+        public List<ExpenseRequest> GetPendingRequest(AppUser user)
+        {
+            List<ExpenseRequest> list = _table.Include(x => x.AppUser).Include(x => x.RequestType).Where(x => x.UserId == user.Id && x.ApprovalStatus == Domain.Entities.Enums.ApprovalStatus.Pending_Approval).ToList();
             return list;
         }
     }
