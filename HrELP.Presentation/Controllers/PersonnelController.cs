@@ -160,11 +160,14 @@ namespace HrELP.Presentation.Controllers
         [Route("{Controller}/{Action}")]
         public async Task<IActionResult> CreateLeaveRequest()
         {          
-            LeaveRequestVM lrm = new LeaveRequestVM();
-            lrm.Personnel = await _signInManager.UserManager.GetUserAsync(User);
-            lrm.LeaveTypes = await _leaveTypeService.GetAllLeaveTypesAsync();
-            lrm.PersonnelId=lrm.Personnel.Id;
-            return View(lrm);
+           LeaveRequestVM lrm = new LeaveRequestVM();
+			lrm.Personnel = await _signInManager.UserManager.GetUserAsync(User);
+			lrm.LeaveTypes = await _leaveTypeService.GetAllLeaveTypesAsync();
+			if (lrm.Personnel != null) { lrm.PersonnelId = lrm.Personnel.Id; return View(lrm); }
+			else
+			{
+				return RedirectToAction("Error", "Login");
+			}
         }
 
         [HttpPost]
