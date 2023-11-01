@@ -8,6 +8,7 @@ namespace HrELP.Domain.Entities.Concrete.Requests
         {
             AdvanceRequests = new HashSet<AdvanceRequest>();
             ExpenseRequests = new HashSet<ExpenseRequest>();
+            LeaveRequests = new HashSet<LeaveRequest>();
           
         }
         public int Id { get; set; }
@@ -16,6 +17,7 @@ namespace HrELP.Domain.Entities.Concrete.Requests
         public RequestCategory RequestCategory { get; set; }
         public ICollection<AdvanceRequest>? AdvanceRequests { get; set; }
         public ICollection<ExpenseRequest>? ExpenseRequests { get; set; }  
+        public ICollection<LeaveRequest>? LeaveRequests { get; set; }  
         public bool IsActive { get; set; }
         public DateTime? CreateDate { get; set; }
         public DateTime? UpdateDate { get; set; }

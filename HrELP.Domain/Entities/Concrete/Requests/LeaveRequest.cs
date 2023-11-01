@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace HrELP.Domain.Entities.Concrete.Requests
 {
-    public class LeaveRequest : IBaseEntity
+    public class LeaveRequest : IBaseEntity, IRequest
     {
        
         public int Id { get; set; }
@@ -29,5 +29,8 @@ namespace HrELP.Domain.Entities.Concrete.Requests
         public DateTime? RequestDate { get; set; }
         public DateTime? CreateDate { get; set; }
         public DateTime? UpdateDate { get; set; }
+        public int RequestTypeId { get; set; }
+        public RequestType RequestType { get; set; }
+        public DateTime? ResponseDate { get; set; }
     }
 }

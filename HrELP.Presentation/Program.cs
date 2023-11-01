@@ -1,7 +1,6 @@
 using HrELP.Application.Services.AddressService;
 using HrELP.Application.Services.AppUserService;
 using HrELP.Application.Services.CompanyService;
-using HrELP.Application.Services.EmailService;
 using HrELP.Domain.Entities.Concrete;
 using HrELP.Domain.Repositories;
 using HrELP.Infrastructure.Repositories;
@@ -15,6 +14,8 @@ using HrELP.Application.Services.ExpenseRequestService;
 using HrELP.Application.Services.AdvanceRequestService;
 using HrELP.Application.Services.AddressAPIService;
 using HrELP.Application.AutoMapper;
+using NETCore.MailKit.Core;
+using HrELP.Application.Services.LeaveTypeService;
 
 namespace HrELP.Presentation
 {
@@ -48,8 +49,8 @@ namespace HrELP.Presentation
             {
                 option.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
-            builder.Services.AddSingleton(builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
-            builder.Services.AddScoped<IEmailService, EmailService>();
+            //builder.Services.AddSingleton(builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
+            //builder.Services.AddScoped<IEmailService, EmailService>();
 
             builder.Services.AddTransient<IAppRoleRepository, AppRoleRepository>();
             builder.Services.AddTransient<IRequestTypeRepository, RequestTypeRepository>();
@@ -77,6 +78,9 @@ namespace HrELP.Presentation
 
             builder.Services.AddTransient<ICompanyService, CompanyService>();
             builder.Services.AddTransient<ICompanyRepository, CompanyRepository>();
+
+            builder.Services.AddTransient<ILeaveTypeRepository, LeaveTypeRepository>();
+            builder.Services.AddTransient<ILeaveTypeService, LeaveTypeService>();
 
             //AutoMapper için gerekli ayar...
             builder.Services.AddAutoMapper(x => x.AddProfile(typeof(HrELPMapper)));

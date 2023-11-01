@@ -1,5 +1,6 @@
 @using HrELP.Application.Models.ViewModels;
-@model LeaveRequestVM
+
+@model LeaveRequestsVM
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["StartDate"] = DateTime.Now.AddDays(-7).ToString("yyyy-MM-ddTHH:mm");
@@ -16,7 +17,7 @@
                             <select asp-for="LeaveTypeId" class="form-control">
                                 @foreach (var item in Model.LeaveTypes)
                                 {
-                                    if (Model.Personnel.Gender == item.Gender && Model.Personnel.MarriageStatus == true)
+                                    if (Model.Personnel.Gender == item.Gender )
                                     {
                                         <option value="@item.LeaveTypeId" data-dayvalue="@item.DayValue">@item.LeaveTypeName</option>
                                     }

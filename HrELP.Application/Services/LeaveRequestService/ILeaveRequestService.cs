@@ -17,7 +17,8 @@ namespace HrELP.Application.Services.LeaveRequestService
         Task<List<LeaveRequest>> GetLeaveRequestByStatusAsync( int id, params Expression<Func<LeaveRequest, object>>[] includes);
         Task<List<LeaveRequest>> GetLeaveRequestByStatusAsync(ApprovalStatus approvalStatus,int id,params Expression<Func<LeaveRequest, object>>[] includes);
         Task DeniedLeaveRequestAsync(int id);
-       
-
+        List<LeaveRequest> GetAll();
+        Task CreateRequest(LeaveRequest request);
+        Task<LeaveRequest> GetRequestById(int id);
     }
 }

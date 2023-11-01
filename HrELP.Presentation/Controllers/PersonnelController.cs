@@ -1,10 +1,14 @@
-﻿using HrELP.Application.Services.AdvanceRequestService;
+﻿using HrELP.Application.Models.ViewModels;
+using HrELP.Application.Services.AdvanceRequestService;
 using HrELP.Application.Services.AppUserService;
 using HrELP.Application.Services.CompanyService;
+using HrELP.Application.Services.LeaveRequestService;
+using HrELP.Application.Services.LeaveTypeService;
 using HrELP.Application.Services.RequestCategoryService;
 using HrELP.Application.Services.RequestTypeService;
 using HrELP.Domain.Entities.Concrete;
 using HrELP.Domain.Entities.Concrete.Requests;
+using HrELP.Domain.Entities.Enums;
 using HrELP.Domain.Repositories;
 using HrELP.Presentation.Models.ViewModels;
 using Microsoft.AspNet.Identity;
@@ -15,6 +19,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using LeaveRequestsVM = HrELP.Application.Models.ViewModels.LeaveRequestsVM;
 
 namespace HrELP.Presentation.Controllers
 {
@@ -29,8 +34,11 @@ namespace HrELP.Presentation.Controllers
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IAdvanceRequestService _advanceRequestService;
+        private readonly ILeaveRequestService _leaveRequestService;
+        private readonly Microsoft.AspNetCore.Identity.UserManager<AppUser> _userManager;
+        private readonly ILeaveTypeService _leaveTypeService;
 
-        public PersonnelController(IAppUserService appUserService, SignInManager<AppUser> signInManager, IExpenseRequestRepository expenseRequestRepository, IRequestTypeService typeService, IRequestCategoryService requestCategoryService, ICompanyService companyService, IWebHostEnvironment webHostEnvironment, IAdvanceRequestService advanceRequestService)
+        public PersonnelController(IAppUserService appUserService, SignInManager<AppUser> signInManager, IExpenseRequestRepository expenseRequestRepository, IRequestTypeService typeService, IRequestCategoryService requestCategoryService, ICompanyService companyService, IWebHostEnvironment webHostEnvironment, IAdvanceRequestService advanceRequestService, ILeaveRequestService leaveRequestService, Microsoft.AspNetCore.Identity.UserManager<AppUser> userManager, ILeaveTypeService leaveTypeService)
         {
 
             _appUserService = appUserService;
@@ -41,6 +49,9 @@ namespace HrELP.Presentation.Controllers
             _companyService = companyService;
             _webHostEnvironment = webHostEnvironment;
             _advanceRequestService = advanceRequestService;
+            _leaveRequestService = leaveRequestService;
+            _userManager = userManager;
+            _leaveTypeService = leaveTypeService;
         }
 
         public IActionResult Index()
@@ -160,33 +171,40 @@ namespace HrELP.Presentation.Controllers
         [Route("{Controller}/{Action}")]
         public async Task<IActionResult> CreateLeaveRequest()
         {          
-           LeaveRequestVM lrm = new LeaveRequestVM();
+           LeaveRequestsVM lrm = new LeaveRequestsVM();
 			lrm.Personnel = await _signInManager.UserManager.GetUserAsync(User);
 			lrm.LeaveTypes = await _leaveTypeService.GetAllLeaveTypesAsync();
-			if (lrm.Personnel != null) { lrm.PersonnelId = lrm.Personnel.Id; return View(lrm); }
+			if (lrm.Personnel != null)
+            { 
+                lrm.PersonnelId = lrm.Personnel.Id;
+                return View(lrm); 
+            }
 			else
 			{
 				return RedirectToAction("Error", "Login");
 			}
+          
         }
 
         [HttpPost]
         [Route("{Controller}/{Action}")]
-        public async Task<IActionResult> CreateLeaveRequest(LeaveRequestVM leaveRequestVM)
+        public async Task<IActionResult> CreateLeaveRequest(LeaveRequestsVM leaveRequestVM)
         {
             LeaveListVM leaveListVM = new LeaveListVM();
             AppUser user = await _userManager.GetUserAsync(User);
             leaveListVM.Personnel = user;
             leaveListVM.PendingLeaveRequest = await _leaveRequestService.GetLeaveRequestByStatusAsync(ApprovalStatus.Pending_Approval, user.Id);
-           
+            LeaveType leaveType = await _leaveTypeService.GetLeaveTypeAsync(leaveRequestVM.LeaveTypeId);
+
             LeaveRequest leaveRequest = new LeaveRequest();
             AppUser appUser = await _userManager.GetUserAsync(User);
             if (appUser != null)
             {
-                
+                leaveRequest.AppUser = appUser; 
                 leaveRequest.LeaveTypeId = leaveRequestVM.LeaveTypeId;
+                leaveRequest.LeaveType = leaveType;
                 leaveRequest.UserId = appUser.Id;
-                leaveRequest.ApprovalStatus = Domain.Entities.Enums.ApprovalStatus.Pending_Approval;
+                leaveRequest.ApprovalStatus = ApprovalStatus.Pending_Approval;
                 leaveRequest.IsActive = true;
                 leaveRequest.StartDate = leaveRequestVM.StartDate;
                 leaveRequest.EndDate = leaveRequestVM.EndDate;
@@ -208,16 +226,18 @@ namespace HrELP.Presentation.Controllers
                         leaveListVMs.ApprovedLeaveRequest = await _leaveRequestService.GetLeaveRequestByStatusAsync(ApprovalStatus.Approved, users.Id, p => p.LeaveType);
                         leaveListVMs.DeclinedLeaveRequest = await _leaveRequestService.GetLeaveRequestByStatusAsync(ApprovalStatus.Declined, users.Id, p => p.LeaveType);
                         leaveListVMs.ErrorMessage = "Already Exist Leave Request";
-
                         return View("ListLeaveRequests",leaveListVMs);   
 
                     }
+                  
                    
                 }
-                _leaveRequestService.CreateLeaveRequestAsync(leaveRequest);
+                
 
 
             }
+            _appUserService.UpdateAsync(appUser);
+            _leaveRequestService.CreateLeaveRequestAsync(leaveRequest);
             return RedirectToAction("ListLeaveRequests");
         }
         [HttpGet]

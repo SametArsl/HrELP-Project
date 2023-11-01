@@ -57,5 +57,21 @@ namespace HrELP.Application.Services.LeaveRequestService
             var leaveRequest = await _leaveRequestRepository.GetAllAsync(x => x.IsActive == true, p => p.LeaveType);
             return leaveRequest;
         }
+
+        public async Task CreateRequest(LeaveRequest request)
+        {
+            await _leaveRequestRepository.AddAsync(request);
+        }
+
+        public List<LeaveRequest> GetAll()
+        {
+            return _leaveRequestRepository.GetAllWithAppUserAsync().ToList();
+        }
+
+        public async Task<LeaveRequest> GetRequestById(int id)
+        {
+            LeaveRequest request = _leaveRequestRepository.GetById(id);
+            return request;
+        }
     }
 }
