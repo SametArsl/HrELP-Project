@@ -1,0 +1,13 @@
+using HrELP.Domain.Entities.Concrete;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace HrELP.Domain.Repositories
+{
+    public interface ILeaveTypeRepository:IBaseRepository<LeaveType>
+    {
+    }
+}
