@@ -36,7 +36,7 @@ namespace HrELP.Presentation
 
             builder.Services.AddIdentity<AppUser, AppRole>(x =>
             {
-                // Diðer ayarlar buraya yazýlabilir
+                // DiÃ°er ayarlar buraya yazÃ½labilir
                 x.Password.RequiredLength = 8;
                 x.Password.RequireUppercase = true;
                 x.Password.RequireLowercase = true;
@@ -78,7 +78,7 @@ namespace HrELP.Presentation
             builder.Services.AddTransient<ICompanyService, CompanyService>();
             builder.Services.AddTransient<ICompanyRepository, CompanyRepository>();
 
-            //AutoMapper için gerekli ayar...
+            //AutoMapper iÃ§in gerekli ayar...
             builder.Services.AddAutoMapper(x => x.AddProfile(typeof(HrELPMapper)));
             
             #endregion
@@ -86,12 +86,17 @@ namespace HrELP.Presentation
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
-            {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+           if (app.Environment.IsDevelopment())
+			{
+				DeveloperExceptionPageOptions options = new DeveloperExceptionPageOptions();
+				options.SourceCodeLineCount = 1;
+				app.UseDeveloperExceptionPage(options);
+
+			}
+			else { app.UseExceptionHandler("/Home/Error"); }
+
+            
+            app.UseStatusCodePagesWithRedirects("/Error/{0}");
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
