@@ -23,8 +23,8 @@ namespace HrELP.Domain.Entities.Concrete.Requests
         public string? Description { get; set; }
         public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.Pending_Approval;
         public bool IsActive { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
         public DateTime? ReplyDate { get; set; }
         public DateTime? RequestDate { get; set; }
         public DateTime? CreateDate { get; set; }
