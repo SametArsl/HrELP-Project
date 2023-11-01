@@ -29,8 +29,8 @@ namespace HrELP.Domain.Entities.Concrete.Requests
         public DateTime? RequestDate { get; set; }
         public DateTime? CreateDate { get; set; }
         public DateTime? UpdateDate { get; set; }
-        public int RequestTypeId { get; set; }
-        public RequestType RequestType { get; set; }
+        public int? RequestTypeId { get; set; }
+        public RequestType? RequestType { get; set; }
         public DateTime? ResponseDate { get; set; }
     }
 }

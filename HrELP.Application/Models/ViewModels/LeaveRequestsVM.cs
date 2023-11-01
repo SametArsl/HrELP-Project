@@ -18,9 +18,9 @@ namespace HrELP.Application.Models.ViewModels
         [Required]
         public string Description { get; set; }
         [Required]
-        public DateTime StartDate { get; set; }
+        public DateTime? StartDate { get; set; }
         [Required]
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
         [Required]
         public int LeaveTypeId { get; set; }
         [Required]

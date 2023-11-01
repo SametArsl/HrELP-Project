@@ -271,9 +271,13 @@ namespace HrELP.Presentation.Controllers
         public async Task<IActionResult> LeaveRequestDetails(int id)
         {
             LeaveRequest request = await _leaveRequestService.GetRequestById(id);
-            Application.Models.ViewModels.LeaveRequestsVM requestVM = new Application.Models.ViewModels.LeaveRequestsVM()
+            LeaveRequestsVM requestVM = new LeaveRequestsVM()
             {
-               
+               Description=request.Description,
+               EndDate=request.EndDate,
+               StartDate=request.StartDate,
+               LeaveTypeId=request.LeaveTypeId
+
             };
             return PartialView("LeaveRequestDetails", requestVM);
         }

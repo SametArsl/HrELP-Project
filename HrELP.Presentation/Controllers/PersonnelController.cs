@@ -170,74 +170,67 @@ namespace HrELP.Presentation.Controllers
         [HttpGet]
         [Route("{Controller}/{Action}")]
         public async Task<IActionResult> CreateLeaveRequest()
-        {          
-           LeaveRequestsVM lrm = new LeaveRequestsVM();
-			lrm.Personnel = await _signInManager.UserManager.GetUserAsync(User);
-			lrm.LeaveTypes = await _leaveTypeService.GetAllLeaveTypesAsync();
-			if (lrm.Personnel != null)
-            { 
+        {
+            LeaveRequestsVM lrm = new LeaveRequestsVM();
+            lrm.Personnel = await _signInManager.UserManager.GetUserAsync(User);
+            lrm.LeaveTypes = await _leaveTypeService.GetAllLeaveTypesAsync();
+            if (lrm.Personnel != null)
+            {
                 lrm.PersonnelId = lrm.Personnel.Id;
-                return View(lrm); 
+                return View(lrm);
             }
-			else
-			{
-				return RedirectToAction("Error", "Login");
-			}
-          
+            else
+            {
+                return RedirectToAction("Error", "Login");
+            }
+
         }
 
         [HttpPost]
         [Route("{Controller}/{Action}")]
         public async Task<IActionResult> CreateLeaveRequest(LeaveRequestsVM leaveRequestVM)
         {
-            LeaveListVM leaveListVM = new LeaveListVM();
             AppUser user = await _userManager.GetUserAsync(User);
-            leaveListVM.Personnel = user;
-            leaveListVM.PendingLeaveRequest = await _leaveRequestService.GetLeaveRequestByStatusAsync(ApprovalStatus.Pending_Approval, user.Id);
+            leaveRequestVM.Personnel = user;
+            leaveRequestVM.pendingLeaveList = await _leaveRequestService.GetLeaveRequestByStatusAsync(ApprovalStatus.Pending_Approval, user.Id);
             LeaveType leaveType = await _leaveTypeService.GetLeaveTypeAsync(leaveRequestVM.LeaveTypeId);
-
-            LeaveRequest leaveRequest = new LeaveRequest();
-            AppUser appUser = await _userManager.GetUserAsync(User);
-            if (appUser != null)
+            decimal leavedays = leaveRequestVM.StartDate.Subtract(leaveRequestVM.EndDate).Days;
+            LeaveRequest leaveRequest = new LeaveRequest()
             {
-                leaveRequest.AppUser = appUser; 
-                leaveRequest.LeaveTypeId = leaveRequestVM.LeaveTypeId;
-                leaveRequest.LeaveType = leaveType;
-                leaveRequest.UserId = appUser.Id;
-                leaveRequest.ApprovalStatus = ApprovalStatus.Pending_Approval;
-                leaveRequest.IsActive = true;
-                leaveRequest.StartDate = leaveRequestVM.StartDate;
-                leaveRequest.EndDate = leaveRequestVM.EndDate;
-                leaveRequest.RequestDate = DateTime.Now;
-                leaveRequest.CompanyId = appUser.CompanyId;
-                leaveRequest.Description = leaveRequestVM.Description;
-                leaveRequest.LeaveDayNumber = Convert.ToDecimal((leaveRequestVM.EndDate - leaveRequestVM.StartDate).Days);
-                leaveRequestVM.pendingLeaveList = leaveListVM.PendingLeaveRequest;
-                appUser.RemainingLeaveRight = appUser.RemainingLeaveRight - leaveRequest.LeaveDayNumber;
-                foreach (var item in leaveRequestVM.pendingLeaveList)
+                ApprovalStatus = ApprovalStatus.Pending_Approval,
+                AppUser = user,
+                LeaveType = leaveType,
+                IsActive = true,
+                CompanyId = user.CompanyId,
+                CreateDate = DateTime.Now,
+                Description = leaveRequestVM.Description,
+                EndDate = leaveRequestVM.EndDate,
+                StartDate = leaveRequestVM.StartDate,
+                LeaveDayNumber = leavedays,
+                UserId = user.Id,
+                RequestDate = DateTime.Now,
+                RequestTypeId=12,
+                LeaveTypeId = leaveRequestVM.LeaveTypeId,
+            };
+            user.RemainingLeaveRight = user.RemainingLeaveRight - Convert.ToDecimal(leavedays);
+            foreach (var item in leaveRequestVM.pendingLeaveList)
+            {
+
+                if (item.LeaveTypeId == leaveRequest.LeaveTypeId)
                 {
-                   
-                    if (item.LeaveTypeId==leaveRequest.LeaveTypeId)
-                    {
-                        LeaveListVM leaveListVMs = new LeaveListVM();
-                        AppUser users = await _userManager.GetUserAsync(User);
-                        leaveListVMs.Personnel = user;
-                        leaveListVMs.PendingLeaveRequest = await _leaveRequestService.GetLeaveRequestByStatusAsync(ApprovalStatus.Pending_Approval, users.Id, p => p.LeaveType);
-                        leaveListVMs.ApprovedLeaveRequest = await _leaveRequestService.GetLeaveRequestByStatusAsync(ApprovalStatus.Approved, users.Id, p => p.LeaveType);
-                        leaveListVMs.DeclinedLeaveRequest = await _leaveRequestService.GetLeaveRequestByStatusAsync(ApprovalStatus.Declined, users.Id, p => p.LeaveType);
-                        leaveListVMs.ErrorMessage = "Already Exist Leave Request";
-                        return View("ListLeaveRequests",leaveListVMs);   
+                    LeaveListVM leaveListVMs = new LeaveListVM();
+                    leaveListVMs.Personnel = user;
+                    leaveListVMs.PendingLeaveRequest = await _leaveRequestService.GetLeaveRequestByStatusAsync(ApprovalStatus.Pending_Approval, user.Id, p => p.LeaveType);
+                    leaveListVMs.ApprovedLeaveRequest = await _leaveRequestService.GetLeaveRequestByStatusAsync(ApprovalStatus.Approved, user.Id, p => p.LeaveType);
+                    leaveListVMs.DeclinedLeaveRequest = await _leaveRequestService.GetLeaveRequestByStatusAsync(ApprovalStatus.Declined, user.Id, p => p.LeaveType);
+                    leaveListVMs.ErrorMessage = "Already Exist Leave Request";
+                    return View("ListLeaveRequests", leaveListVMs);
 
-                    }
-                  
-                   
                 }
-                
-
-
             }
-            _appUserService.UpdateAsync(appUser);
-            _leaveRequestService.CreateLeaveRequestAsync(leaveRequest);
+
+            await _appUserService.UpdateAsync(user);
+            await _leaveRequestService.CreateLeaveRequestAsync(leaveRequest);
             return RedirectToAction("ListLeaveRequests");
         }
         [HttpGet]
@@ -250,7 +243,7 @@ namespace HrELP.Presentation.Controllers
             leaveListVM.PendingLeaveRequest = await _leaveRequestService.GetLeaveRequestByStatusAsync(ApprovalStatus.Pending_Approval, user.Id, p => p.LeaveType);
             leaveListVM.ApprovedLeaveRequest = await _leaveRequestService.GetLeaveRequestByStatusAsync(ApprovalStatus.Approved, user.Id, p => p.LeaveType);
             leaveListVM.DeclinedLeaveRequest = await _leaveRequestService.GetLeaveRequestByStatusAsync(ApprovalStatus.Declined, user.Id, p => p.LeaveType);
-          
+
             return View(leaveListVM);
         }
         [HttpPost]

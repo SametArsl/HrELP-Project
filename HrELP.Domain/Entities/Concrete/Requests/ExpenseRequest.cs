@@ -20,7 +20,7 @@ namespace HrELP.Domain.Entities.Concrete.Requests
         public Currency Currency { get; set; }
         public DateTime? CreateDate { get; set; }
         public DateTime? UpdateDate { get; set; }
-        public int RequestTypeId { get; set; }
+        public int? RequestTypeId { get; set; }
         public RequestType? RequestType { get; set; }
         public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.Pending_Approval;
         public DateTime? ResponseDate { get; set; }

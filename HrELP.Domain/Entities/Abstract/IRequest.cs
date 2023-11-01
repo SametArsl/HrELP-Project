@@ -15,8 +15,8 @@ namespace HrELP.Domain.Entities.Abstract
         public int CompanyId { get; set; }
         public int UserId { get; set; }
         public AppUser AppUser { get; set; }
-        public int RequestTypeId { get; set; }
-        public RequestType RequestType { get; set; }
+        public int? RequestTypeId { get; set; }
+        public RequestType? RequestType { get; set; }
         public string Description { get; set; }
         public ApprovalStatus ApprovalStatus { get; set; }
         public DateTime? ResponseDate { get; set; }

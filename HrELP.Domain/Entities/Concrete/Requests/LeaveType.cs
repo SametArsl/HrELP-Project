@@ -11,6 +11,10 @@ namespace HrELP.Domain.Entities.Concrete
 {
     public class LeaveType : IBaseEntity
     {
+        public LeaveType()
+        {
+              LeaveRequests = new HashSet<LeaveRequest>();
+        }
         public int LeaveTypeId { get; set; }
         public string LeaveTypeName { get; set; }
         public decimal DayValue { get; set; }
