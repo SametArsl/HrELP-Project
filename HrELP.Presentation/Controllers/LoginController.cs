@@ -178,17 +178,26 @@ namespace HrELP.Presentation.Controllers
 
             return View();
         }
-        public IActionResult Error()
+       public IActionResult Error()
         {
             return View();
         }
 
-        [Route("SenBuralaraNerdenGeldin/{statusCode}")]
+        [Route("Error/{statusCode}")]
         public IActionResult Error(int statusCode)
         {
-            if (statusCode == 404) { ViewBag.ErrorMessage = "Üzgünüm ama böyle bir sayfa yok..."; }
-            else if (statusCode == 403) { return View("Error403"); }
-            return View();
+            if (statusCode == 404)
+            {
+                
+                return View("Error");
+            }
+            else if (statusCode == 403)
+            {
+                
+                return View("Error403");
+            }
+            
+            return View("Error");
         }
 
 	}
