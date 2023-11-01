@@ -15,5 +15,8 @@ namespace HrELP.Domain.Repositories
         Task DeleteAsync(T entity);
         Task<T> GetFirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
         IQueryable<T> GetAll();
+        Task<List<T>> GetAllAsync(Expression<Func<T, bool>> predicate);
+        Task<List<T>> GetAllAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes);
+        Task<T> GetByIdAsync(int id);
     }
 }

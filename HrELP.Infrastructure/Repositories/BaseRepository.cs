@@ -48,10 +48,6 @@ namespace HrELP.Infrastructure.Repositories
         {
             return _table.AsQueryable();
         }
-        public async Task<T> GetByIdAsync(int id)
-        {
-            return await _table.FindAsync(id);
-        }
         public async Task DeactivateAsync(int id)
         {
             var entity = await GetByIdAsync(id);
@@ -73,6 +69,30 @@ namespace HrELP.Infrastructure.Repositories
                 entity.IsActive = true;
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>> predicate)
+        {
+            var result = await _table.Where(predicate).ToListAsync();
+            return result;
+        }
+
+        public async Task<T> GetByIdAsync(int id)
+        {
+            return await _table.FindAsync(id);
+        }
+
+        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
+        {
+            var query = _table.AsQueryable();
+            // Include işlemleri
+            if (includes != null)
+            {
+                query = includes.Aggregate(query, (current, include) => current.Include(include));
+            }
+
+            var result = await query.Where(predicate).ToListAsync();
+            return result;
         }
     }
 }

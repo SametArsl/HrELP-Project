@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using HrELP.Application.Models.DTOs;
+using HrELP.Application.Models.ViewModels;
 using HrELP.Application.Services.AddressAPIService;
 using HrELP.Application.Services.AddressService;
 using HrELP.Application.Services.AdvanceRequestService;
 using HrELP.Application.Services.AppUserService;
 using HrELP.Application.Services.CompanyService;
-using HrELP.Application.Services.EmailService;
 using HrELP.Application.Services.ExpenseRequestService;
 using HrELP.Application.Services.LeaveRequestService;
 using HrELP.Domain.Entities.Concrete;
@@ -20,6 +20,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Owin.BuilderProperties;
+using MimeKit;
+using NETCore.MailKit.Core;
+using System.Net;
+using System.Net.Mail;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Address = HrELP.Domain.Entities.Concrete.Address;
 
@@ -35,12 +39,11 @@ namespace HrELP.Presentation.Controllers
         private readonly ICompanyService _companyService;
         private readonly UserManager<AppUser> _userManager;
         private readonly IMapper _mapper;
-        private readonly IEmailService _emailService;
         private readonly IExpenseRequestService _expenseRequestService;
         private readonly IAdvanceRequestService _advanceRequestService;
         private readonly ILeaveRequestService _leaveRequestService;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public ManagerController(SignInManager<AppUser> signInManager, AddressAPIService addressAPI, IAppUserService appUserService, ICompanyService companyService, IMapper mapper, UserManager<AppUser> userManager, IEmailService emailService, IExpenseRequestService expenseRequestService, IWebHostEnvironment webHostEnvironment, IAdvanceRequestService advanceRequestService, ILeaveRequestService leaveRequestService)
+        public ManagerController(SignInManager<AppUser> signInManager, AddressAPIService addressAPI, IAppUserService appUserService, ICompanyService companyService, IMapper mapper, UserManager<AppUser> userManager, IExpenseRequestService expenseRequestService, IWebHostEnvironment webHostEnvironment, IAdvanceRequestService advanceRequestService, ILeaveRequestService leaveRequestService)
         {
             _signInManager = signInManager;
             _addressAPI = addressAPI;
@@ -48,7 +51,6 @@ namespace HrELP.Presentation.Controllers
             _companyService = companyService;
             _mapper = mapper;
             _userManager = userManager;
-            _emailService = emailService;
             _expenseRequestService = expenseRequestService;
             _webHostEnvironment = webHostEnvironment;
             _advanceRequestService = advanceRequestService;
@@ -149,9 +151,42 @@ namespace HrELP.Presentation.Controllers
                 var confirmationLink = Url.Action("CreatePassword", "Login",
                     new { userId = user.Id, token = confirmationToken }, Request.Scheme
                     );
-                string subject = "Create Password";
-                string content = "Click here to create your password:  " + confirmationLink;
-                SendEmail(user.Email, content, subject);
+                string HtmlBody = "";
+                var PathToFile = Path.Combine(_webHostEnvironment.WebRootPath, "EmailTemplate", "Confirmation.html");
+
+                var builder = new BodyBuilder();
+                using (StreamReader sr = System.IO.File.OpenText(PathToFile))
+                {
+                    builder.HtmlBody = sr.ReadToEnd();
+                }
+
+                builder.HtmlBody = builder.HtmlBody.Replace("{0}", user.FullName);
+                builder.HtmlBody = builder.HtmlBody.Replace("{1}", confirmationLink);
+              
+                MailMessage mail = new MailMessage();
+                mail.To.Add(user.Email);
+                mail.From = new MailAddress("noreplyhrelp@gmail.com");
+                mail.Subject = "Confirmation Link";
+                mail.Body = builder.HtmlBody;
+                mail.IsBodyHtml = true;
+
+                using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                {
+                    ServicePointManager.ServerCertificateValidationCallback = (s, certificate, chain, sslPolicyErrors) => true;
+                    smtp.EnableSsl = true;
+                    smtp.UseDefaultCredentials = false;
+                    smtp.Credentials = new NetworkCredential("noreplyhrelp@gmail.com", "rmzqiazgoktnbcac");
+
+                    try
+                    {
+                        smtp.Send(mail);
+                        return RedirectToAction("Login", "Login");
+                    }
+                    catch (Exception ex)
+                    {
+                      throw new Exception(ex.Message.ToString());
+                    }
+                }
 
                 ViewBag.ErrorTitle = "Registration successful";
                 ViewBag.ErrorMessage = "Before you can Login, please create a password by clicking on the confirmation link we've sent to your email adress.";
@@ -177,11 +212,7 @@ namespace HrELP.Presentation.Controllers
             return View(expenses);
         }
 
-        private void SendEmail(string email, string content, string subject)
-        {
-            var message = new Message(new string[] { email }, subject, content);
-            _emailService.SendEmail(message);
-        }
+       
         [Route("{Controller}/{Action}")]
         [HttpGet]
         public async Task<IActionResult> PersonelDetails(int id)
@@ -240,14 +271,13 @@ namespace HrELP.Presentation.Controllers
         public async Task<IActionResult> LeaveRequestDetails(int id)
         {
             LeaveRequest request = await _leaveRequestService.GetRequestById(id);
-            LeaveRequestVM requestVM = new LeaveRequestVM()
+            LeaveRequestsVM requestVM = new LeaveRequestsVM()
             {
-                ApprovalStatus = request.ApprovalStatus,
-                AppUser = request.AppUser,
-                TotalDaysOff = request.TotalDaysOff,
-                Description = request.Description,
-                Id = request.Id,
-                RequestType = request.RequestType,
+               Description=request.Description,
+               EndDate=request.EndDate,
+               StartDate=request.StartDate,
+               LeaveTypeId=request.LeaveTypeId
+
             };
             return PartialView("LeaveRequestDetails", requestVM);
         }

@@ -11,19 +11,26 @@ namespace HrELP.Domain.Entities.Concrete.Requests
 {
     public class LeaveRequest : IBaseEntity, IRequest
     {
+       
         public int Id { get; set; }
         public int CompanyId { get; set; }
         public int UserId { get; set; }
         public AppUser? AppUser { get; set; }
-        public int RequestTypeId { get; set; }
-        public RequestType? RequestType { get; set; }
+        public int LeaveTypeId { get; set; }
+        public decimal LeaveDayNumber { get; set; }
+        public LeaveType? LeaveType { get; set; }
         [MaxLength(200)]
         public string? Description { get; set; }
         public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.Pending_Approval;
-        public DateTime? ResponseDate { get; set; }
-        public int? TotalDaysOff { get; set; }
         public bool IsActive { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public DateTime? ReplyDate { get; set; }
+        public DateTime? RequestDate { get; set; }
         public DateTime? CreateDate { get; set; }
         public DateTime? UpdateDate { get; set; }
+        public int? RequestTypeId { get; set; }
+        public RequestType? RequestType { get; set; }
+        public DateTime? ResponseDate { get; set; }
     }
 }

@@ -35,6 +35,8 @@ namespace HrELP.Domain.Entities.Concrete
         public int CompanyId { get; set; }
         public Company? Company { get; set; }
         public string? Profession { get; set; }
+         public decimal RemainingLeaveRight { get; set; }
+        public bool? MarriageStatus { get; set; }
         public string Department { get; set; }
         public int AddressId { get; set; }
         public Address? Address { get; set; }

@@ -29,6 +29,7 @@ namespace HrELP.Infrastructure
         public DbSet<Company>? Companies { get; set; }
         public DbSet<AdvanceRequest>? AdvanceRequests { get; set; }
         public DbSet<ExpenseRequest>? ExpenseRequests { get; set; }
+        public DbSet<LeaveType>? LeaveTypes { get; set; }
         public DbSet<LeaveRequest>? LeaveRequests { get; set; }
         public DbSet<RequestType>? RequestTypes { get; set; }
         public DbSet<RequestCategory>? RequestCategories { get; set; }
@@ -47,6 +48,8 @@ namespace HrELP.Infrastructure
             builder.ApplyConfiguration<Address>(new AddressCFG());
             builder.ApplyConfiguration<Company>(new CompanyCFG());
             builder.ApplyConfiguration<RequestType>(new RequestTypeCFG());
+                builder.ApplyConfiguration<LeaveType>(new LeaveTypeCFG());
+            builder.ApplyConfiguration<LeaveRequest>(new LeaveRequestCFG());
 
             builder.Entity<IdentityUserRole<int>>().HasData(new IdentityUserRole<int> { RoleId = 1, UserId = 1 });
             builder.Entity<IdentityUserRole<int>>().HasData(new IdentityUserRole<int> { RoleId = 3, UserId = 2 });

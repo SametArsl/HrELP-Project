@@ -1,7 +1,6 @@
 using HrELP.Application.Services.AddressService;
 using HrELP.Application.Services.AppUserService;
 using HrELP.Application.Services.CompanyService;
-using HrELP.Application.Services.EmailService;
 using HrELP.Domain.Entities.Concrete;
 using HrELP.Domain.Repositories;
 using HrELP.Infrastructure.Repositories;
@@ -15,6 +14,8 @@ using HrELP.Application.Services.ExpenseRequestService;
 using HrELP.Application.Services.AdvanceRequestService;
 using HrELP.Application.Services.AddressAPIService;
 using HrELP.Application.AutoMapper;
+using NETCore.MailKit.Core;
+using HrELP.Application.Services.LeaveTypeService;
 
 namespace HrELP.Presentation
 {
@@ -36,7 +37,7 @@ namespace HrELP.Presentation
 
             builder.Services.AddIdentity<AppUser, AppRole>(x =>
             {
-                // Diðer ayarlar buraya yazýlabilir
+                // DiÃ°er ayarlar buraya yazÃ½labilir
                 x.Password.RequiredLength = 8;
                 x.Password.RequireUppercase = true;
                 x.Password.RequireLowercase = true;
@@ -48,8 +49,8 @@ namespace HrELP.Presentation
             {
                 option.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
-            builder.Services.AddSingleton(builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
-            builder.Services.AddScoped<IEmailService, EmailService>();
+            //builder.Services.AddSingleton(builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
+            //builder.Services.AddScoped<IEmailService, EmailService>();
 
             builder.Services.AddTransient<IAppRoleRepository, AppRoleRepository>();
             builder.Services.AddTransient<IRequestTypeRepository, RequestTypeRepository>();
@@ -78,7 +79,10 @@ namespace HrELP.Presentation
             builder.Services.AddTransient<ICompanyService, CompanyService>();
             builder.Services.AddTransient<ICompanyRepository, CompanyRepository>();
 
-            //AutoMapper için gerekli ayar...
+            builder.Services.AddTransient<ILeaveTypeRepository, LeaveTypeRepository>();
+            builder.Services.AddTransient<ILeaveTypeService, LeaveTypeService>();
+
+            //AutoMapper iÃ§in gerekli ayar...
             builder.Services.AddAutoMapper(x => x.AddProfile(typeof(HrELPMapper)));
             
             #endregion
@@ -86,12 +90,17 @@ namespace HrELP.Presentation
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
-            {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+           if (app.Environment.IsDevelopment())
+			{
+				DeveloperExceptionPageOptions options = new DeveloperExceptionPageOptions();
+				options.SourceCodeLineCount = 1;
+				app.UseDeveloperExceptionPage(options);
+
+			}
+			else { app.UseExceptionHandler("/Home/Error"); }
+
+            
+            app.UseStatusCodePagesWithRedirects("/Error/{0}");
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 using MimeKit;
 using System.Net;
 using System.Net.Mail;
-using HrELP.Application.Services.EmailService;
 
 namespace HrELP.Presentation.Controllers
 {
@@ -21,16 +20,14 @@ namespace HrELP.Presentation.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IMapper _mapper;
-        private readonly IEmailService _emailService;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
 
-        public LoginController(IAppUserService appUserService, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IMapper mapper, IEmailService emailService, IWebHostEnvironment IWebHostEnvironment)
+        public LoginController(IAppUserService appUserService, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IMapper mapper, IWebHostEnvironment IWebHostEnvironment)
         {
             _appUserService = appUserService;
             _userManager = userManager;
             _signInManager = signInManager;
             _mapper = mapper;
-            _emailService = emailService;
             _IWebHostEnvironment = IWebHostEnvironment;
         }
         public IActionResult Login()
@@ -171,12 +168,33 @@ namespace HrELP.Presentation.Controllers
                     }
                     catch (Exception ex)
                     {                        
-                        Console.WriteLine("E-posta gönderme hatası: " + ex.Message);
+                        throw new Exception(ex.Message.ToString());
                     }
                 }               
             }
 
             return View();
+        }
+       public IActionResult Error()
+        {
+            return View();
+        }
+
+        [Route("Error/{statusCode}")]
+        public IActionResult Error(int statusCode)
+        {
+            if (statusCode == 404)
+            {
+                
+                return View("Error");
+            }
+            else if (statusCode == 403)
+            {
+                
+                return View("Error403");
+            }
+            
+            return View("Error");
         }
 
 	}

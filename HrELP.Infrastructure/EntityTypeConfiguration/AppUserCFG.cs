@@ -67,7 +67,8 @@ namespace HrELP.Infrastructure.EntityTypeConfiguration
                 Department = "R&D",
                 AddressId = 2,
                 Salary = 23000M,
-                Gender = Domain.Entities.Enums.Gender.Male
+                Gender = Domain.Entities.Enums.Gender.Male,
+                MarriageStatus = true
             };
 
             root.PasswordHash = hashPwd.HashPassword(root, "Mngr_123.");
