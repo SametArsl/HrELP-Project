@@ -1,4 +1,5 @@
-﻿using HrELP.Domain.Entities.Concrete.Requests;
+﻿using HrELP.Domain.Entities.Concrete;
+using HrELP.Domain.Entities.Concrete.Requests;
 using HrELP.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -19,6 +20,12 @@ namespace HrELP.Infrastructure.Repositories
         {
             AdvanceRequest? advanceRequest = _table.Include(x => x.RequestType).ThenInclude(x => x.RequestCategory).Include(x => x.AppUser).FirstOrDefault(x => x.Id == id);
             return advanceRequest;
+        }
+
+        public List<AdvanceRequest> GetPendingRequest(AppUser user)
+        {
+            List<AdvanceRequest> list = _table.Include(x => x.AppUser).Include(x => x.RequestType).Where(x => x.UserId == user.Id && x.ApprovalStatus==Domain.Entities.Enums.ApprovalStatus.Pending_Approval).ToList();
+            return list;
         }
 
         IQueryable<AdvanceRequest> IAdvanceRequestRepository.GetAllWithAppUserAsync()

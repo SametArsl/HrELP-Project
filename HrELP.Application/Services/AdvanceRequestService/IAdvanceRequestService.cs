@@ -1,4 +1,5 @@
-﻿using HrELP.Domain.Entities.Concrete.Requests;
+﻿using HrELP.Domain.Entities.Concrete;
+using HrELP.Domain.Entities.Concrete.Requests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,6 @@ namespace HrELP.Application.Services.AdvanceRequestService
         Task CreateRequest(AdvanceRequest request);
         Task<AdvanceRequest> GetRequestById(int id);
         Task UpdateAsync(AdvanceRequest request);
+        List<AdvanceRequest> PendingRequests(AppUser user);
     }
 }
