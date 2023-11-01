@@ -7,7 +7,7 @@ namespace HrELP.Domain.Entities.Enums
         [Display(Name = "TRY")]
         TL,
         USD,
-        EURO,
+        EUR,
         GBP,
         CHF
     }

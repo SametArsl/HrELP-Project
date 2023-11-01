@@ -9,29 +9,32 @@
                 <div class="user">
                     <form asp-controller="Personnel" asp-action="FileARequest" method="post" enctype="multipart/form-data">
                         <label for="expenseAmount">Expense Amount:</label>
-                        <input asp-for="ExpenseAmount" type="number" id="expenseAmount" name="expenseAmount" required><br><br>
+                        <input class="form-control" asp-for="ExpenseAmount" type="number" id="expenseAmount" name="expenseAmount" required><br><br>
 
                         <label for="currency">Currency:</label>
-                        <select asp-for="Currency" id="currency" name="currency" required>
+                        <select class="form-select" asp-for="Currency" id="currency" name="currency" required>
                             <option value="USD">USD</option>
                             <option value="EUR">EUR</option>
                             <option value="TRY">TRY</option>
+                            <option value="GBP">GBP</option>
+                            <option value="CHF">CHF</option>
                         </select><br><br>
 
                         <label for="requestType">Request Type:</label>
                         @Html.DropDownListFor(model => model.RequestType.Id,
                         new SelectList(ViewBag.Requests, "Value", "Text"),
                         "-- Select Request Type --",
-                        new {@class="form-control", id = "RequestDropdown"})<br><br>
+                        new {@class="form-select", id = "RequestDropdown"})<br><br>
 
                         <label for="description">Description:</label>
-                        <textarea asp-for="Description" id="description" name="description" rows="4" cols="50"></textarea><br /><br />
+                        <textarea class="form-control" asp-for="Description" id="description" name="description" rows="4" cols="50"></textarea><br /><br />
                         <div class="mb-4 pb-2">
                             <label asp-for="FormFile" class="form-label">Upload a File: </label><br />
-                            <input asp-for="FormFile" type="file" id="FormFile" accept=".pdf,.docx,.jpg,.jpeg,.png" required />
+                            <input asp-for="FormFile" class="form-control" type="file" id="FormFile" accept=".pdf,.docx,.jpg,.jpeg,.png" required />
                         </div>
-
-                        <input type="submit" value="Submit Request">
+                        <div class="text-center">
+                            <input class="btn btn-outline-primary" type="submit" value="Submit Request">
+                        </div>
                     </form>
                 </div>
             </div>

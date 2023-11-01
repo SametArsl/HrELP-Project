@@ -158,7 +158,7 @@ namespace HrELP.Presentation.Controllers
                             ViewData["Message"] = $"The error occurred. Error Message={ex.Message}";
                         }
 
-                        return View("Index", "User");
+                        return RedirectToAction("Index", "User");
                     }
 
                 }

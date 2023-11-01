@@ -7,47 +7,49 @@
 }
 <body>
     <main>
-        <div class="new-users" >
+        <div class="new-users">
             <h2>Leave Request</h2>
-            <div class="user-list mt-4" >
-                <div class="user" >
-                    <form asp-controller="Personnel" asp-action="CreateLeaveRequest" method="post" >
+            <div class="user-list mt-4">
+                <div class="user">
+                    <form asp-controller="Personnel" asp-action="CreateLeaveRequest" method="post">
                         <div class="form-group">
                             <label asp-for="LeaveTypeId">Leave Type</label>
-                            <select asp-for="LeaveTypeId" class="form-control">
+                            <select asp-for="LeaveTypeId" class="form-select">
                                 @foreach (var item in Model.LeaveTypes)
                                 {
-                                    if (Model.Personnel.Gender == item.Gender )
+                                    if (Model.Personnel.Gender == item.Gender)
                                     {
                                         <option value="@item.LeaveTypeId" data-dayvalue="@item.DayValue">@item.LeaveTypeName</option>
                                     }
                                 }
                             </select>
                         </div>
-                        <div class="form-group">                           
+                        <div class="form-group">
                             <br />
                             <label for="Description">Description:</label>
-                            <input type="text" asp-for="Description" id="description" name="description" readonly>
+                            <textarea class="form-control" type="text" asp-for="Description" id="description" name="description" rows="4" cols="50" readonly></textarea>
                             <span asp-validation-for="Description" class="text-danger"></span><br />
                             <label for="StartDate">Leave Start Date:</label>
-                            <input type="datetime-local" asp-for="StartDate" id="start-date" name="StartDate" value="@ViewData["StartDate"]">
+                            <input class="form-control" type="datetime-local" asp-for="StartDate" id="start-date" name="StartDate" value="@ViewData["StartDate"]">
                             <span asp-validation-for="StartDate" class="text-danger"></span><br />
                             <label for="EndDate">Leave End Date:</label>
-                            <input type="datetime-local" asp-for="EndDate" id="end-date" name="EndDate" value="@DateTime.Now" readonly>
+                            <input class="form-control" type="datetime-local" asp-for="EndDate" id="end-date" name="EndDate" value="@DateTime.Now" readonly>
                             <span asp-validation-for="EndDate" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                         </div>
-                        <button type="submit">Create Leave Request</button>
+                        <div class="text-center">
+                            <button class="btn btn-outline-primary mt-2" type="submit">Create Leave Request</button>
+                        </div>
                     </form>
                 </div>
             </div>
-        </div>        
+        </div>
     </main>
 </body>
 
 <script>
-  
+
 
     document.addEventListener("DOMContentLoaded", function () {
         var startInput = document.getElementById('start-date');
@@ -85,14 +87,14 @@
     document.querySelector('select[name="LeaveTypeId"]').addEventListener('change', function () {
         var leaveTypeSelect = document.querySelector('select[name="LeaveTypeId"]');
         var selectedLeaveType = leaveTypeSelect.options[leaveTypeSelect.selectedIndex];
-        var dayValue = parseFloat(selectedLeaveType.getAttribute('data-dayvalue'));       
+        var dayValue = parseFloat(selectedLeaveType.getAttribute('data-dayvalue'));
         var startDate = new Date(document.getElementById('start-date').value);
         var endDate = new Date(startDate.getTime() + dayValue * 24 * 60 * 60 * 1000);
         var endDateInput = document.getElementById('end-date');
         endDateInput.value = endDate.toISOString().slice(0, 16);
         var descriptionInput = document.getElementById('description');
-       descriptionInput.value = dayValue.toString()+ " Days Off";
+        descriptionInput.value = dayValue.toString() + " Days Off";
     });
-  
+
 </script>
 
