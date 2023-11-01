@@ -155,5 +155,87 @@ namespace HrELP.Presentation.Controllers
                 return View(vM);
             }
         }
+
+        [HttpGet]
+        [Route("{Controller}/{Action}")]
+        public async Task<IActionResult> CreateLeaveRequest()
+        {          
+            LeaveRequestVM lrm = new LeaveRequestVM();
+            lrm.Personnel = await _signInManager.UserManager.GetUserAsync(User);
+            lrm.LeaveTypes = await _leaveTypeService.GetAllLeaveTypesAsync();
+            lrm.PersonnelId=lrm.Personnel.Id;
+            return View(lrm);
+        }
+
+        [HttpPost]
+        [Route("{Controller}/{Action}")]
+        public async Task<IActionResult> CreateLeaveRequest(LeaveRequestVM leaveRequestVM)
+        {
+            LeaveListVM leaveListVM = new LeaveListVM();
+            AppUser user = await _userManager.GetUserAsync(User);
+            leaveListVM.Personnel = user;
+            leaveListVM.PendingLeaveRequest = await _leaveRequestService.GetLeaveRequestByStatusAsync(ApprovalStatus.Pending_Approval, user.Id);
+           
+            LeaveRequest leaveRequest = new LeaveRequest();
+            AppUser appUser = await _userManager.GetUserAsync(User);
+            if (appUser != null)
+            {
+                
+                leaveRequest.LeaveTypeId = leaveRequestVM.LeaveTypeId;
+                leaveRequest.UserId = appUser.Id;
+                leaveRequest.ApprovalStatus = Domain.Entities.Enums.ApprovalStatus.Pending_Approval;
+                leaveRequest.IsActive = true;
+                leaveRequest.StartDate = leaveRequestVM.StartDate;
+                leaveRequest.EndDate = leaveRequestVM.EndDate;
+                leaveRequest.RequestDate = DateTime.Now;
+                leaveRequest.CompanyId = appUser.CompanyId;
+                leaveRequest.Description = leaveRequestVM.Description;
+                leaveRequest.LeaveDayNumber = Convert.ToDecimal((leaveRequestVM.EndDate - leaveRequestVM.StartDate).Days);
+                leaveRequestVM.pendingLeaveList = leaveListVM.PendingLeaveRequest;
+                appUser.RemainingLeaveRight = appUser.RemainingLeaveRight - leaveRequest.LeaveDayNumber;
+                foreach (var item in leaveRequestVM.pendingLeaveList)
+                {
+                   
+                    if (item.LeaveTypeId==leaveRequest.LeaveTypeId)
+                    {
+                        LeaveListVM leaveListVMs = new LeaveListVM();
+                        AppUser users = await _userManager.GetUserAsync(User);
+                        leaveListVMs.Personnel = user;
+                        leaveListVMs.PendingLeaveRequest = await _leaveRequestService.GetLeaveRequestByStatusAsync(ApprovalStatus.Pending_Approval, users.Id, p => p.LeaveType);
+                        leaveListVMs.ApprovedLeaveRequest = await _leaveRequestService.GetLeaveRequestByStatusAsync(ApprovalStatus.Approved, users.Id, p => p.LeaveType);
+                        leaveListVMs.DeclinedLeaveRequest = await _leaveRequestService.GetLeaveRequestByStatusAsync(ApprovalStatus.Declined, users.Id, p => p.LeaveType);
+                        leaveListVMs.ErrorMessage = "Already Exist Leave Request";
+
+                        return View("ListLeaveRequests",leaveListVMs);   
+
+                    }
+                   
+                }
+                _leaveRequestService.CreateLeaveRequestAsync(leaveRequest);
+
+
+            }
+            return RedirectToAction("ListLeaveRequests");
+        }
+        [HttpGet]
+        [Route("{Controller}/{Action}")]
+        public async Task<IActionResult> ListLeaveRequests()
+        {
+            LeaveListVM leaveListVM = new LeaveListVM();
+            AppUser user = await _userManager.GetUserAsync(User);
+            leaveListVM.Personnel = user;
+            leaveListVM.PendingLeaveRequest = await _leaveRequestService.GetLeaveRequestByStatusAsync(ApprovalStatus.Pending_Approval, user.Id, p => p.LeaveType);
+            leaveListVM.ApprovedLeaveRequest = await _leaveRequestService.GetLeaveRequestByStatusAsync(ApprovalStatus.Approved, user.Id, p => p.LeaveType);
+            leaveListVM.DeclinedLeaveRequest = await _leaveRequestService.GetLeaveRequestByStatusAsync(ApprovalStatus.Declined, user.Id, p => p.LeaveType);
+          
+            return View(leaveListVM);
+        }
+        [HttpPost]
+        [Route("{Controller}/{Action}")]
+        public async Task<IActionResult> ListLeaveRequests(int id)
+        {
+            await _leaveRequestService.DeniedLeaveRequestAsync(id);
+            return View("ListLeaveRequests");
+        }
     }
 }
