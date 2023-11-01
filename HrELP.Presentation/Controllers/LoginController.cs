@@ -171,7 +171,7 @@ namespace HrELP.Presentation.Controllers
                     }
                     catch (Exception ex)
                     {                        
-                        Console.WriteLine("E-posta gönderme hatası: " + ex.Message);
+                        throw new Exception(ex.Message.ToString());
                     }
                 }               
             }
