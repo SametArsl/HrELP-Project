@@ -149,9 +149,42 @@ namespace HrELP.Presentation.Controllers
                 var confirmationLink = Url.Action("CreatePassword", "Login",
                     new { userId = user.Id, token = confirmationToken }, Request.Scheme
                     );
-                string subject = "Create Password";
-                string content = "Click here to create your password:  " + confirmationLink;
-                SendEmail(user.Email, content, subject);
+                string HtmlBody = "";
+                var PathToFile = Path.Combine(_IWebHostEnvironment.WebRootPath, "EmailTemplate", "Confirmation.html");
+
+                var builder = new BodyBuilder();
+                using (StreamReader sr = System.IO.File.OpenText(PathToFile))
+                {
+                    builder.HtmlBody = sr.ReadToEnd();
+                }
+
+                builder.HtmlBody = builder.HtmlBody.Replace("{0}", user.FullName);
+                builder.HtmlBody = builder.HtmlBody.Replace("{1}", confirmationLink);
+              
+                MailMessage mail = new MailMessage();
+                mail.To.Add(user.Email);
+                mail.From = new MailAddress("noreplyhrelp@gmail.com");
+                mail.Subject = "Confirmation Link";
+                mail.Body = builder.HtmlBody;
+                mail.IsBodyHtml = true;
+
+                using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                {
+                    ServicePointManager.ServerCertificateValidationCallback = (s, certificate, chain, sslPolicyErrors) => true;
+                    smtp.EnableSsl = true;
+                    smtp.UseDefaultCredentials = false;
+                    smtp.Credentials = new NetworkCredential("noreplyhrelp@gmail.com", "rmzqiazgoktnbcac");
+
+                    try
+                    {
+                        smtp.Send(mail);
+                        return RedirectToAction("Login", "Login");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("E-posta gönderme hatası: " + ex.Message);
+                    }
+                }
 
                 ViewBag.ErrorTitle = "Registration successful";
                 ViewBag.ErrorMessage = "Before you can Login, please create a password by clicking on the confirmation link we've sent to your email adress.";
@@ -177,11 +210,7 @@ namespace HrELP.Presentation.Controllers
             return View(expenses);
         }
 
-        private void SendEmail(string email, string content, string subject)
-        {
-            var message = new Message(new string[] { email }, subject, content);
-            _emailService.SendEmail(message);
-        }
+       
         [Route("{Controller}/{Action}")]
         [HttpGet]
         public async Task<IActionResult> PersonelDetails(int id)
