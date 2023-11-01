@@ -1,4 +1,5 @@
-﻿using HrELP.Domain.Entities.Concrete.Requests;
+﻿using HrELP.Domain.Entities.Concrete;
+using HrELP.Domain.Entities.Concrete.Requests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace HrELP.Domain.Repositories
     {
         IQueryable<ExpenseRequest> GetAllWithAppUserAsync();
         ExpenseRequest GetById(int id);
+        List<ExpenseRequest> GetPendingRequest(AppUser user);
     }
 }

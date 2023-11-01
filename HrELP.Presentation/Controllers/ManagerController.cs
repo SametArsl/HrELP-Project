@@ -294,7 +294,7 @@ namespace HrELP.Presentation.Controllers
                 _appUserService.UpdateAsync(appUser);
             }
             advanceRequest.IsActive = false;
-            _advanceRequestService.UpdateAsync(advanceRequest);
+            await _advanceRequestService.UpdateAsync(advanceRequest);
 
             return RedirectToAction(nameof(ListAdvanceRequests));
         }
@@ -306,13 +306,48 @@ namespace HrELP.Presentation.Controllers
             advanceRequest.ApprovalStatus = Domain.Entities.Enums.ApprovalStatus.Declined;
             advanceRequest.ResponseDate= DateTime.Now;
             advanceRequest.IsActive = false;
-            _advanceRequestService.UpdateAsync(advanceRequest);
+            await _advanceRequestService.UpdateAsync(advanceRequest);
 
             return RedirectToAction(nameof(ListAdvanceRequests));
         }
-        public IActionResult RequestDetail(ExpenseRequestVM vm)
+        public async Task<IActionResult> ApproveExpenseRequest(int id)
         {
-            return PartialView(vm);
+            ExpenseRequest expenceRequest = await _expenseRequestService.GetRequestById(id);
+            AppUser appUser = await _appUserService.GetUserAsync(expenceRequest.UserId);
+            expenceRequest.UpdateDate = DateTime.Now;
+            expenceRequest.ApprovalStatus = Domain.Entities.Enums.ApprovalStatus.Approved;
+            expenceRequest.ResponseDate = DateTime.Now;
+            expenceRequest.IsActive = false;
+            await _expenseRequestService.UpdateAsync(expenceRequest);
+
+            return RedirectToAction(nameof(ListExpenseRequests));
+        }
+        public async Task<IActionResult> RefuseExpenseRequest(int id)
+        {
+            ExpenseRequest expenceRequest = await _expenseRequestService.GetRequestById(id);
+            AppUser appUser = await _appUserService.GetUserAsync(expenceRequest.UserId);
+            expenceRequest.UpdateDate = DateTime.Now;
+            expenceRequest.ApprovalStatus = Domain.Entities.Enums.ApprovalStatus.Declined;
+            expenceRequest.ResponseDate = DateTime.Now;
+            expenceRequest.IsActive = false;
+            await _expenseRequestService.UpdateAsync(expenceRequest);
+
+            return RedirectToAction(nameof(ListExpenseRequests));
+        }
+        public async Task<IActionResult> ExpenseRequestDetail(int id)
+        {
+            ExpenseRequest request = await _expenseRequestService.GetRequestById(id);
+            ExpenseRequestVM requestVM = new ExpenseRequestVM()
+            {
+                ApprovalStatus = request.ApprovalStatus,
+                AppUser = request.AppUser,
+                ExpenseAmount=request.ExpenseAmount,
+                Currency = request.Currency,
+                Description = request.Description,
+                Id = request.Id,
+                RequestType = request.RequestType,
+            };
+            return PartialView("ExpenseRequestDetails", requestVM);
         }
     }
 }
