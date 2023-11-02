@@ -8,8 +8,10 @@ using HrELP.Application.Services.AppUserService;
 using HrELP.Application.Services.CompanyService;
 using HrELP.Application.Services.ExpenseRequestService;
 using HrELP.Application.Services.LeaveRequestService;
+using HrELP.Application.Services.LeaveTypeService;
 using HrELP.Domain.Entities.Concrete;
 using HrELP.Domain.Entities.Concrete.Requests;
+using HrELP.Domain.Repositories;
 using HrELP.Infrastructure;
 using HrELP.Presentation.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -43,6 +45,7 @@ namespace HrELP.Presentation.Controllers
         private readonly IAdvanceRequestService _advanceRequestService;
         private readonly ILeaveRequestService _leaveRequestService;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly ILeaveTypeService _leaveTypeService;
         public ManagerController(SignInManager<AppUser> signInManager, AddressAPIService addressAPI, IAppUserService appUserService, ICompanyService companyService, IMapper mapper, UserManager<AppUser> userManager, IExpenseRequestService expenseRequestService, IWebHostEnvironment webHostEnvironment, IAdvanceRequestService advanceRequestService, ILeaveRequestService leaveRequestService)
         {
             _signInManager = signInManager;
@@ -162,7 +165,7 @@ namespace HrELP.Presentation.Controllers
 
                 builder.HtmlBody = builder.HtmlBody.Replace("{0}", user.FullName);
                 builder.HtmlBody = builder.HtmlBody.Replace("{1}", confirmationLink);
-              
+
                 MailMessage mail = new MailMessage();
                 mail.To.Add(user.Email);
                 mail.From = new MailAddress("noreplyhrelp@gmail.com");
@@ -180,17 +183,18 @@ namespace HrELP.Presentation.Controllers
                     try
                     {
                         smtp.Send(mail);
-                        return RedirectToAction("Login", "Login");
+                        return RedirectToAction(nameof(GetEmployeeList));
                     }
                     catch (Exception ex)
                     {
-                      throw new Exception(ex.Message.ToString());
+                        throw new Exception(ex.Message.ToString());
                     }
                 }
 
-                ViewBag.ErrorTitle = "Registration successful";
-                ViewBag.ErrorMessage = "Before you can Login, please create a password by clicking on the confirmation link we've sent to your email adress.";
+
             }
+            ViewBag.ErrorTitle = "Registration successful";
+            ViewBag.ErrorMessage = "Before you can Login, please create a password by clicking on the confirmation link we've sent to your email adress.";
             return RedirectToAction("Index", "User");
         }
         [Route("{Controller}/{Action}")]
@@ -212,7 +216,7 @@ namespace HrELP.Presentation.Controllers
             return View(expenses);
         }
 
-       
+
         [Route("{Controller}/{Action}")]
         [HttpGet]
         public async Task<IActionResult> PersonelDetails(int id)
@@ -261,33 +265,33 @@ namespace HrELP.Presentation.Controllers
             };
             return PartialView("AdvanceRequestDetails", requestVM);
         }
-        [HttpGet]
-        public IActionResult ListLeaveRequests()
-        {
-            List<LeaveRequest> leaveRequests = _leaveRequestService.GetAll();
+        //[HttpGet]
+        //public IActionResult ListLeaveRequests()
+        //{
+        //    List<LeaveRequest> leaveRequests = _leaveRequestService.GetAll();
 
-            return View(leaveRequests);
-        }
-        public async Task<IActionResult> LeaveRequestDetails(int id)
-        {
-            LeaveRequest request = await _leaveRequestService.GetRequestById(id);
-            LeaveRequestsVM requestVM = new LeaveRequestsVM()
-            {
-               Description=request.Description,
-               EndDate=request.EndDate,
-               StartDate=request.StartDate,
-               LeaveTypeId=request.LeaveTypeId
+        //    return View(leaveRequests);
+        //}
+        //public async Task<IActionResult> LeaveRequestDetails(int id)
+        //{
+        //    LeaveRequest request = await _leaveRequestService.GetRequestById(id);
+        //    LeaveRequestsVM requestVM = new LeaveRequestsVM()
+        //    {
+        //       Description=request.Description,
+        //       EndDate=request.EndDate,
+        //       StartDate=request.StartDate,
+        //       LeaveTypeId=request.LeaveTypeId
 
-            };
-            return PartialView("LeaveRequestDetails", requestVM);
-        }
+        //    };
+        //    return PartialView("LeaveRequestDetails", requestVM);
+        //}
         public async Task<IActionResult> ApproveAdvanceRequest(int id)
         {
             AdvanceRequest advanceRequest = await _advanceRequestService.GetRequestById(id);
             AppUser appUser = await _appUserService.GetUserAsync(advanceRequest.UserId);
             advanceRequest.UpdateDate = DateTime.Now;
             advanceRequest.ApprovalStatus = Domain.Entities.Enums.ApprovalStatus.Approved;
-            advanceRequest.ResponseDate= DateTime.Now;
+            advanceRequest.ResponseDate = DateTime.Now;
             if (advanceRequest.RequestType.Id == 11)
             {
                 appUser.AdvanceLimit = appUser.AdvanceLimit - advanceRequest.RequestAmount;
@@ -304,7 +308,7 @@ namespace HrELP.Presentation.Controllers
             AppUser appUser = await _appUserService.GetUserAsync(advanceRequest.UserId);
             advanceRequest.UpdateDate = DateTime.Now;
             advanceRequest.ApprovalStatus = Domain.Entities.Enums.ApprovalStatus.Declined;
-            advanceRequest.ResponseDate= DateTime.Now;
+            advanceRequest.ResponseDate = DateTime.Now;
             advanceRequest.IsActive = false;
             await _advanceRequestService.UpdateAsync(advanceRequest);
 
@@ -341,13 +345,66 @@ namespace HrELP.Presentation.Controllers
             {
                 ApprovalStatus = request.ApprovalStatus,
                 AppUser = request.AppUser,
-                ExpenseAmount=request.ExpenseAmount,
+                ExpenseAmount = request.ExpenseAmount,
                 Currency = request.Currency,
                 Description = request.Description,
                 Id = request.Id,
                 RequestType = request.RequestType,
             };
             return PartialView("ExpenseRequestDetails", requestVM);
+        }
+        public IActionResult ListLeaveRequests()
+        {
+            List<LeaveRequest> leaveRequests = _leaveRequestService.GetAll();
+
+            return View(leaveRequests);
+        }
+        public async Task<IActionResult> LeaveRequestDetails(int id)//
+        {
+            LeaveRequest request = await _leaveRequestService.GetRequestById(id);
+            request.LeaveType = await _leaveTypeService.GetLeaveTypeAsync(id);
+            LeaveRequestVM requestVM = new LeaveRequestVM()
+            {
+                AppUser = request.AppUser,
+                UserId = request.UserId,
+                Id = request.Id,
+                Description = request.Description,
+                CreateDate = request.CreateDate.Value,
+                UpdateDate = request.UpdateDate.Value,
+                RequestType = request.RequestType,
+                RequestTypeId = request.RequestTypeId.Value,
+                TotalDaysOff = request.LeaveType.DayValue,
+                ApprovalStatus = request.ApprovalStatus,
+
+
+            };
+            return View(requestVM);
+        }
+        public async Task<IActionResult> LeaveRefuseRequest(int id)//
+        {
+            LeaveRequest leaveRequest = await _leaveRequestService.GetRequestById(id);
+            AppUser appUser = await _appUserService.GetUserAsync(leaveRequest.UserId);
+            leaveRequest.UpdateDate = DateTime.Now;
+            leaveRequest.ApprovalStatus = Domain.Entities.Enums.ApprovalStatus.Declined;
+            leaveRequest.ResponseDate = DateTime.Now;
+            leaveRequest.ReplyDate = DateTime.Now;
+            leaveRequest.IsActive = false;
+            await _leaveRequestService.UpdateAsync(leaveRequest);
+            //SendEmailByStatus(id);
+            return RedirectToAction(nameof(ListLeaveRequests));
+        }
+        public async Task<IActionResult> LeaveApproveRequest(int id)//
+        {
+            LeaveRequest leaveRequest = await _leaveRequestService.GetRequestById(id);
+            AppUser appUser = await _appUserService.GetUserAsync(leaveRequest.UserId);
+            leaveRequest.UpdateDate = DateTime.Now;
+            leaveRequest.ApprovalStatus = Domain.Entities.Enums.ApprovalStatus.Approved;
+            leaveRequest.ResponseDate = DateTime.Now;
+            leaveRequest.ReplyDate = DateTime.Now;
+            leaveRequest.IsActive = false;
+            await _leaveRequestService.UpdateAsync(leaveRequest);
+            //SendEmailByStatus(id);
+            return RedirectToAction(nameof(ListLeaveRequests));
         }
     }
 }

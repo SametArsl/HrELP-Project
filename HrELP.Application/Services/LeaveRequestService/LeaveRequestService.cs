@@ -73,5 +73,9 @@ namespace HrELP.Application.Services.LeaveRequestService
             LeaveRequest request = _leaveRequestRepository.GetById(id);
             return request;
         }
+        public async Task UpdateAsync(LeaveRequest request)
+        {
+            await _leaveRequestRepository.UpdateAsync(request);
+        }
     }
 }

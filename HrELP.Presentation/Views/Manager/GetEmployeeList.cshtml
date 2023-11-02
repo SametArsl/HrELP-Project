@@ -7,6 +7,10 @@
         <div class="new-users">
             <h2>Employee List</h2>
             <div class="user-list mt-4">
+                @if(ViewBag.ErrorTitle!=null)
+                {
+                    <div class="alert alert-success">@ViewBag.ErrorTitle</div>
+                }
                 <div class="user">
                     <ul class="nav nav-tabs mt-5" id="employeeTabs" role="tablist">
                         <li class="nav-item" role="presentation">

@@ -13,7 +13,7 @@ namespace HrELP.Presentation.Models.ViewModels
         public int UserId { get; set; }
         public AppUser AppUser { get; set; }
         public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.Pending_Approval;
-        public int? TotalDaysOff { get; set; }
+        public decimal TotalDaysOff { get; set; }
         public DateTime CreateDate { get; set; } = DateTime.Now;
         public DateTime UpdateDate { get; set; } = DateTime.Now;
     }

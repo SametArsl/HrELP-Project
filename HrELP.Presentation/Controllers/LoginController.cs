@@ -98,6 +98,7 @@ namespace HrELP.Presentation.Controllers
                         if (user.PasswordHash != null)
                         {
                             TempData["ErrorMessage"] = "Your Password has been successfully created. You can now login to the system.";
+                            user.EmailConfirmed = true;
                             await _userManager.UpdateAsync(user);
                             return RedirectToAction("Login", "Login");
                         }

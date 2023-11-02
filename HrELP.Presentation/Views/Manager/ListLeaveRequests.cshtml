@@ -39,7 +39,7 @@
                                 {
                                     <tr>
                                         <td>
-                                            <a asp-action="AdvanceRequestDetails" asp-route-id="@leaveRequest.Id" class="text-dark">
+                                            <a asp-action="LeaveRequestDetails" asp-route-id="@leaveRequest.Id" class="text-dark">
                                                 <span class="material-symbols-outlined">
                                                     quick_reference_all
                                                 </span>
@@ -55,6 +55,7 @@
                                                 <span class="material-symbols-outlined text-warning">
                                                     hourglass_top
                                                 </span>
+                                                //eklemeyapılacakOAYLA
                                             }
                                             else if (leaveRequest.ApprovalStatus == HrELP.Domain.Entities.Enums.ApprovalStatus.Approved)
                                             {
@@ -94,7 +95,7 @@
                                     {
                                         <tr>
                                             <td>
-                                                <a asp-action="AdvanceRequestDetails" asp-route-id="@leaveRequest.Id" class="text-dark">
+                                                <a asp-action="LeaveRequestDetails" asp-route-id="@leaveRequest.Id" class="text-dark">
                                                     <span class="material-symbols-outlined">
                                                         quick_reference_all
                                                     </span>
@@ -135,7 +136,7 @@
                                     {
                                         <tr>
                                             <td>
-                                                <a asp-action="AdvanceRequestDetails" asp-route-id="@leaveRequest.Id" class="text-dark">
+                                                <a asp-action="LeaveRequestDetails" asp-route-id="@leaveRequest.Id" class="text-dark">
                                                     <span class="material-symbols-outlined">
                                                         quick_reference_all
                                                     </span>
@@ -165,8 +166,7 @@
                                     <th>Owner</th>
                                     <th>Type</th>
                                     <th>Date</th>
-                                    <th>Amount</th>
-                                    <th>Currency</th>
+                                    <th>Days Off</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -177,7 +177,7 @@
                                     {
                                         <tr>
                                             <td>
-                                                <a asp-action="AdvanceRequestDetails" asp-route-id="@leaveRequest.Id" class="text-dark">
+                                                <a asp-action="LeaveRequestDetails" asp-route-id="@leaveRequest.Id" class="text-dark">
                                                     <span class="material-symbols-outlined">
                                                         quick_reference_all
                                                     </span>

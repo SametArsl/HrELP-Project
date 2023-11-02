@@ -13,5 +13,6 @@ namespace HrELP.Domain.Repositories
         IQueryable<AdvanceRequest> GetAllWithAppUserAsync();
         AdvanceRequest GetById(int id);
         List<AdvanceRequest> GetPendingRequest(AppUser user);
+        List<AdvanceRequest> GetAllRequests(AppUser user);
     }
 }

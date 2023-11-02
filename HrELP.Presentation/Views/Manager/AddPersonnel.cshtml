@@ -16,7 +16,7 @@
                             <div class="mb-4 pb-2">
                                 <label class="form-label">Department: </label><br />
                                 <div class="select-wrapper">
-                                    <select asp-for="Department" class="select form-control" id="departmanSelect">
+                                    <select asp-for="Department" class="form-select" id="departmanSelect">
                                         <option value="">Please Select a Department</option>
                                         @foreach (var item in ViewBag.Departments)
                                         {
@@ -30,7 +30,7 @@
                             <div class="mb-4 pb-2">
                                 <label class="form-label" for="form3Examplev4">Position: </label><br />
                                 <div class="select-wrapper">
-                                    <select asp-for="Profession" class="select form-control" id="pozisyonSelect">
+                                    <select asp-for="Profession" class="form-select" id="pozisyonSelect">
                                         <option value="">Please Select a Position</option>   @foreach (var position in ViewBag.Positions)
                                         {
                                             <option value="@position">@position</option>
@@ -140,14 +140,14 @@
                                     @Html.DropDownListFor(model => model.SelectedCity,
                                     new SelectList(ViewBag.City, "Value", "Text"),
                                     "-- Please Select a City --",
-                                    new {@class="form-control", id = "CityDropdown"})
+                                    new {@class="form-select", id = "CityDropdown"})
 
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-group col-12">
                                     <label for="Town" class="mb-4">Town</label>
-                                    <select id="TownDropdown" asp-for="SelectedTown" class="form-control mb-4">
+                                    <select id="TownDropdown" asp-for="SelectedTown" class="form-select mb-4">
                                         <option value="">--Please Select a Town--</option>
                                         <option value="@Model.SelectedTown"></option>
                                     </select>
@@ -156,7 +156,7 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <label for="District" class="mb-4">District</label>
-                                    <select id="DistrictDropdown" asp-for="SelectedDistrict" class="form-control mb-4">
+                                    <select id="DistrictDropdown" asp-for="SelectedDistrict" class="form-select mb-4">
                                         <option value="">--Please Select a District--</option>
                                         <option value="@Model.SelectedDistrict"></option>
                                     </select>
@@ -165,7 +165,7 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <label for="Quarter" class="mb-4">Quarter</label>
-                                    <select id="QuarterDropdown" asp-for="SelectedQuarter" class="form-control mb-4">
+                                    <select id="QuarterDropdown" asp-for="SelectedQuarter" class="form-select mb-4">
                                         <option value="">--Please Select a Quarter--</option>
                                         <option value="@Model.SelectedQuarter"></option>
                                     </select>
