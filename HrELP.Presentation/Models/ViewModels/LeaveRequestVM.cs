@@ -8,7 +8,8 @@ namespace HrELP.Presentation.Models.ViewModels
     {
         public int Id { get; set; }
         public int RequestTypeId { get; set; }
-        public RequestType RequestType { get; set; }
+        public RequestType RequestTypes { get; set; }
+        public LeaveType LeaveType { get; set; }
         public string Description { get; set; }
         public int UserId { get; set; }
         public AppUser AppUser { get; set; }

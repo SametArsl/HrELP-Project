@@ -27,7 +27,8 @@ namespace HrELP.Application.Services.LeaveTypeService
 
         public async Task<LeaveType> GetLeaveTypeAsync(int leaveTypeId)
         {
-            return await _ILeaveTypeRepository.GetByIdAsync(leaveTypeId);
+            LeaveType leaveType = await _ILeaveTypeRepository.GetByIdAsync(leaveTypeId);
+            return leaveType;
         }
 
         public async Task<LeaveType> GetLeaveTypeByNameAsync(string name)

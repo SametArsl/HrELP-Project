@@ -359,10 +359,11 @@ namespace HrELP.Presentation.Controllers
 
             return View(leaveRequests);
         }
-        public async Task<IActionResult> LeaveRequestDetails(int id)//
+        public async Task<IActionResult> LeaveRequestDetails(int id)
         {
             LeaveRequest request = await _leaveRequestService.GetRequestById(id);
-            request.LeaveType = await _leaveTypeService.GetLeaveTypeAsync(id);
+            var leaveType = await _leaveTypeService.GetLeaveTypeAsync(request.LeaveTypeId);
+            request.LeaveType = leaveType;
             LeaveRequestVM requestVM = new LeaveRequestVM()
             {
                 AppUser = request.AppUser,
@@ -371,11 +372,11 @@ namespace HrELP.Presentation.Controllers
                 Description = request.Description,
                 CreateDate = request.CreateDate.Value,
                 UpdateDate = request.UpdateDate.Value,
-                RequestType = request.RequestType,
+                RequestTypes = request.RequestType,
                 RequestTypeId = request.RequestTypeId.Value,
                 TotalDaysOff = request.LeaveType.DayValue,
                 ApprovalStatus = request.ApprovalStatus,
-
+                LeaveType = request.LeaveType
 
             };
             return View(requestVM);
@@ -390,7 +391,7 @@ namespace HrELP.Presentation.Controllers
             leaveRequest.ReplyDate = DateTime.Now;
             leaveRequest.IsActive = false;
             await _leaveRequestService.UpdateAsync(leaveRequest);
-            //SendEmailByStatus(id);
+            SendEmailByStatus(id);
             return RedirectToAction(nameof(ListLeaveRequests));
         }
         public async Task<IActionResult> LeaveApproveRequest(int id)//
@@ -403,8 +404,47 @@ namespace HrELP.Presentation.Controllers
             leaveRequest.ReplyDate = DateTime.Now;
             leaveRequest.IsActive = false;
             await _leaveRequestService.UpdateAsync(leaveRequest);
-            //SendEmailByStatus(id);
+            SendEmailByStatus(id);
             return RedirectToAction(nameof(ListLeaveRequests));
+        }
+        public async Task SendEmailByStatus(int id)//roottacshtml
+        {
+            LeaveRequest lr = await _leaveRequestService.GetLeaveRequestAsync(id);
+            AppUser user = await _appUserService.GetUserAsync(lr.UserId);
+            //LeaveRequest request = await _leaveRequestService.GetRequestById(id);
+            //request.LeaveType = await _leaveTypeService.GetLeaveTypeAsync(id);
+            //user.Id = lr.UserId;
+            string HtmlBody = "";
+            var PathToFile = Path.Combine(_webHostEnvironment.WebRootPath, "EmailTemplate", "SendEmailByStatus.html");
+
+            var builder = new BodyBuilder();
+            using (StreamReader sr = System.IO.File.OpenText(PathToFile))
+            {
+                builder.HtmlBody = sr.ReadToEnd();
+            }
+
+            builder.HtmlBody = builder.HtmlBody.Replace("{0}", user.FullName);
+            builder.HtmlBody = builder.HtmlBody.Replace("{1}", lr.CreateDate.ToString());//requesttypname
+            builder.HtmlBody = builder.HtmlBody.Replace("{2}", lr.ReplyDate.ToString());//cevaplanmaTarihi
+            builder.HtmlBody = builder.HtmlBody.Replace("{3}", lr.ApprovalStatus.ToString());//OnaylamaStatus
+                                                                                             //builder.HtmlBody = builder.HtmlBody.Replace("{4}", request.RequestType.RequestName);
+
+            MailMessage mail = new MailMessage();
+            mail.To.Add(user.Email);
+            mail.From = new MailAddress("noreplyhrelp@gmail.com");
+            mail.Subject = "Request Information";
+            mail.Body = builder.HtmlBody;
+            mail.IsBodyHtml = true;
+
+            using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+            {
+                ServicePointManager.ServerCertificateValidationCallback = (s, certificate, chain, sslPolicyErrors) => true;
+                smtp.EnableSsl = true;
+                smtp.UseDefaultCredentials = false;
+                smtp.Credentials = new NetworkCredential("noreplyhrelp@gmail.com", "rmzqiazgoktnbcac");
+                smtp.Send(mail);
+
+            }
         }
     }
 }

@@ -4,8 +4,8 @@
 <body>
     <main>
         <div class="new-users text-center">
-            <h2>All Leave Requests</h2>          
-            <h2 style="color:red">@Model.ErrorMessage</h2>          
+            <h2>All Leave Requests</h2>
+            <h2 style="color:red">@Model.ErrorMessage</h2>
             <div class="user-list mt-4">
                 <table class="table table-bordered table-striped">
                     <thead>
@@ -16,7 +16,6 @@
                             <th>End Date</th>
                             <th>Create Date</th>
                             <th>Status</th>
-                            <th>Description</th>
                         </tr>
                     </thead>
                     <tbody id="allTab">
@@ -43,10 +42,9 @@
                                             @leaveLists.CreateDate
                                         </td>
                                         <td>
-                                            @leaveLists.ApprovalStatus
-                                        </td>
-                                        <td>
-                                            @leaveLists.Description
+                                            <span class="material-symbols-outlined text-success">
+                                                check_circle
+                                            </span>
                                         </td>
                                     </tr>
                                 }
@@ -72,10 +70,10 @@
                                             @leaveLists.CreateDate
                                         </td>
                                         <td>
-                                            @leaveLists.ApprovalStatus
-                                        </td>
-                                        <td>
-                                            @leaveLists.Description
+                                            <span class="material-symbols-outlined text-danger">
+                                                cancel
+                                            </span>
+
                                         </td>
                                     </tr>
                                 }
@@ -101,10 +99,9 @@
                                             @leaveLists.CreateDate
                                         </td>
                                         <td>
-                                            @leaveLists.ApprovalStatus
-                                        </td>
-                                        <td>
-                                            @leaveLists.Description
+                                            <span class="material-symbols-outlined text-warning">
+                                                hourglass_top
+                                            </span>
                                         </td>
                                     </tr>
                                 }

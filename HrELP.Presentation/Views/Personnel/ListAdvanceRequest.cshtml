@@ -15,7 +15,6 @@
                             <th>Create Date</th>
                             <th>Response Date</th>
                             <th>Status</th>
-                            <th>Description</th>
                         </tr>
                     </thead>
                     <tbody id="allTab">
@@ -42,10 +41,24 @@
                                             @request.ResponseDate
                                         </td>
                                         <td>
-                                            @request.ApprovalStatus
-                                        </td>
-                                        <td>
-                                            @request.Description
+                                            @if(@request.ApprovalStatus == ApprovalStatus.Pending_Approval)
+                                            {
+                                                <span class="material-symbols-outlined text-warning">
+                                                    hourglass_top
+                                                </span>
+                                            }
+                                            @if(request.ApprovalStatus == ApprovalStatus.Approved)
+                                            {
+                                                <span class="material-symbols-outlined text-success">
+                                                    check_circle
+                                                </span>
+                                            }
+                                            @if(request.ApprovalStatus == ApprovalStatus.Declined)
+                                            {
+                                                <span class="material-symbols-outlined text-danger">
+                                                    cancel
+                                                </span>
+                                            }
                                         </td>
                                     </tr>
                                 }
