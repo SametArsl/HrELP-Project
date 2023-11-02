@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace HrELP.Application.Services.LeaveRequestService
 {
-    public class LeaveRequestService:ILeaveRequestService
+    public class LeaveRequestService : ILeaveRequestService
     {
         private readonly ILeaveRequestRepository _leaveRequestRepository;
 
@@ -76,6 +76,11 @@ namespace HrELP.Application.Services.LeaveRequestService
         public async Task UpdateAsync(LeaveRequest request)
         {
             await _leaveRequestRepository.UpdateAsync(request);
+        }
+
+        public async Task DeleteAsync(LeaveRequest request)
+        {
+            await _leaveRequestRepository.DeleteAsync(request);
         }
     }
 }

@@ -15,6 +15,8 @@
                             <th>Create Date</th>
                             <th>Response Date</th>
                             <th>Status</th>
+                            <th>File</th>
+                            <th>Delete Request</th>
                         </tr>
                     </thead>
                     <tbody id="allTab">
@@ -66,6 +68,14 @@
                                                     description
                                                 </span>
                                             </a>
+                                        </td>
+                                        <td>
+                                            @if(request.ApprovalStatus == ApprovalStatus.Pending_Approval)
+                                            {
+                                                <a class="btn btn-sm btn-outline-danger" asp-controller="Personnel" asp-action="DeleteExpenseRequest" asp-route-id="@request.Id">
+                                                    Delete Request
+                                                </a>
+                                            }
                                         </td>
                                     </tr>
                                 }

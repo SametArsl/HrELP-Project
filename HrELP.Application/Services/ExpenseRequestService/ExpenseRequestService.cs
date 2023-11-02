@@ -50,5 +50,10 @@ namespace HrELP.Application.Services.ExpenseRequestService
         {
             await _expenseRequestRepository.UpdateAsync(request);
         }
+
+        public async Task DeleteAsync(ExpenseRequest request)
+        {
+            await _expenseRequestRepository.DeleteAsync(request);
+        }
     }
 }

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace HrELP.Application.Services.AdvanceRequestService
 {
-    public class AdvanceRequestService:IAdvanceRequestService
+    public class AdvanceRequestService : IAdvanceRequestService
     {
         private readonly IAdvanceRequestRepository _advanceRequestRepository;
 
@@ -38,13 +38,13 @@ namespace HrELP.Application.Services.AdvanceRequestService
 
         public List<AdvanceRequest> PendingRequests(AppUser user)
         {
-            var list=_advanceRequestRepository.GetPendingRequest(user);
+            var list = _advanceRequestRepository.GetPendingRequest(user);
             return list;
         }
 
         public List<AdvanceRequest> AllRequests(AppUser user)
         {
-            var list=_advanceRequestRepository.GetAllRequests(user);
+            var list = _advanceRequestRepository.GetAllRequests(user);
             return list;
         }
 
@@ -52,6 +52,10 @@ namespace HrELP.Application.Services.AdvanceRequestService
         {
             await _advanceRequestRepository.UpdateAsync(request);
         }
-        
+
+        public async Task DeleteAsync(AdvanceRequest request)
+        {
+            await _advanceRequestRepository.DeleteAsync(request);
+        }
     }
 }

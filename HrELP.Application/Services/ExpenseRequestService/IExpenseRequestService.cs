@@ -16,5 +16,6 @@ namespace HrELP.Application.Services.ExpenseRequestService
         Task UpdateAsync(ExpenseRequest request);
         List<ExpenseRequest> PendingRequests(AppUser user);
         List<ExpenseRequest> AllRequests(AppUser user);
+        Task DeleteAsync(ExpenseRequest request);
     }
 }

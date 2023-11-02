@@ -16,6 +16,7 @@
                             <th>End Date</th>
                             <th>Create Date</th>
                             <th>Status</th>
+                            <th>Delete Request</th>
                         </tr>
                     </thead>
                     <tbody id="allTab">
@@ -46,6 +47,8 @@
                                                 check_circle
                                             </span>
                                         </td>
+                                        <td>
+                                        </td>
                                     </tr>
                                 }
                             }
@@ -73,7 +76,8 @@
                                             <span class="material-symbols-outlined text-danger">
                                                 cancel
                                             </span>
-
+                                        </td>
+                                        <td>
                                         </td>
                                     </tr>
                                 }
@@ -102,6 +106,11 @@
                                             <span class="material-symbols-outlined text-warning">
                                                 hourglass_top
                                             </span>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-sm btn-outline-danger" asp-controller="Personnel" asp-action="DeleteLeaveRequest" asp-route-id="@leaveLists.Id">
+                                                Delete Request
+                                            </a>
                                         </td>
                                     </tr>
                                 }

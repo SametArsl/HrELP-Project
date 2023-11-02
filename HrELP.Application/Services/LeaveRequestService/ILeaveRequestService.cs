@@ -21,5 +21,6 @@ namespace HrELP.Application.Services.LeaveRequestService
         Task CreateRequest(LeaveRequest request);
         Task<LeaveRequest> GetRequestById(int id);
         Task UpdateAsync(LeaveRequest request);
+        Task DeleteAsync(LeaveRequest request);
     }
 }

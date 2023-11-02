@@ -176,7 +176,7 @@ namespace HrELP.Presentation.Controllers
                             ViewData["Message"] = $"The error occurred. Error Message={ex.Message}";
                         }
 
-                        return RedirectToAction("Index", "User");
+                        return RedirectToAction(nameof(ListAdvanceRequest));
                     }
 
                 }
@@ -293,6 +293,27 @@ namespace HrELP.Presentation.Controllers
             AppUser appUser = await _userManager.GetUserAsync(User);
             var list = _expenseRequestService.AllRequests(appUser);
             return View(list);
+        }
+        public async Task<IActionResult> DeleteAdvanceRequest(int id)
+        {
+            var advanceRequest = await _advanceRequestService.GetRequestById(id);
+            await _advanceRequestService.DeleteAsync(advanceRequest);
+
+            return RedirectToAction(nameof(ListAdvanceRequest));
+        }
+        public async Task<IActionResult> DeleteExpenseRequest(int id)
+        {
+            var expenseRequest = await _expenseRequestService.GetRequestById(id);
+            await _expenseRequestService.DeleteAsync(expenseRequest);
+
+            return RedirectToAction(nameof(ListExpenseRequest));
+        }
+        public async Task<IActionResult> DeleteLeaveRequest(int id)
+        {
+            var leaveRequest = await _leaveRequestService.GetRequestById(id);
+            await _leaveRequestService.DeleteAsync(leaveRequest);
+
+            return RedirectToAction(nameof(ListLeaveRequests));
         }
     }
 }
