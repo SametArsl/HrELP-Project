@@ -9,9 +9,10 @@ namespace HrELP.Application.Services.LeaveTypeService
 {
     public interface ILeaveTypeService
     {
-        Task<LeaveType> GetLeaveTypeAsync(int leaveTypeId);
-        Task<LeaveType> GetLeaveTypeByNameAsync(string name);
-        Task CreateLeaveTypeAsync(LeaveType leaveType);
-        Task<List<LeaveType>> GetAllLeaveTypesAsync();
+        Task<LeaveTypes> GetLeaveTypeAsync(int leaveTypeId);
+        Task<LeaveTypes> GetLeaveTypeByNameAsync(string name);
+        Task CreateLeaveTypeAsync(LeaveTypes leaveType);
+        Task<List<LeaveTypes>> GetAllLeaveTypesAsync();
+        Task<LeaveTypes> GetLeaveTypesAsync(int leaveRequestId);
     }
 }

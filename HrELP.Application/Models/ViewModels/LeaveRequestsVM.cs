@@ -24,7 +24,7 @@ namespace HrELP.Application.Models.ViewModels
         [Required]
         public int LeaveTypeId { get; set; }
         [Required]
-        public List<LeaveType> LeaveTypes { get; set; }
+        public List<LeaveTypes> LeaveTypes { get; set; }
         [Required]
         public List<LeaveRequest> pendingLeaveList { get; set; }
     }

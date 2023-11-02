@@ -13,6 +13,7 @@ using HrELP.Domain.Entities.Concrete;
 using HrELP.Domain.Entities.Concrete.Requests;
 using HrELP.Domain.Repositories;
 using HrELP.Infrastructure;
+using HrELP.Infrastructure.Repositories;
 using HrELP.Presentation.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -46,7 +47,8 @@ namespace HrELP.Presentation.Controllers
         private readonly ILeaveRequestService _leaveRequestService;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ILeaveTypeService _leaveTypeService;
-        public ManagerController(SignInManager<AppUser> signInManager, AddressAPIService addressAPI, IAppUserService appUserService, ICompanyService companyService, IMapper mapper, UserManager<AppUser> userManager, IExpenseRequestService expenseRequestService, IWebHostEnvironment webHostEnvironment, IAdvanceRequestService advanceRequestService, ILeaveRequestService leaveRequestService)
+        private readonly ILeaveTypeRepository _leaveTypeRepository;
+        public ManagerController(SignInManager<AppUser> signInManager, AddressAPIService addressAPI, IAppUserService appUserService, ICompanyService companyService, IMapper mapper, UserManager<AppUser> userManager, IExpenseRequestService expenseRequestService, IWebHostEnvironment webHostEnvironment, IAdvanceRequestService advanceRequestService, ILeaveRequestService leaveRequestService, ILeaveTypeRepository leaveTypeRepository)
         {
             _signInManager = signInManager;
             _addressAPI = addressAPI;
@@ -58,6 +60,7 @@ namespace HrELP.Presentation.Controllers
             _webHostEnvironment = webHostEnvironment;
             _advanceRequestService = advanceRequestService;
             _leaveRequestService = leaveRequestService;
+            _leaveTypeRepository = leaveTypeRepository;
         }
 
 
@@ -265,26 +268,7 @@ namespace HrELP.Presentation.Controllers
             };
             return PartialView("AdvanceRequestDetails", requestVM);
         }
-        //[HttpGet]
-        //public IActionResult ListLeaveRequests()
-        //{
-        //    List<LeaveRequest> leaveRequests = _leaveRequestService.GetAll();
-
-        //    return View(leaveRequests);
-        //}
-        //public async Task<IActionResult> LeaveRequestDetails(int id)
-        //{
-        //    LeaveRequest request = await _leaveRequestService.GetRequestById(id);
-        //    LeaveRequestsVM requestVM = new LeaveRequestsVM()
-        //    {
-        //       Description=request.Description,
-        //       EndDate=request.EndDate,
-        //       StartDate=request.StartDate,
-        //       LeaveTypeId=request.LeaveTypeId
-
-        //    };
-        //    return PartialView("LeaveRequestDetails", requestVM);
-        //}
+        
         public async Task<IActionResult> ApproveAdvanceRequest(int id)
         {
             AdvanceRequest advanceRequest = await _advanceRequestService.GetRequestById(id);
@@ -295,10 +279,11 @@ namespace HrELP.Presentation.Controllers
             if (advanceRequest.RequestType.Id == 11)
             {
                 appUser.AdvanceLimit = appUser.AdvanceLimit - advanceRequest.RequestAmount;
-                _appUserService.UpdateAsync(appUser);
+                await _appUserService.UpdateAsync(appUser);
             }
             advanceRequest.IsActive = false;
             await _advanceRequestService.UpdateAsync(advanceRequest);
+            SendEmailByAdvanceStatus(id);
 
             return RedirectToAction(nameof(ListAdvanceRequests));
         }
@@ -312,6 +297,8 @@ namespace HrELP.Presentation.Controllers
             advanceRequest.IsActive = false;
             await _advanceRequestService.UpdateAsync(advanceRequest);
 
+            SendEmailByAdvanceStatus(id);
+
             return RedirectToAction(nameof(ListAdvanceRequests));
         }
         public async Task<IActionResult> ApproveExpenseRequest(int id)
@@ -324,6 +311,8 @@ namespace HrELP.Presentation.Controllers
             expenceRequest.IsActive = false;
             await _expenseRequestService.UpdateAsync(expenceRequest);
 
+            SendEmailByExpenseStatus(id);
+
             return RedirectToAction(nameof(ListExpenseRequests));
         }
         public async Task<IActionResult> RefuseExpenseRequest(int id)
@@ -335,6 +324,8 @@ namespace HrELP.Presentation.Controllers
             expenceRequest.ResponseDate = DateTime.Now;
             expenceRequest.IsActive = false;
             await _expenseRequestService.UpdateAsync(expenceRequest);
+
+            SendEmailByExpenseStatus(id);
 
             return RedirectToAction(nameof(ListExpenseRequests));
         }
@@ -362,7 +353,8 @@ namespace HrELP.Presentation.Controllers
         public async Task<IActionResult> LeaveRequestDetails(int id)
         {
             LeaveRequest request = await _leaveRequestService.GetRequestById(id);
-            var leaveType = await _leaveTypeService.GetLeaveTypeAsync(request.LeaveTypeId);
+            int leaveTypeId = request.LeaveTypeId;
+            LeaveTypes leaveType = await _leaveTypeRepository.GetLeaveTypeById(leaveTypeId);
             request.LeaveType = leaveType;
             LeaveRequestVM requestVM = new LeaveRequestVM()
             {
@@ -409,8 +401,8 @@ namespace HrELP.Presentation.Controllers
         }
         public async Task SendEmailByStatus(int id)//roottacshtml
         {
-            LeaveRequest lr = await _leaveRequestService.GetLeaveRequestAsync(id);
-            AppUser user = await _appUserService.GetUserAsync(lr.UserId);
+            LeaveRequest lr = await _leaveRequestService.GetRequestById(id);
+
             //LeaveRequest request = await _leaveRequestService.GetRequestById(id);
             //request.LeaveType = await _leaveTypeService.GetLeaveTypeAsync(id);
             //user.Id = lr.UserId;
@@ -423,14 +415,92 @@ namespace HrELP.Presentation.Controllers
                 builder.HtmlBody = sr.ReadToEnd();
             }
 
-            builder.HtmlBody = builder.HtmlBody.Replace("{0}", user.FullName);
+            builder.HtmlBody = builder.HtmlBody.Replace("{0}", lr.AppUser.FullName);
             builder.HtmlBody = builder.HtmlBody.Replace("{1}", lr.CreateDate.ToString());//requesttypname
             builder.HtmlBody = builder.HtmlBody.Replace("{2}", lr.ReplyDate.ToString());//cevaplanmaTarihi
             builder.HtmlBody = builder.HtmlBody.Replace("{3}", lr.ApprovalStatus.ToString());//OnaylamaStatus
-                                                                                             //builder.HtmlBody = builder.HtmlBody.Replace("{4}", request.RequestType.RequestName);
+            builder.HtmlBody = builder.HtmlBody.Replace("{4}", lr.Description);
 
             MailMessage mail = new MailMessage();
-            mail.To.Add(user.Email);
+            mail.To.Add(lr.AppUser.Email);
+            mail.From = new MailAddress("noreplyhrelp@gmail.com");
+            mail.Subject = "Request Information";
+            mail.Body = builder.HtmlBody;
+            mail.IsBodyHtml = true;
+
+            using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+            {
+                ServicePointManager.ServerCertificateValidationCallback = (s, certificate, chain, sslPolicyErrors) => true;
+                smtp.EnableSsl = true;
+                smtp.UseDefaultCredentials = false;
+                smtp.Credentials = new NetworkCredential("noreplyhrelp@gmail.com", "rmzqiazgoktnbcac");
+                smtp.Send(mail);
+
+            }
+        }
+        public async Task SendEmailByExpenseStatus(int id)//roottacshtml
+        {
+            ExpenseRequest er = await _expenseRequestService.GetRequestById(id);
+
+            //LeaveRequest request = await _leaveRequestService.GetRequestById(id);
+            //request.LeaveType = await _leaveTypeService.GetLeaveTypeAsync(id);
+            //user.Id = lr.UserId;
+            string HtmlBody = "";
+            var PathToFile = Path.Combine(_webHostEnvironment.WebRootPath, "EmailTemplate", "SendEmailByStatus.html");
+
+            var builder = new BodyBuilder();
+            using (StreamReader sr = System.IO.File.OpenText(PathToFile))
+            {
+                builder.HtmlBody = sr.ReadToEnd();
+            }
+
+            builder.HtmlBody = builder.HtmlBody.Replace("{0}", er.AppUser.FullName);
+            builder.HtmlBody = builder.HtmlBody.Replace("{1}", er.CreateDate.ToString());//requesttypname
+            builder.HtmlBody = builder.HtmlBody.Replace("{2}", er.ResponseDate.ToString());//cevaplanmaTarihi
+            builder.HtmlBody = builder.HtmlBody.Replace("{3}", er.ApprovalStatus.ToString());//OnaylamaStatus
+            builder.HtmlBody = builder.HtmlBody.Replace("{4}", er.Description);
+
+            MailMessage mail = new MailMessage();
+            mail.To.Add(er.AppUser.Email);
+            mail.From = new MailAddress("noreplyhrelp@gmail.com");
+            mail.Subject = "Request Information";
+            mail.Body = builder.HtmlBody;
+            mail.IsBodyHtml = true;
+
+            using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+            {
+                ServicePointManager.ServerCertificateValidationCallback = (s, certificate, chain, sslPolicyErrors) => true;
+                smtp.EnableSsl = true;
+                smtp.UseDefaultCredentials = false;
+                smtp.Credentials = new NetworkCredential("noreplyhrelp@gmail.com", "rmzqiazgoktnbcac");
+                smtp.Send(mail);
+
+            }
+        }
+        public async Task SendEmailByAdvanceStatus(int id)//roottacshtml
+        {
+            AdvanceRequest ar = await _advanceRequestService.GetRequestById(id);
+
+            //LeaveRequest request = await _leaveRequestService.GetRequestById(id);
+            //request.LeaveType = await _leaveTypeService.GetLeaveTypeAsync(id);
+            //user.Id = lr.UserId;
+            string HtmlBody = "";
+            var PathToFile = Path.Combine(_webHostEnvironment.WebRootPath, "EmailTemplate", "SendEmailByStatus.html");
+
+            var builder = new BodyBuilder();
+            using (StreamReader sr = System.IO.File.OpenText(PathToFile))
+            {
+                builder.HtmlBody = sr.ReadToEnd();
+            }
+
+            builder.HtmlBody = builder.HtmlBody.Replace("{0}", ar.AppUser.FullName);
+            builder.HtmlBody = builder.HtmlBody.Replace("{1}", ar.CreateDate.ToString());//requesttypname
+            builder.HtmlBody = builder.HtmlBody.Replace("{2}", ar.ResponseDate.ToString());//cevaplanmaTarihi
+            builder.HtmlBody = builder.HtmlBody.Replace("{3}", ar.ApprovalStatus.ToString());//OnaylamaStatus
+            builder.HtmlBody = builder.HtmlBody.Replace("{4}", ar.Description);
+
+            MailMessage mail = new MailMessage();
+            mail.To.Add(ar.AppUser.Email);
             mail.From = new MailAddress("noreplyhrelp@gmail.com");
             mail.Subject = "Request Information";
             mail.Body = builder.HtmlBody;

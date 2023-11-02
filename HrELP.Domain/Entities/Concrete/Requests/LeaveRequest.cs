@@ -18,7 +18,7 @@ namespace HrELP.Domain.Entities.Concrete.Requests
         public AppUser? AppUser { get; set; }
         public int LeaveTypeId { get; set; }
         public decimal LeaveDayNumber { get; set; }
-        public LeaveType? LeaveType { get; set; }
+        public LeaveTypes? LeaveType { get; set; }
         [MaxLength(200)]
         public string? Description { get; set; }
         public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.Pending_Approval;

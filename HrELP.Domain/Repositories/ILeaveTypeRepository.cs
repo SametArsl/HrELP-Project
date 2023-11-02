@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 
 namespace HrELP.Domain.Repositories
 {
-    public interface ILeaveTypeRepository:IBaseRepository<LeaveType>
+    public interface ILeaveTypeRepository:IBaseRepository<LeaveTypes>
     {
+        Task<LeaveTypes> GetLeaveTypeById(int id);
     }
+
 }

@@ -222,7 +222,7 @@ namespace HrELP.Presentation.Controllers
             AppUser user = await _userManager.GetUserAsync(User);
             leaveRequestVM.Personnel = user;
             leaveRequestVM.pendingLeaveList = await _leaveRequestService.GetLeaveRequestByStatusAsync(ApprovalStatus.Pending_Approval, user.Id);
-            LeaveType leaveType = await _leaveTypeService.GetLeaveTypeAsync(leaveRequestVM.LeaveTypeId);
+            LeaveTypes leaveType = await _leaveTypeService.GetLeaveTypeAsync(leaveRequestVM.LeaveTypeId);
             decimal leavedays = leaveRequestVM.EndDate.Subtract(leaveRequestVM.StartDate).Days;
             LeaveRequest leaveRequest = new LeaveRequest()
             {
