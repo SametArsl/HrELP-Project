@@ -2,6 +2,7 @@
 using HrELP.Application.Services.AdvanceRequestService;
 using HrELP.Application.Services.AppUserService;
 using HrELP.Application.Services.CompanyService;
+using HrELP.Application.Services.ExpenseRequestService;
 using HrELP.Application.Services.LeaveRequestService;
 using HrELP.Application.Services.LeaveTypeService;
 using HrELP.Application.Services.RequestCategoryService;
@@ -35,10 +36,11 @@ namespace HrELP.Presentation.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IAdvanceRequestService _advanceRequestService;
         private readonly ILeaveRequestService _leaveRequestService;
+        private readonly IExpenseRequestService _expenseRequestService;
         private readonly Microsoft.AspNetCore.Identity.UserManager<AppUser> _userManager;
         private readonly ILeaveTypeService _leaveTypeService;
 
-        public PersonnelController(IAppUserService appUserService, SignInManager<AppUser> signInManager, IExpenseRequestRepository expenseRequestRepository, IRequestTypeService typeService, IRequestCategoryService requestCategoryService, ICompanyService companyService, IWebHostEnvironment webHostEnvironment, IAdvanceRequestService advanceRequestService, ILeaveRequestService leaveRequestService, Microsoft.AspNetCore.Identity.UserManager<AppUser> userManager, ILeaveTypeService leaveTypeService)
+        public PersonnelController(IAppUserService appUserService, SignInManager<AppUser> signInManager, IExpenseRequestRepository expenseRequestRepository, IRequestTypeService typeService, IRequestCategoryService requestCategoryService, ICompanyService companyService, IWebHostEnvironment webHostEnvironment, IAdvanceRequestService advanceRequestService, ILeaveRequestService leaveRequestService, Microsoft.AspNetCore.Identity.UserManager<AppUser> userManager, ILeaveTypeService leaveTypeService, IExpenseRequestService expenseRequestService)
         {
 
             _appUserService = appUserService;
@@ -52,6 +54,7 @@ namespace HrELP.Presentation.Controllers
             _leaveRequestService = leaveRequestService;
             _userManager = userManager;
             _leaveTypeService = leaveTypeService;
+            _expenseRequestService = expenseRequestService;
         }
 
         public IActionResult Index()
@@ -100,8 +103,23 @@ namespace HrELP.Presentation.Controllers
                 }
             }
             expenseRequest.FilePath = vM.FilePath;
-
-            await _expenseRequestRepository.AddAsync(expenseRequest);
+            if (_expenseRequestService.PendingRequests(vM.AppUser).Count > 0)
+            {
+                ViewBag.Requests = _typeService.GetAdvanceRequestTypes().Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.RequestName }).ToList();
+                ViewData["OutOfLimit"] = "The system allows only one expence request per category to be pending at the same time.";
+                return View(vM);
+            }
+            else
+            {
+                try
+                {
+                    await _expenseRequestRepository.AddAsync(expenseRequest);
+                }
+                catch (Exception ex)
+                {
+                    ViewData["Message"] = $"The error occurred. Error Message={ex.Message}";
+                }
+            }
             return RedirectToAction("Index", "User");
         }
         [HttpGet]
@@ -205,7 +223,7 @@ namespace HrELP.Presentation.Controllers
             leaveRequestVM.Personnel = user;
             leaveRequestVM.pendingLeaveList = await _leaveRequestService.GetLeaveRequestByStatusAsync(ApprovalStatus.Pending_Approval, user.Id);
             LeaveType leaveType = await _leaveTypeService.GetLeaveTypeAsync(leaveRequestVM.LeaveTypeId);
-            decimal leavedays = leaveRequestVM.StartDate.Subtract(leaveRequestVM.EndDate).Days;
+            decimal leavedays = leaveRequestVM.EndDate.Subtract(leaveRequestVM.StartDate).Days;
             LeaveRequest leaveRequest = new LeaveRequest()
             {
                 ApprovalStatus = ApprovalStatus.Pending_Approval,
@@ -263,6 +281,18 @@ namespace HrELP.Presentation.Controllers
         {
             await _leaveRequestService.DeniedLeaveRequestAsync(id);
             return View("ListLeaveRequests");
+        }
+        public async Task<IActionResult> ListAdvanceRequest()
+        {
+            AppUser appUser= await _userManager.GetUserAsync(User);
+            var list =  _advanceRequestService.AllRequests(appUser);
+            return View(list);
+        }
+        public async Task<IActionResult> ListExpenseRequest()
+        {
+            AppUser appUser = await _userManager.GetUserAsync(User);
+            var list = _expenseRequestService.AllRequests(appUser);
+            return View(list);
         }
     }
 }

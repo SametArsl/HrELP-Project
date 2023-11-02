@@ -15,5 +15,6 @@ namespace HrELP.Application.Services.AdvanceRequestService
         Task<AdvanceRequest> GetRequestById(int id);
         Task UpdateAsync(AdvanceRequest request);
         List<AdvanceRequest> PendingRequests(AppUser user);
+        List<AdvanceRequest> AllRequests(AppUser user);
     }
 }

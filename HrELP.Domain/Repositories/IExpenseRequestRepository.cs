@@ -13,5 +13,6 @@ namespace HrELP.Domain.Repositories
         IQueryable<ExpenseRequest> GetAllWithAppUserAsync();
         ExpenseRequest GetById(int id);
         List<ExpenseRequest> GetPendingRequest(AppUser user);
+        List<ExpenseRequest> GetAllRequests(AppUser user);
     }
 }

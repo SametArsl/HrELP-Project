@@ -34,5 +34,10 @@ namespace HrELP.Infrastructure.Repositories
             List<ExpenseRequest> list = _table.Include(x => x.AppUser).Include(x => x.RequestType).Where(x => x.UserId == user.Id && x.ApprovalStatus == Domain.Entities.Enums.ApprovalStatus.Pending_Approval).ToList();
             return list;
         }
+        public List<ExpenseRequest> GetAllRequests(AppUser user)
+        {
+            List<ExpenseRequest> list = _table.Include(x => x.AppUser).Include(x => x.RequestType).Where(x => x.UserId == user.Id).ToList();
+            return list;
+        }
     }
 }

@@ -28,6 +28,12 @@ namespace HrELP.Infrastructure.Repositories
             return list;
         }
 
+        public List<AdvanceRequest> GetAllRequests(AppUser user)
+        {
+            List<AdvanceRequest> list = _table.Include(x => x.AppUser).Include(x => x.RequestType).Where(x => x.UserId == user.Id).ToList();
+            return list;
+        }
+
         IQueryable<AdvanceRequest> IAdvanceRequestRepository.GetAllWithAppUserAsync()
         {
             IQueryable<AdvanceRequest> list = _table.Include(x => x.AppUser).Include(y => y.RequestType);

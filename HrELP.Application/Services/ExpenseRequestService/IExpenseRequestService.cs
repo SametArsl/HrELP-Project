@@ -15,5 +15,6 @@ namespace HrELP.Application.Services.ExpenseRequestService
         Task<ExpenseRequest> GetRequestById(int id);
         Task UpdateAsync(ExpenseRequest request);
         List<ExpenseRequest> PendingRequests(AppUser user);
+        List<ExpenseRequest> AllRequests(AppUser user);
     }
 }

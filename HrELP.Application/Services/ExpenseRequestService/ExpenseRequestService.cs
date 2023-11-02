@@ -40,6 +40,11 @@ namespace HrELP.Application.Services.ExpenseRequestService
             var list = _expenseRequestRepository.GetPendingRequest(user);
             return list;
         }
+        public List<ExpenseRequest> AllRequests(AppUser user)
+        {
+            var list = _expenseRequestRepository.GetAllRequests(user);
+            return list;
+        }
 
         public async Task UpdateAsync(ExpenseRequest request)
         {

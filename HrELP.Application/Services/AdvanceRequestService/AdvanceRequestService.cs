@@ -42,6 +42,12 @@ namespace HrELP.Application.Services.AdvanceRequestService
             return list;
         }
 
+        public List<AdvanceRequest> AllRequests(AppUser user)
+        {
+            var list=_advanceRequestRepository.GetAllRequests(user);
+            return list;
+        }
+
         public async Task UpdateAsync(AdvanceRequest request)
         {
             await _advanceRequestRepository.UpdateAsync(request);
