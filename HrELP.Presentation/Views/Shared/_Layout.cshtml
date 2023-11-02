@@ -145,7 +145,7 @@
                                     <span class="material-symbols-outlined">
                                         assignment_add
                                     </span>
-                                    <h3 class="mt-2">&nbsp;&nbsp;&nbsp; Requests</h3>
+                                    <h3 class="mt-2">&nbsp;&nbsp;&nbsp; New Requests</h3>
                                 </button>
                             </h2>
                             <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
@@ -169,6 +169,41 @@
                                             patient_list
                                         </span>
                                         <h3>Leave Request</h3>
+                                    </a>
+                                    <a></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item border-0">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    <span class="material-symbols-outlined">
+                                        assignment_add
+                                    </span>
+                                    <h3 class="mt-2">&nbsp;&nbsp;&nbsp; My Requests</h3>
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <a asp-controller="Personnel" asp-action="ListExpenseRequests" class="text-decoration-none">
+                                        <span class="material-symbols-outlined">
+                                            patient_list
+                                        </span>
+                                        <h3>My Expense Requests</h3>
+                                    </a>
+                                    <hr>
+                                    <a asp-controller="Personnel" asp-action="ListAdvanceRequests" class="text-decoration-none">
+                                        <span class="material-symbols-outlined">
+                                            patient_list
+                                        </span>
+                                        <h3>My Advance Requests</h3>
+                                    </a>
+                                    <hr>
+                                    <a asp-controller="Personnel" asp-action="ListLeaveRequests" class="text-decoration-none">
+                                        <span class="material-symbols-outlined">
+                                            patient_list
+                                        </span>
+                                        <h3>My Leave Requests</h3>
                                     </a>
                                     <a></a>
                                 </div>

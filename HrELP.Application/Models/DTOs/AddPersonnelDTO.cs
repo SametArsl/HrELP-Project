@@ -29,6 +29,7 @@ namespace HrELP.Application.Models.DTOs
         public Gender Gender { get; set; }
         [NumberValidator]
         public string IdentityNumber { get; set; }
+        public bool MarriageStatus { get; set; }
         public int CompanyId { get; set; }
         public Company? Company { get; set; }
         public int AddressId { get; set; }
