@@ -140,6 +140,7 @@ namespace HrELP.Presentation.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
+            await HttpContext.SignOutAsync();
             return View("~/Views/Login/Login.cshtml");
         }
         [HttpGet]

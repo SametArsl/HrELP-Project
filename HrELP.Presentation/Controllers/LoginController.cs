@@ -38,6 +38,7 @@ namespace HrELP.Presentation.Controllers
         [Route("{Controller}/{Action}")]
         public async Task<IActionResult> Login(LoginDTO loginDTO)
         {
+            HttpContext.Session.SetString("Photo", "");
             if (ModelState.IsValid)
             {
                 try
