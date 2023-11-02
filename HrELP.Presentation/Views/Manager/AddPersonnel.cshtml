@@ -8,6 +8,9 @@
                 <div class="user">
                     <h2 style="margin-top:15px; margin-left:120px">@Model.FirstName</h2>
                     <dl class="mt-5">
+                        <div id="imageContainer">
+                            <!-- This is where the selected image will be displayed -->
+                        </div>
                         <form method="post" asp-controller="Manager" asp-action="AddPersonnel" enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label asp-for="PhotoFile" class="form-label">Upload A Photo:</label>
@@ -417,6 +420,22 @@
             }
         });
     });
+
+    document.getElementById('formFile').addEventListener('change', function (event) {
+        var file = event.target.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function () {
+            var img = document.createElement('img');
+            img.src = reader.result;
+            img.style.maxWidth = '300px'; // Set a maximum width for the displayed image
+            document.getElementById('imageContainer').innerHTML = '';
+            document.getElementById('imageContainer').appendChild(img);
+        }
+
+        reader.readAsDataURL(file);
+    });
+
 </script>
 
 <style>
