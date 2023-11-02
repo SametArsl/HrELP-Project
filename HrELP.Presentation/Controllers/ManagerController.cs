@@ -48,6 +48,37 @@ namespace HrELP.Presentation.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ILeaveTypeService _leaveTypeService;
         private readonly ILeaveTypeRepository _leaveTypeRepository;
+        #region SomeLists
+        static List<string> departments = new List<string>
+            {
+                "Software Development",
+                "Testing and Quality Assurance",
+                "Product Management",
+                "Customer Support",
+                "Sales and Marketing",
+                "Human Resources",
+                "Finance and Accounting",
+                "Management"
+            };
+
+        static List<string> positions = new List<string>
+            {
+                "Software Developer",
+                "QA Engineer / Tester",
+                "Project Manager",
+                "Business Analyst",
+                "Data Scientist",
+                "Database Administrator",
+                "System Administrator",
+                "UX/UI Designer",
+                "DevOps Engineer",
+                "Security Specialist",
+                "Support Engineer",
+                "Systems Analyst",
+                "Mobile App Developer",
+                "Machine Learning Engineer"
+            };
+        #endregion
         public ManagerController(SignInManager<AppUser> signInManager, AddressAPIService addressAPI, IAppUserService appUserService, ICompanyService companyService, IMapper mapper, UserManager<AppUser> userManager, IExpenseRequestService expenseRequestService, IWebHostEnvironment webHostEnvironment, IAdvanceRequestService advanceRequestService, ILeaveRequestService leaveRequestService, ILeaveTypeRepository leaveTypeRepository)
         {
             _signInManager = signInManager;
@@ -73,39 +104,7 @@ namespace HrELP.Presentation.Controllers
         [HttpGet]
         public async Task<IActionResult> AddPersonnel()
         {
-
-
-            List<string> departments = new List<string>
-            {
-                "Software Development",
-                "Testing and Quality Assurance",
-                "Product Management",
-                "Customer Support",
-                "Sales and Marketing",
-                "Human Resources",
-                "Finance and Accounting",
-                "Management"
-            };
-            List<string> positions = new List<string>
-            {
-                "Software Developer",
-                "QA Engineer / Tester",
-                "Project Manager",
-                "Business Analyst",
-                "Data Scientist",
-                "Database Administrator",
-                "System Administrator",
-                "UX/UI Designer",
-                "DevOps Engineer",
-                "Security Specialist",
-                "Support Engineer",
-                "Systems Analyst",
-                "Mobile App Developer",
-                "Machine Learning Engineer"
-            };
-
-
-
+           
             // ViewBag'e departmanları ve pozisyonları ekle
             ViewBag.Departments = departments;
             ViewBag.Positions = positions;
@@ -148,6 +147,22 @@ namespace HrELP.Presentation.Controllers
             dTO.Company = await _companyService.GetCompany(appUser.CompanyId);
             dTO.CompanyId = appUser.CompanyId;
             dTO.Address = address;
+            AppUser user2 = await _appUserService.GetUserWithIdentityAsync(dTO.IdentityNumber);
+            if(user2 != null)
+            {
+                ViewData["IdentityExists"] = "This identity already exists";
+                ViewBag.Departments = departments;
+                ViewBag.Positions = positions;
+                var cities = await _addressAPI.GetCitiesAsync();
+                var cityList = cities.Select(x => new SelectListItem { Value = x, Text = x }).ToList();
+                ViewBag.City = cityList;
+                return View(dTO);
+            }
+
+            dTO.FirstName = CapitalizeFirstLetter(dTO.FirstName);
+            dTO.SecondFirstName = CapitalizeFirstLetter(dTO.SecondFirstName);
+            dTO.LastName = CapitalizeFirstLetter(dTO.LastName);
+            dTO.SecondLastName = CapitalizeFirstLetter(dTO.SecondLastName);
 
             int rowsChanged = await _appUserService.AddPersonnelAsync(dTO);
             if (rowsChanged != 0)
@@ -186,18 +201,18 @@ namespace HrELP.Presentation.Controllers
                     try
                     {
                         smtp.Send(mail);
-                        return RedirectToAction(nameof(GetEmployeeList));
+                        List<AppUser> employeeList = _appUserService.GetAllUsersByCompanyId(appUser.CompanyId);
+                        ViewData["ErrorTitle"] = "Registration successful";
+                        ViewData["ErrorMessage"] = "Before you can Login, please create a password by clicking on the confirmation link we've sent to your email adress.";
+                        return View("GetEmployeeList", employeeList);
                     }
                     catch (Exception ex)
                     {
                         throw new Exception(ex.Message.ToString());
                     }
                 }
-
-
             }
-            ViewBag.ErrorTitle = "Registration successful";
-            ViewBag.ErrorMessage = "Before you can Login, please create a password by clicking on the confirmation link we've sent to your email adress.";
+            
             return RedirectToAction("Index", "User");
         }
         [Route("{Controller}/{Action}")]
@@ -515,6 +530,19 @@ namespace HrELP.Presentation.Controllers
                 smtp.Send(mail);
 
             }
+
+        }
+        public string CapitalizeFirstLetter(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+            {
+                return input;
+            }
+
+            string firstLetter = input.Substring(0, 1).ToUpper();
+            string restOfTheString = input.Substring(1).ToLower();
+
+            return firstLetter + restOfTheString;
         }
     }
 }

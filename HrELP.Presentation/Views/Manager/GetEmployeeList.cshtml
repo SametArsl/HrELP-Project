@@ -7,11 +7,11 @@
         <div class="new-users">
             <h2>Employee List</h2>
             <div class="user-list mt-4">
-                @if(ViewBag.ErrorTitle!=null)
-                {
-                    <div class="alert alert-success">@ViewBag.ErrorTitle</div>
-                }
                 <div class="user">
+                    @if (ViewData["ErrorTitle"] != null)
+                    {
+                        <div class="alert alert-success">@ViewData["ErrorTitle"]</div>
+                    }
                     <ul class="nav nav-tabs mt-5" id="employeeTabs" role="tablist">
                         <li class="nav-item" role="presentation">
                             <a class="nav-link active text-decoration-none" id="all-tab" data-toggle="tab" href="#all" role="tab" aria-controls="all" aria-selected="true">All Employees</a>

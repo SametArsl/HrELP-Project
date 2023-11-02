@@ -8,6 +8,12 @@
                 <div class="user">
                     <h2 style="margin-top:15px; margin-left:120px">@Model.FirstName</h2>
                     <dl class="mt-5">
+                        @if (ViewData["IdentityExists"] != null)
+                        {
+                            <div class="alert alert-danger">
+                                @ViewData["IdentityExists"]
+                            </div>
+                        }
                         <div id="imageContainer">
                             <!-- This is where the selected image will be displayed -->
                         </div>
@@ -19,7 +25,7 @@
                             <div class="mb-4 pb-2">
                                 <label class="form-label">Department: </label><br />
                                 <div class="select-wrapper">
-                                    <select asp-for="Department" class="form-select" id="departmanSelect">
+                                    <select asp-for="Department" class="form-control" id="departmanSelect">
                                         <option value="">Please Select a Department</option>
                                         @foreach (var item in ViewBag.Departments)
                                         {
@@ -33,7 +39,7 @@
                             <div class="mb-4 pb-2">
                                 <label class="form-label" for="form3Examplev4">Position: </label><br />
                                 <div class="select-wrapper">
-                                    <select asp-for="Profession" class="form-select" id="pozisyonSelect">
+                                    <select asp-for="Profession" class="form-control" id="pozisyonSelect">
                                         <option value="">Please Select a Position</option>   @foreach (var position in ViewBag.Positions)
                                         {
                                             <option value="@position">@position</option>
